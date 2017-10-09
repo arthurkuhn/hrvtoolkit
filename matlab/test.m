@@ -1,7 +1,7 @@
 close all;
-load("G002ecg.mat")
+load("a2f1ecg.mat")
 
-qrsEx = a2f1ecg(250:750000);
+qrsEx = a2f1ecg(250:7500);
 fs = 1000;
 
 qrsEx = qrsEx;
@@ -26,19 +26,19 @@ interval = diff(locs_Rwave);
 figure;
 plot(1:length(interval),interval);
 
-sigPeaks = qrsEx(locs);
+sigPeaks = qrsEx(locs_Rwave);
 
 
 
 newmatrix = sigPeaks;
 newmatrix(sigPeaks < 4) = 0;
 
-% figure
-% plot(1:length(qrsEx),qrsEx)
-% hold on
-% plot(1:length(newmatrix),newmatrix,'ro')
-% xlabel('Seconds'); ylabel('Amplitude')
-% title('Subject - MIT-BIH 200')
+figure
+plot(1:length(qrsEx),qrsEx)
+hold on
+plot(1:length(newmatrix),newmatrix,'ro')
+xlabel('Seconds'); ylabel('Amplitude')
+title('Subject - MIT-BIH 200')
 
 
 % [mpdict,~,~,longs] = wmpdictionary(numel(qrsEx),'lstcpt',{{'sym4',3}});
