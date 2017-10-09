@@ -6,8 +6,6 @@ load("G002ecg.mat") % Heavy bias
 fs = 1000;
 
 sig = G002ecg;
-step = 1/fs;
-max = length(sig)/fs;
 time = 0:(1/fs):((length(sig)-1)/fs);
 
 figure;
