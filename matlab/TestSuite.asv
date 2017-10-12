@@ -1,9 +1,0 @@
-close all;
-
-ecgFile = "a2f1ecg.mat";
-load(ecgFile);
-sig = a2f1ecg;
-
-
-
-

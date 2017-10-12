@@ -14,12 +14,12 @@ plot(time,sig);
 % every second of the ECG signal was normalized by the standard deviation of the signal in that second. 
 numSecs = floor(length(sig) / fs);
 
-for i = 1:numSecs-1
-    currSec = sig(i*fs:(i+1)*fs-1);
-    M = mean(currSec,2);
+for i = 0:numSecs-1
+    currSec = sig(1+i*fs:(i+1)*fs-1);
+    M = mean(currSec);
     S = std(currSec);
     normalizedSec = arrayfun(@(a) (a - M)/ S, currSec);
-    sig(i*fs:(i+1)*fs-1) = normalizedSec;
+    sig(1+i*fs:(i+1)*fs-1) = normalizedSec;
 end
 
 figure;
@@ -89,7 +89,7 @@ peakIndex = 1;
 for i = 1:length(sig)-1
     if(slips(i) ~= 0)
         peaks(peakIndex) = maxIndex;
-        peakIndex = peakIndex + 1
+        peakIndex = peakIndex + 1;
         currMax = movingAverage(i);
         continue
     end
