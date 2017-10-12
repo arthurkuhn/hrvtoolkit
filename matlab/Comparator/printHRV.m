@@ -1,5 +1,9 @@
 function printHRV(ecg, peaks,fs,titleString)
 
+if(length(peaks) < 10)
+    return
+end
+
 interval = diff(peaks);
 interval = interval.^-1;
 interval = interval * fs;

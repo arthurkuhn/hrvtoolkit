@@ -1,7 +1,7 @@
 close all;
 fs = 1000;
 
-index = 1:60000;
+index = 1:120000;
 
 ecgFile = "G002ecg.mat";
 load(ecgFile);
