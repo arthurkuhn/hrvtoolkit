@@ -1,10 +1,6 @@
-close all;
-
-ecgFile = "G002ecg.mat";
-load(ecgFile);
-sig = transpose(a2f1ecg);
-fs = 1000;
-
+function runAllTests( sig, fs, ecgFile)
+%RUNALLTESTS Summary of this function goes here
+%   Detailed explanation goes here
 
 [~,locs_Rwave] = findpeaks(sig,'MinPeakHeight',0.0005,'MinPeakDistance',200);   
 printHRV(sig, locs_Rwave, fs, "Unfiltered Signal - " + ecgFile);
@@ -16,3 +12,7 @@ printHRV(sig, qrs_i_raw, fs, "Pan & Tompkins Algorithm - " + ecgFile);
 
 [peaks] = kotaFunction(sig, fs);
 printHRV(sig, peaks, fs, "Base Kota - " + ecgFile);
+
+
+end
+
