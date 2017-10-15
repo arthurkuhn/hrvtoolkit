@@ -65,6 +65,66 @@ interval = diff(locs_Rwave);
 figure;
 plot(1:length(interval),interval);
 
+x3 = sig;
+
+% HILBER TRANSFORM
+s = x3; % Band-pass filtered ECG signal
+d = 1/(pi*length(s));
+s2 = conv(s, d);
+xe = abs(s)+abs(s2); % Envelop xe(t)
+
+% MOVING WINDOW INTEGRATION
+% MAKE IMPULSE RESPONSE
+h = ones (1 ,31)/31;
+Delay = 15; % Delay in samples
+% Apply filter
+x6 = conv (xe ,h);
+N = length(x6) - 15;
+x6 = x6 (15+[1: N]);
+
+x6 = x6/ max( abs(x6 ));
+
+% FIND R-PEAKS
+max_h = max(x6);
+thresh = mean (x6 );
+poss_reg =(x6>thresh*max_h);
+left = find(diff([0 poss_reg])==1);
+right = find(diff([poss_reg 0])==-1);
+for i=1:length(left)
+ [R_value(i) R_loc(i)] = max( sig(left(i):right(i)) );
+ R_loc(i) = R_loc(i)-1+left(i); % add offset
+end
+
+R_loc=R_loc(find(R_value>0))
+R_value=R_value(find(R_value>0))
+beats = length(R_loc)
+time = 0:1/fs:(length(sig)-1)*1/fs;
+% CALCULATE THE HEARTRATE
+beat_frequency = (length(sig)-1)*1/fs/beats
+bpm = beat_frequency*60
+HR = 60./diff(R_loc).*fs
+% PLOTING RESULTS
+figure
+subplot(3,1,1)
+plot (time,sig/max(sig));
+title('Orignal ECG Signal');
+xlabel('Time in seconds');
+ylabel('Amplitude');
+subplot(3,1,2)
+plot (time,x3/max(x3) , time(R_loc) ,R_value , 'r^');
+legend('ECG','R','S','Q');
+title('ECG Signal with R points');
+xlabel('Time in seconds');
+ylabel('Amplitude');
+%xlim([1 6])
+subplot(3,1,3)
+stairs(HR)
+title('Heart Rate Signal of ECG ');
+xlabel('Time in seconds');
+ylabel('HR(min-1)');
+xlim([0 10])
+
+
 % Hilbert Transform
 transform = hilbert(sig);
 % Find the angle:
