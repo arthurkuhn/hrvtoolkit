@@ -11,8 +11,8 @@ function Hd = lowpassFilter
 Fs = 1000;  % Sampling Frequency
 
 N     = 2;   % Order
-Fpass = 16;  % Passband Frequency
-Fstop = 25;  % Stopband Frequency
+Fpass = 5;  % Passband Frequency
+Fstop = 15;  % Stopband Frequency
 Wpass = 1;   % Passband Weight
 Wstop = 1;   % Stopband Weight
 
