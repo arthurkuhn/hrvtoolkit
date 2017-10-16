@@ -2,10 +2,10 @@
 
 close all;
 clear all;
-load("G002ecg.mat") % Heavy bias
+load("A1ecg.mat") % Heavy bias
 fs = 1000;
 
-sig = G002ecg;
+sig = transpose(A1ecg);
 time = 0:(1/fs):((length(sig)-1)/fs);
 
 figure;
@@ -94,14 +94,14 @@ for i=1:length(left)
  R_loc(i) = R_loc(i)-1+left(i); % add offset
 end
 
-R_loc=R_loc(find(R_value>0))
-R_value=R_value(find(R_value>0))
-beats = length(R_loc)
+R_loc=R_loc(find(R_value>0));
+R_value=R_value(find(R_value>0));
+beats = length(R_loc);
 time = 0:1/fs:(length(sig)-1)*1/fs;
 % CALCULATE THE HEARTRATE
 beat_frequency = (length(sig)-1)*1/fs/beats
-bpm = beat_frequency*60
-HR = 60./diff(R_loc).*fs
+bpm = beat_frequency*60;
+HR = 60./diff(R_loc).*fs;
 % PLOTING RESULTS
 figure
 subplot(3,1,1)
