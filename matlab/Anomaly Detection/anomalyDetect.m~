@@ -23,28 +23,28 @@ sig5 = orig_sig;
 sig6 = orig_sig;
 
 time = 0:(1/fs):((length(orig_sig)-1)/fs);
-window = 0.5*fs; % # of secs
+window = 2*fs; % # of secs
 numwindows = floor(length(orig_sig-1)/window);
 index = 0;
 array = 0;
 
 %RMS
-%length(orig_sig)-window + window
+length(orig_sig)-window + window
 
-for i = 1:length(orig_sig)-window %0 to #samples; one i is 1/fs
-   r = rms(orig_sig(i:i+window))
-
-%  if (r > 0.00125)
-%       index = index+1
-%       array(index)= i
-       
-%   end
- %  if (r > 0.00126)
-       %sig2(i*window+1:(i+1)*window) = mean(orig_sig(1:length(orig_sig)-1));       
-  % else
-       %not noisy
- %  end
-end
+% for i = 1:(length(orig_sig))-window-1 %0 to #samples; one i is 1/fs
+%    r = rms(orig_sig(i:i+window));
+% 
+%    if (r > 0.0013)
+%        index = index+1;
+%        array(index)= i;
+%        
+%    end
+%  %  if (r > 0.00126)
+%        sig2(i*window+1:(i+1)*window) = mean(orig_sig(1:length(orig_sig)-1));       
+%   % else
+%        %not noisy
+%  %  end
+% end
 % 
 % figure;
 % 
