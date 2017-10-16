@@ -28,8 +28,7 @@ plot(time,sig);
 
 % ECG was detrended using a 120-ms smoothing filter with a zero-phase distortion.
 
-filt = lowpassFilter();
-sig = filter(filt, sig);
+sig = preprocessing(sig, fs);
 
 figure;
 plot(time,sig);
@@ -91,7 +90,7 @@ poss_reg =(x6>thresh*max_h);
 left = find(diff([0 poss_reg])==1);
 right = find(diff([poss_reg 0])==-1);
 for i=1:length(left)
- [R_value(i) R_loc(i)] = max( sig(left(i):right(i)) );
+ [R_value(i), R_loc(i)] = max( sig(left(i):right(i)) );
  R_loc(i) = R_loc(i)-1+left(i); % add offset
 end
 
