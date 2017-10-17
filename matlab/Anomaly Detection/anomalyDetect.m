@@ -6,6 +6,7 @@ load("G002ecg.mat")
 fs = 1000;
 
 orig_sig = G002ecg;
+orig_sig = orig_sig.*100;
 %filt = lowpassFilter();
 filt = BP();
 
@@ -31,8 +32,10 @@ array = 0;
 %RMS
 %length(orig_sig)-window + window
 
+r = zeros(1,length(orig_sig));
+
 for i = 1:length(orig_sig)-window %0 to #samples; one i is 1/fs
-   r = rms(orig_sig(i:i+window))
+   r(i) = rms(orig_sig(i:i+window));
 
 %  if (r > 0.00125)
 %       index = index+1
