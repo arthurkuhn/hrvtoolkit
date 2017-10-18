@@ -3,56 +3,62 @@
 close all;
 clear all;
 load("G002ecg.mat")
-fs = 1000;
+load("A1ecg.mat")
+load("a2f1ecg.mat")
+load("a5c3ecg.mat")
 
-orig_sig = G002ecg;
+fs = 1000;
+orig_sig = a5c3ecg;
 orig_sig = orig_sig.*1000; %to see variations
 
 filt = BP(); % Band pass from 16 to 26 Hz
+filt_sig = filter(filt, orig_sig); % new signal
 
-time = 0:(1/fs):((length(orig_sig)-1)/fs); %time in seconds
+time = 0:(1/fs):((length(filt_sig)-1)/fs); %time in seconds
 window = 1*fs; % # of secs
-
 index = 0;
+s = zeros(1,length(filt_sig));
 
-% STD DEV 
-% r = zeros(1,length(orig_sig));
-s = zeros(1,length(orig_sig));
-
-for i = 1:length(orig_sig)-window %0 to #samples; one i is 1/fs
+for i = floor(1*window)/2+1:length(filt_sig)-window/2 %0 to #samples; one i is 1/fs
    %r(i) = rms(orig_sig(i:i+window));
-   s(i) = std(orig_sig(i:i+window));
-
-%  if (r(i) > 0.1261)
-   if (s(i) > 0.145)
+   s(i) = std(filt_sig(i-floor(window/2):i+(window/2)));
+   
+   %if (r(i) > 0.1261) %0.11, 0.09
+   if (s(i)>0.14)
+  % if (s(i) > 0.09)
        index = index+1;
-       array(index)= i; 
+       array(index)= i; %take middle window value
    end
 end
 
 %create same length signal 
-for j = 1:length(array)
-    noisy_sig(array(j)) = orig_sig(array(j));
-    
+for i = 1:length(array)
+    noisy_sig(i) = filt_sig(array(i));
 end
 
-%convert array to time
+%in secs
+
 array = array/fs;
 figure;
-
-subplot(2,1,1);
+subplot(3,1,1);
 plot(time, orig_sig);
-hold on
-scatter(length(noisy_sig), noisy_sig,1,'c');
 
-%axis([0 300 -2.5e-3 1.5e-3]);
-title('Original signal');
+subplot(3,1,2);
+plot(time, filt_sig);
+hold on
+scatter(array, noisy_sig,1,'r');
+%title(G0002ecg);
 xlabel('Time (s)');
-subplot(2,1,2);
-scatter(length(noisy_sig), noisy_sig,1,'c');
-%axis([0 300 -2.5e-3 1.5e-3]);
-title('max RMS = 0.0013');
-xlabel('Time (s)');
+
+ subplot(3,1,3);
+ plot(time, filt_sig);
+
+figure;
+plot(1:length(s),s);
+% scatter(array, noisy_sig,1,'c');
+% %axis([0 300 -2.5e-3 1.5e-3]);
+% title('max RMS = 0.0013');
+% xlabel('Time (s)');
 
 % subplot(3,1,3);
 % plot(time, sig2);
@@ -143,3 +149,14 @@ xlabel('Time (s)');
 % sig5 = orig_sig;
 % sig6 = orig_sig;
 %numwindows = floor(length(orig_sig-1)/window);
+
+% check if no index @ clean sig:
+% index_clean = 0;
+% sc = zeros(1,length(orig_sig));
+% for i = 50*fs:120*fs; % test on clean sig
+%     sc(i) = std(orig_sig(i:i+window));
+%     if (sc(i) > 0.145)
+%         index_clean = index_clean+1;
+%         array_clean(index_clean)= i; 
+%     end
+% end
