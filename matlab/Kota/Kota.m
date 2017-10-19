@@ -8,9 +8,6 @@ fs = 1000;
 sig = transpose(A1ecg);
 time = 0:(1/fs):((length(sig)-1)/fs);
 
-figure;
-plot(time,sig);
-
 % every second of the ECG signal was normalized by the standard deviation of the signal in that second. 
 numSecs = floor(length(sig) / fs);
 
@@ -22,16 +19,9 @@ for i = 0:numSecs-1
     sig(1+i*fs:(i+1)*fs-1) = normalizedSec;
 end
 
-figure;
-plot(time,sig);
-
-
 % ECG was detrended using a 120-ms smoothing filter with a zero-phase distortion.
 
 sig = preprocessing(sig, fs);
-
-figure;
-plot(time,sig);
 
 % Difference between successive samples of the signal – equivalent to a highpass filter – was calculated and the samples with negative values were set to zero
 
@@ -39,9 +29,6 @@ sig = diff(sig);
 sig(length(sig)+1)=0;
 idx = sig < 0;
 sig(idx) = 0;
-
-figure;
-plot(time,sig);
 
 
 % A 150 ms running average was calculated for the rectified data.
@@ -104,24 +91,36 @@ bpm = beat_frequency*60;
 HR = 60./diff(R_loc).*fs;
 % PLOTING RESULTS
 figure
-subplot(3,1,1)
+ax1 = subplot(3,1,1);
 plot (time,sig/max(sig));
 title('Orignal ECG Signal');
 xlabel('Time in seconds');
 ylabel('Amplitude');
-subplot(3,1,2)
-plot (time,x3/max(x3) , time(R_loc) ,R_value , 'r^');
+ax2 = subplot(3,1,2);
+hold on
+%plot (time,x3/max(x3) , time(R_loc) ,R_value , 'r^');
+plot (time,x3);
+plot(time(R_loc),x3(R_loc),'rv','MarkerFaceColor','r')
 legend('ECG','R','S','Q');
 title('ECG Signal with R points');
 xlabel('Time in seconds');
 ylabel('Amplitude');
 %xlim([1 6])
-subplot(3,1,3)
-stairs(HR)
-title('Heart Rate Signal of ECG ');
-xlabel('Time in seconds');
-ylabel('HR(min-1)');
-xlim([0 10])
+ax3 = subplot(3,1,3);
+% Plot HRV
+interval = diff(R_loc);
+plot(1:length(interval),interval);
+title("HRV POST Hilbert");
+xlim([200 600]);
+
+linkaxes([ax1,ax2,ax3],'x')
+% stairs(HR)
+% title('Heart Rate Signal of ECG ');
+% xlabel('Time in seconds');
+% ylabel('HR(min-1)');
+% xlim([0 10])
+
+
 
 
 % Hilbert Transform
