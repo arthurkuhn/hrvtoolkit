@@ -8,7 +8,7 @@ load("a2f1ecg.mat")
 load("a5c3ecg.mat")
 
 fs = 1000;
-orig_sig = a5c3ecg;
+orig_sig = A1ecg;
 orig_sig = orig_sig.*1000; %to see variations
 
 filt = BP(); % Band pass from 16 to 26 Hz
@@ -24,7 +24,7 @@ for i = floor(1*window)/2+1:length(filt_sig)-window/2 %0 to #samples; one i is 1
    s(i) = std(filt_sig(i-floor(window/2):i+(window/2)));
    
    %if (r(i) > 0.1261) %0.11, 0.09
-   if (s(i)>0.14)
+   if (s(i)>0.09)
   % if (s(i) > 0.09)
        index = index+1;
        array(index)= i; %take middle window value
@@ -42,19 +42,27 @@ array = array/fs;
 figure;
 subplot(3,1,1);
 plot(time, orig_sig);
+title('A1ecg (original signal)');
+xlabel('Time (s)');
+
 
 subplot(3,1,2);
 plot(time, filt_sig);
-hold on
-scatter(array, noisy_sig,1,'r');
-%title(G0002ecg);
+title('filtered signal (BP 16-26Hz)');
 xlabel('Time (s)');
 
- subplot(3,1,3);
- plot(time, filt_sig);
 
-figure;
-plot(1:length(s),s);
+subplot(3,1,3);
+plot(time, filt_sig);
+hold on
+scatter(array, noisy_sig,1,'r');
+title('noise detection (std dev > 0.145)');
+xlabel('Time (s)');
+
+
+
+% figure;
+% plot(1:length(s),s);
 % scatter(array, noisy_sig,1,'c');
 % %axis([0 300 -2.5e-3 1.5e-3]);
 % title('max RMS = 0.0013');
