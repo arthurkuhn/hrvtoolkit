@@ -8,7 +8,7 @@ load("a2f1ecg.mat")
 load("a5c3ecg.mat")
 
 fs = 1000;
-orig_sig = A1ecg;
+orig_sig = G002ecg;
 orig_sig = orig_sig.*1000; %to see variations
 
 filt = BP(); % Band pass from 16 to 26 Hz
@@ -56,3 +56,9 @@ xlabel('Time (s)');
 
 linkaxes([ax1, ax2, ax3], 'x')
 
+
+
+
+%quantization
+%tacogram
+%bradi cardio: < 100
