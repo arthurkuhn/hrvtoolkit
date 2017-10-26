@@ -1,12 +1,11 @@
 %% Kotal & Al %%
 
 close all;
-load("a5c3ecg.mat") % Heavy bias
+load("A1ecg.mat") % Heavy bias
 fs = 1000;
 
-sig = transpose(a5c3ecg);
-%sig = a5c3ecg;
-sig = sig(1:100000);
+sig = transpose(A1ecg);
+%sig = sig(1:100000);
 time = 0:(1/fs):((length(sig)-1)/fs);
 
 % every second of the ECG signal was normalized by the standard deviation of the signal in that second. 
@@ -42,7 +41,7 @@ movingAverage = sig;
 % MOVING WINDOW INTEGRATION
 % MAKE IMPULSE RESPONSE
 h = ones (1 ,31)/31;
-Delay = 15; % Delay in samples
+Delay = 0; % Delay in samples
 % Apply filter
 x6 = conv (sig ,h);
 N = length(x6) - Delay;
@@ -104,7 +103,7 @@ end
 left = locs;
 for i=1:length(left)-1
  [R_value(i), R_loc(i)] = max( sig(left(i):left(i+1)) );
-  R_loc(i) = R_loc(i)-1+left(i); % add offset
+ R_loc(i) = R_loc(i)-1+left(i); % add offset
 end
 
 R_loc=R_loc(find(R_value>0));
