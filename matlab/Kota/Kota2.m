@@ -85,15 +85,15 @@ for i=1:length(left)-1
  R_loc(i) = R_loc(i)-1+left(i); % add offset
 end
 
-R_loc=R_loc(find(R_value>0));
-R_value=R_value(find(R_value>0));
+R_loc=R_loc(R_value>0);
+R_value=R_value(R_value>0);
 beats = length(R_loc);
 time = 0:1/fs:(length(sig)-1)*1/fs;
 figure;
 ax1 = subplot(3,1,1);
 hold on;
-plot (time,x3);
-plot(time(R_loc),x3(R_loc),'rv','MarkerFaceColor','r')
+plot (time,sig);
+plot(time(R_loc),sig(R_loc),'rv','MarkerFaceColor','r')
 legend('ECG','R','S','Q');
 title('ECG Signal with R points');
 xlabel('Time in seconds');
