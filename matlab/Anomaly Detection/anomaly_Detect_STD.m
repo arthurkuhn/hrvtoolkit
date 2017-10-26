@@ -29,7 +29,6 @@ for i = floor(1*window)/2+1:length(filt_sig)-window/2 %0 to #samples; one i is 1
    end
 end
 
-%create same length signal 
 for i = 1:length(array)
     noisy_sig(i) = filt_sig(array(i));
 end
@@ -60,5 +59,5 @@ linkaxes([ax1, ax2, ax3], 'x')
 
 
 %quantization
-%tacogram
-%bradi cardio: < 100
+%tachogram
+%brady cardio: < 100
