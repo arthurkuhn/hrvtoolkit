@@ -1,10 +1,12 @@
 %% Kotal & Al %%
 
 close all;
-load("A1ecg.mat") % Heavy bias
+clear all;
+load("a5c3ecg.mat") % Heavy bias
 fs = 1000;
 
-sig = transpose(A1ecg);
+sig = transpose(a5c3ecg);
+sig = sig.*100;
 %sig = sig(1:100000);
 time = 0:(1/fs):((length(sig)-1)/fs);
 
@@ -15,11 +17,15 @@ for i = 0:numSecs-1
     currSec = sig(1+i*fs:(i+1)*fs-1);
     M = mean(currSec);
     S = std(currSec);
+    if(S == 0)
+        error(YO);
+    end
     normalizedSec = arrayfun(@(a) (a - M)/ S, currSec);
     sig(1+i*fs:(i+1)*fs-1) = normalizedSec;
 end
 
 % ECG was detrended using a 120-ms smoothing filter with a zero-phase distortion.
+sig(isnan(sig)) = 0;
 
 sig = preprocessing(sig, fs);
 ecg_h = sig;
@@ -30,7 +36,6 @@ sig = diff(sig);
 sig(length(sig)+1)=0;
 idx = sig < 0;
 sig(idx) = 0;
-
 
 % A 150 ms running average was calculated for the rectified data.
 timeWind = 150; %In ms
@@ -75,7 +80,7 @@ hold on;
 plot(time,angleRads);
 %plot(time,G002ecg);
 
-[pks,locs] = findpeaks(angleRads,'MinPeakDistance',250, 'MinPeakHeight', 0);
+[pks,locs] = findpeaks(angleRads,'MinPeakDistance',200, 'MinPeakHeight', 0);
 
 % FIND R-PEAKS
 %left = find(slips>0);
