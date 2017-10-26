@@ -3,6 +3,7 @@
 close all;
 clear all;
 load("a5c3ecg.mat") % Heavy bias
+load("G002ecg.mat")
 fs = 1000;
 
 sig = transpose(a5c3ecg);
@@ -80,7 +81,7 @@ hold on;
 plot(time,angleRads);
 %plot(time,G002ecg);
 
-[pks,locs] = findpeaks(angleRads,'MinPeakDistance',200, 'MinPeakHeight', 0);
+[pks,locs] = findpeaks(angleRads,'MinPeakDistance',250, 'MinPeakHeight', 0);
 
 % FIND R-PEAKS
 %left = find(slips>0);
@@ -114,6 +115,8 @@ ax3 = subplot(3,1,3);
 interval = diff(R_loc); % Period
 interval(length(interval)+1) = interval(length(interval)); % Adding one last index
 interval = interval./fs;
+interval = interval.^-1;
+interval = interval.*60; % To get BPM
 
 full = zeros(1,length(sig)); %  Initialize full signal
 full(R_loc) = interval; % R Locations, add the inteval value to the full signal
@@ -124,6 +127,9 @@ for i = 2:length(full) % Iterate over the full array
 end
 plot(time,full);
 % plot(1:length(interval),interval);
-title("HRV POST Hilbert");
+title("Reconstructed HRV POST Hilbert");
+ylabel("Beats per minute");
+xlabel("Time");
+ylim([100 200]);
 
 linkaxes([ax1,ax2, ax3],'x')
