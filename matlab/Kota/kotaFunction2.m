@@ -49,18 +49,6 @@ figure;
 hold on;
 plot(1:length(x6), x6);
 
-% Try to find peaks
-[~,locs_Rwave] = findpeaks(x6,'MinPeakHeight',0.005,...
-    'MinPeakDistance',200);
-plot(locs_Rwave,x6(locs_Rwave),'rv','MarkerFaceColor','r')
-
-% Plot HRV
-interval = diff(locs_Rwave);
-figure;
-plot(1:length(interval),interval);
-
-x3 = sig;
-
 % Hilbert Transform
 transformH = hilbert(sig);
 
@@ -71,7 +59,6 @@ angleRads = angle(transformH + sig);
 figure;
 hold on;
 plot(time,angleRads);
-%plot(time,G002ecg);
 
 [pks,locs] = findpeaks(angleRads,'MinPeakDistance',250, 'MinPeakHeight', 0);
 
