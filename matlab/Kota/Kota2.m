@@ -63,38 +63,17 @@ plot(1:length(interval),interval);
 
 x3 = sig;
 
-% HILBER TRANSFORM
-s = x3; % Band-pass filtered ECG signal
-d = 1/(pi*length(s));
-s2 = conv(s, d);
-xe = abs(s)+abs(s2); % Envelop xe(t)
-
 % Hilbert Transform
 transformH = hilbert(sig);
 
 % Find the angle:
 angleRads = angle(transformH + sig);
-% Find the phase slips
-slips = diff(sign(angleRads));
-slips(length(slips)+1) = 0;
-
 
 % Plot the transform
 figure;
 hold on;
 plot(time,angleRads);
 %plot(time,G002ecg);
-
-prevSlip = 0;
-for i = 1:length(slips)
-    if slips(i)>0 && prevSlip < 150
-        slips(i) = 0;
-    elseif slips(i)>0
-         prevSlip = 0;
-    else
-         prevSlip = prevSlip + 1;
-    end
-end
 
 [pks,locs] = findpeaks(angleRads,'MinPeakDistance',250, 'MinPeakHeight', 0);
 
