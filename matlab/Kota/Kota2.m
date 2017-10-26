@@ -5,7 +5,7 @@ load("A1ecg.mat") % Heavy bias
 fs = 1000;
 
 sig = transpose(A1ecg);
-sig = sig(1:100000);
+%sig = sig(1:100000);
 time = 0:(1/fs):((length(sig)-1)/fs);
 
 % every second of the ECG signal was normalized by the standard deviation of the signal in that second. 
@@ -41,7 +41,7 @@ movingAverage = sig;
 % MOVING WINDOW INTEGRATION
 % MAKE IMPULSE RESPONSE
 h = ones (1 ,31)/31;
-Delay = 15; % Delay in samples
+Delay = 0; % Delay in samples
 % Apply filter
 x6 = conv (sig ,h);
 N = length(x6) - Delay;
@@ -73,7 +73,7 @@ xe = abs(s)+abs(s2); % Envelop xe(t)
 transformH = hilbert(sig);
 
 % Find the angle:
-angleRads = angle(transformH);
+angleRads = angle(transformH + sig);
 % Find the phase slips
 slips = diff(sign(angleRads));
 slips(length(slips)+1) = 0;
@@ -96,11 +96,11 @@ for i = 1:length(slips)
     end
 end
 
-[~,locs] = findpeaks(-abs(transformH),'MinPeakDistance',200);
+[pks,locs] = findpeaks(angleRads,'MinPeakDistance',250, 'MinPeakHeight', 0);
 
 % FIND R-PEAKS
-left = find(slips>0);
-%left = locs;
+%left = find(slips>0);
+left = locs;
 for i=1:length(left)-1
  [R_value(i), R_loc(i)] = max( sig(left(i):left(i+1)) );
  R_loc(i) = R_loc(i)-1+left(i); % add offset
@@ -111,7 +111,7 @@ R_value=R_value(find(R_value>0));
 beats = length(R_loc);
 time = 0:1/fs:(length(sig)-1)*1/fs;
 figure;
-ax1 = subplot(2,1,1);
+ax1 = subplot(3,1,1);
 hold on;
 plot (time,x3);
 plot(time(R_loc),x3(R_loc),'rv','MarkerFaceColor','r')
@@ -120,17 +120,24 @@ title('ECG Signal with R points');
 xlabel('Time in seconds');
 ylabel('Amplitude');
 %xlim([1 6])
-ax2 = subplot(2,1,2);
+ax2 = subplot(3,1,2);
 hold on;
-plot(time(R_loc),sig(R_loc),'rv','MarkerFaceColor','r')
+plot(time(locs),angleRads(locs),'rv','MarkerFaceColor','r')
 plot(time,angleRads);
+title("Angle with slips identified");
 
-linkaxes([ax1,ax2],'x')
-
-
-figure;
-% Plot HRV
+ax3 = subplot(3,1,3);
 interval = diff(R_loc);
-plot(1:length(interval),interval);
+interval(length(interval)+1) = interval(length(interval));
+full = zeros(1,length(sig));
+full(R_loc) = interval;
+for i = 2:length(full)
+    if full(i) == 0
+        full(i) = full(i-1);
+    end
+end
+plot(time,full);
+% plot(1:length(interval),interval);
 title("HRV POST Hilbert");
-xlim([200 600]);
+
+linkaxes([ax1,ax2, ax3],'x')
