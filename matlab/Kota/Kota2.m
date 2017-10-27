@@ -2,11 +2,14 @@
 
 close all;
 clear all;
-load("a5c3ecg.mat") % Heavy bias
-load("G002ecg.mat")
+load("a5c3ecg.mat") % visible bradycardia
+load("G002ecg.mat") % Heavy bias, brady -> 5 missed beats
+load("A1ecg.mat") % Faint
+load("a2f1ecg.mat") % Some Missed beats -> Tweak
 fs = 1000;
 
-sig = transpose(a5c3ecg);
+sig = transpose(A1ecg);
+orig_sig = sig;
 sig = sig.*100;
 %sig = sig(1:100000);
 time = 0:(1/fs):((length(sig)-1)/fs);
@@ -47,25 +50,16 @@ movingAverage = sig;
 % MOVING WINDOW INTEGRATION
 % MAKE IMPULSE RESPONSE
 h = ones (1 ,31)/31;
-Delay = 0; % Delay in samples
+Delay = 15; % Delay in samples
 % Apply filter
 x6 = conv (sig ,h);
 N = length(x6) - Delay;
 x6 = x6 (Delay+[1: N]);
 
-figure;
-hold on;
-plot(1:length(x6), x6);
-
 % Try to find peaks
 [~,locs_Rwave] = findpeaks(x6,'MinPeakHeight',0.005,...
                                     'MinPeakDistance',200);
 plot(locs_Rwave,x6(locs_Rwave),'rv','MarkerFaceColor','r')
-
-% Plot HRV
-interval = diff(locs_Rwave);
-figure;
-plot(1:length(interval),interval);
 
 x3 = sig;
 
@@ -75,31 +69,28 @@ transformH = hilbert(sig);
 % Find the angle:
 angleRads = angle(transformH + sig);
 
-% Plot the transform
-figure;
-hold on;
-plot(time,angleRads);
-%plot(time,G002ecg);
+% timeWind = 150; %In ms
+% angleRadsMovMean = movmean(angleRads, timeWind);
 
-[pks,locs] = findpeaks(angleRads,'MinPeakDistance',250, 'MinPeakHeight', 0);
+[pks,locs] = findpeaks(-angleRads,'MinPeakDistance',250, 'MinPeakHeight', 0);
 
 % FIND R-PEAKS
 %left = find(slips>0);
 left = locs;
 for i=1:length(left)-1
- [R_value(i), R_loc(i)] = max( sig(left(i):left(i+1)) );
+ [R_value(i), R_loc(i)] = max( orig_sig(left(i):left(i+1)) );
  R_loc(i) = R_loc(i)-1+left(i); % add offset
 end
 
-R_loc=R_loc(R_value>0);
-R_value=R_value(R_value>0);
+% R_loc=R_loc(R_value>0);
+% R_value=R_value(R_value>0);
 beats = length(R_loc);
 time = 0:1/fs:(length(sig)-1)*1/fs;
 figure;
 ax1 = subplot(3,1,1);
 hold on;
-plot (time,sig);
-plot(time(R_loc),sig(R_loc),'rv','MarkerFaceColor','r')
+plot (time,orig_sig);
+plot(time(R_loc),orig_sig(R_loc),'rv','MarkerFaceColor','r')
 legend('ECG','R','S','Q');
 title('ECG Signal with R points');
 xlabel('Time in seconds');
@@ -118,14 +109,10 @@ interval = interval./fs;
 interval = interval.^-1;
 interval = interval.*60; % To get BPM
 
-full = zeros(1,length(sig)); %  Initialize full signal
-full(R_loc) = interval; % R Locations, add the inteval value to the full signal
-for i = 2:length(full) % Iterate over the full array
-    if full(i) == 0 % If 0
-        full(i) = full(i-1); % Replace by prev value
-    end
-end
-plot(time,full);
+f=fit(transpose(time(R_loc)),transpose(interval),'smoothingspline');
+plot(f,time(R_loc),interval);
+
+%plot(time,full);
 % plot(1:length(interval),interval);
 title("Reconstructed HRV POST Hilbert");
 ylabel("Beats per minute");
