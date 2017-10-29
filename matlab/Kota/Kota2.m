@@ -8,7 +8,7 @@ load("A1ecg.mat") % Faint
 load("a2f1ecg.mat") % Some Missed beats -> Tweak
 fs = 1000;
 
-sig = transpose(A1ecg);
+sig = transpose(a5c3ecg);
 orig_sig = sig;
 sig = sig.*100;
 %sig = sig(1:100000);
