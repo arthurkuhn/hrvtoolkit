@@ -1,6 +1,6 @@
 %% Kotal & Al %%
 
-%V2 In this version, we removed the need for peaks on the slips to be under
+% V2 In this version, we removed the need for peaks on the slips to be under
 % 0, this allows for more peaks to be detected, but also increases the FP
 % rate
 
