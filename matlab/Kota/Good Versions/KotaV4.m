@@ -1,7 +1,7 @@
 %% Kotal & Al %%
 
-% V4 Instead of looking for peaks on the detrended, we looked for them in the
-% highpassed signal. This did not work (dual peaks). We keep a minimum peak height in the slips to be
+% V3 Instead of looking for peaks on the orig_sig, we look for them in the
+% detrended signal. We keep a minimum peak height in the slips to be
 % negative to keep FPs low.
 
 close all;
@@ -13,20 +13,27 @@ load("a2f1ecg.mat") % Some Missed beats -> Tweak
 fs = 1000;
 file = "A1ecg";
 sig = transpose(A1ecg);
+sig = -sig;
 orig_sig = sig;
+sig = sig.*100;
 %sig = sig(1:100000);
 time = 0:(1/fs):((length(sig)-1)/fs);
 
 % every second of the ECG signal was normalized by the standard deviation of the signal in that second. 
 numSecs = floor(length(sig) / fs);
+sigFullSecs = sig(1:numSecs*fs);
+sigSplit = reshape(sigFullSecs, fs, numSecs);
+newsig = sigSplit;
 
-for i = 0:numSecs-1
-    currSec = sig(1+i*fs:(i+1)*fs-1);
+parfor i = 1:numSecs
+    currSec = sigSplit(:,i);
     M = mean(currSec);
     S = std(currSec);
     normalizedSec = arrayfun(@(a) (a - M)/ S, currSec);
-    sig(1+i*fs:(i+1)*fs-1) = normalizedSec;
+    newsig(:,i) = normalizedSec;
 end
+sigExtend = reshape(newsig,[],1);
+sig(1:length(sigExtend)) = sigExtend;
 
 % ECG was detrended using a 120-ms smoothing filter with a zero-phase distortion.
 sig(isnan(sig)) = 0;
@@ -35,7 +42,6 @@ detrended = sig;
 
 sig = preprocessing(sig, fs);
 ecg_h = sig;
-preProcessed = sig;
 
 % Difference between successive samples of the signal – equivalent to a highpass filter – was calculated and the samples with negative values were set to zero
 
@@ -43,8 +49,6 @@ sig = diff(sig);
 sig(length(sig)+1)=0;
 idx = sig < 0;
 sig(idx) = 0;
-
-highPassed = sig;
 
 % A 150 ms running average was calculated for the rectified data.
 timeWind = 150; %In ms
@@ -55,13 +59,13 @@ movingAverage = sig;
 % MOVING WINDOW INTEGRATION
 % MAKE IMPULSE RESPONSE
 h = ones (1 ,31)/31;
-Delay = 15; % Delay in samples
+Delay = 30; % Delay in samples
 % Apply filter
 x6 = conv (sig ,h);
 N = length(x6) - Delay;
 x6 = x6 (Delay+[1: N]);
 
-x3 = sig;
+sig=x6;
 
 % Hilbert Transform
 transformH = hilbert(sig);
@@ -74,8 +78,8 @@ angleRads = angle(transformH + sig);
 % FIND R-PEAKS
 %left = find(slips>0);
 left = locs;
-for i=1:length(left)-1
- [R_value(i), R_loc(i)] = max( preProcessed(left(i):left(i+1)) );
+parfor i=1:length(left)-1
+ [R_value(i), R_loc(i)] = max( detrended(left(i):left(i+1)) );
  R_loc(i) = R_loc(i)-1+left(i); % add offset
 end
 
@@ -84,29 +88,31 @@ end
 beats = length(R_loc);
 time = 0:1/fs:(length(sig)-1)*1/fs;
 figure;
-ax1 = subplot(3,1,1);
+ax1 = subplot(1,1,1);
 hold on;
-plot (time,preProcessed);
-plot(time(R_loc),preProcessed(R_loc),'rv','MarkerFaceColor','r')
+plot (time,orig_sig);
+plot(time(R_loc),orig_sig(R_loc),'rv','MarkerFaceColor','r')
 legend('ECG','R');
 title('ECG Signal with R points');
 xlabel('Time in seconds');
 ylabel('Amplitude');
 %xlim([1 6])
-ax2 = subplot(3,1,2);
+figure;
+ax2 = subplot(1,1,1);
 hold on;
 plot(time(locs),angleRads(locs),'rv','MarkerFaceColor','r')
 plot(time,angleRads);
 title("Angle with slips identified");
 
-ax3 = subplot(3,1,3);
+figure
+ax3 = subplot(1,1,1);
 interval = diff(R_loc); % Period
 periods = interval; % For histogram
 interval(length(interval)+1) = interval(length(interval)); % Adding one last index
 interval = interval./fs;
 interval = interval.^-1;
 interval = interval.*60; % To get BPM
-interval(isinf(interval)) = -5;
+interval(isinf(interval)) = -2;
 
 f=fit(transpose(time(R_loc)),transpose(interval),'smoothingspline');
 plot(f,time(R_loc),interval);
@@ -118,7 +124,17 @@ ylabel("Beats per minute");
 xlabel("Time");
 ylim([100 200]);
 
-linkaxes([ax1,ax2, ax3],'x')
+figure;
+ax4 = subplot(1,1,1);
+vel = diff(periods);
+vel(length(vel)+1)=vel(length(vel));
+vel(length(vel)+1)=vel(length(vel));
+plot(time(R_loc),vel);
+title("Changes in RR-Interval");
+xlabel("Time (in s)");
+ylabel("RR-Interval Change with previous beat (in ms)");
+
+linkaxes([ax1,ax2, ax3, ax4],'x')
 
 
 figure;

@@ -4,15 +4,18 @@
 % detrended signal. We keep a minimum peak height in the slips to be
 % negative to keep FPs low.
 
-close all;
-clear all;
+
+
 load("a5c3ecg.mat") % visible bradycardia
 load("G002ecg.mat") % Heavy bias, brady -> 5 missed beats
 load("A1ecg.mat") % Faint
 load("a2f1ecg.mat") % Some Missed beats -> Tweak
+load("G011ecg.mat")
+load("G013ecg.mat")
+
 fs = 1000;
-file = "a5c3ecg";
-sig = transpose(a5c3ecg);
+file = "G013ecg";
+sig = transpose(G013ecg);
 orig_sig = sig;
 sig = sig.*100;
 %sig = sig(1:100000);
@@ -58,13 +61,13 @@ movingAverage = sig;
 % MOVING WINDOW INTEGRATION
 % MAKE IMPULSE RESPONSE
 h = ones (1 ,31)/31;
-Delay = 15; % Delay in samples
+Delay = 30; % Delay in samples
 % Apply filter
 x6 = conv (sig ,h);
 N = length(x6) - Delay;
 x6 = x6 (Delay+[1: N]);
 
-x3 = sig;
+sig = x6;
 
 % Hilbert Transform
 transformH = hilbert(sig);
@@ -109,6 +112,8 @@ interval = diff(R_loc); % Period
 periods = interval; % For histogram
 interval(length(interval)+1) = interval(length(interval)); % Adding one last index
 interval = interval./fs;
+periodsSecs = interval;
+dlmwrite(file+".ibi",transpose(periodsSecs));
 interval = interval.^-1;
 interval = interval.*60; % To get BPM
 interval(isinf(interval)) = -2;
