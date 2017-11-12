@@ -1,7 +1,7 @@
 function [ R_value ] = kotaFunction3( sig, fs, invert )
 %KOTAFUNCTION3 Summary of this function goes here
-%   Detailed explanation goes here
-if(invert)
+%   Invert = 1 will invert the signal, we will look for S Waves
+if(invert == 1)
     sig = -sig;
 end
 orig_sig = sig;
