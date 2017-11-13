@@ -1,4 +1,4 @@
-function [ R_value ] = kotaFunction3( sig, fs, invert )
+function [ R_loc, interval, time ] = kotaFunction3( sig, fs, invert )
 %KOTAFUNCTION3 Summary of this function goes here
 %   Invert = 1 will invert the signal, we will look for S Waves
 if(invert == 1)
@@ -71,5 +71,7 @@ parfor i=1:length(left)-1
  [R_value(i), R_loc(i)] = max( detrended(left(i):left(i+1)) );
  R_loc(i) = R_loc(i)-1+left(i); % add offset
 end
+interval = diff(R_loc);
+interval(length(interval)+1) = interval(length(interval));
 end
 
