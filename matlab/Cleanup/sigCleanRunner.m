@@ -60,7 +60,7 @@ plot(1:length(hr), hr);
 %axis([0 R_loc(length(R_loc)) 0 700]);
 
 subplot(2,1,2);
-%plot(1:length(orig_interval), orig_interval);
-plot(1:length(hr), hr);
+plot(1:length(orig_interval), orig_interval);
+%plot(1:length(hr), hr);
 hold on
 scatter(false, orig_interval(false),10,'r');
