@@ -29,12 +29,11 @@ for i = 1:length(tooHigh)
     removedIndexes(index) = tooHigh(i);
 end
 
-% % Remove extreme values:
-% interval = interval(interval < fs*2); %BPM < 30
-% interval = interval(interval > 1/4*fs); %BPM > 240
+% Remove extreme values:
+interval = interval(interval < fs*2); %BPM < 30
+interval = interval(interval > 1/4*fs); %BPM > 240
 
-cleanInterval = interval;
-cleanInterval(removedIndexes) = [];
+cleanInterval = interval(removedIndexes
 
 end
 
