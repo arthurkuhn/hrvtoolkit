@@ -10,20 +10,32 @@ G011ecg = data;
 load("G013ecg.mat")
 G013ecg = data;
 fs = 1000;
+allowedDeviation = 0.10; % 10%
 index=0;
 [ R_loc, interval, time ] = kotaFunction3(G002ecg, fs, 0 );
 
 for i = 2:length(R_loc)-1
     % double of 2 adjacent hardbeats: missed peak
-    if (interval(i)>(interval(i-1)+interval(i+1)-50)) && (interval(i)<(interval(i-1)+interval(i+1)+50));
+    sumPrevNext = interval(i-1) + interval(i+1);
+    deviation = allowedDeviation * sumPrevNext;
+%     if (interval(i)>(interval(i-1)+interval(i+1)-50)) && (interval(i)<(interval(i-1)+interval(i+1)+50));
+%         index=index+1;
+%         false(index) = i;
+%     end
+    if(interval(i) > (sumPrevNext - deviation) && interval(i) < (sumPrevNext + deviation))
         index=index+1;
         false(index) = i;
     end
 end
 
-for i = 2:length(false)
-    false_loc(i) = R_loc(false(i-1));
-    noisy_sig(i) = interval(i);
+% for i = 2:length(false)
+%     false_loc(i) = R_loc(false(i-1));
+%     noisy_sig(i) = interval(i);
+% end
+
+for i = 1:length(false)-1
+    false_loc(i) = R_loc(false(i));
+    noisy_sig(i) = interval(false(i));
 end
 
 false_loc = false_loc./fs;
