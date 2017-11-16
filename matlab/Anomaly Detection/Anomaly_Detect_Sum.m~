@@ -15,18 +15,16 @@ index=0;
 
 for i = 2:length(R_loc)-1
     % double of 2 adjacent hardbeats: missed peak
-    if (interval(i)>(interval(i-1)+interval(i+1)-50)) && (interval(i)<(interval(i-1)+interval(i+1)+50));
+    if (interval(i)>(interval(i-1)+interval(i+1)-400)) && (interval(i)<(interval(i-1)+interval(i+1)+400));
         index=index+1;
         false(index) = i;
     end
 end
 
 for i = 2:length(false)
-    false_loc(i) = R_loc(false(i-1));
-    noisy_sig(i) = interval(i);
+    noisy_sig(i) = R_loc(false(i));
 end
-
-false_loc = false_loc./fs;
+    
 BPM = 60*fs./(interval);
 
 figure;
@@ -37,7 +35,7 @@ plot(time(R_loc), interval);
 subplot(2,1,2);
 plot(time(R_loc), interval);
 hold on
-scatter(false_loc, noisy_sig,10,'r');
+scatter(false, noisy_sig,1,'r');
 
 % plot (time(R_loc), mfilt_sig);
 %axis([0 R_loc(length(R_loc)) 0 700]);
