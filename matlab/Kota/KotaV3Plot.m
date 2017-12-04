@@ -5,6 +5,8 @@
 % negative to keep FPs low.
 
 
+close all;
+clear all;
 
 load("a5c3ecg.mat") % visible bradycardia
 load("G002ecg.mat") % Heavy bias, brady -> 5 missed beats
@@ -14,8 +16,8 @@ load("G011ecg.mat")
 load("G013ecg.mat")
 
 fs = 1000;
-file = "G013ecg";
-sig = transpose(G013ecg);
+file = "a5c3ecg";
+sig = transpose(a5c3ecg);
 orig_sig = sig;
 sig = sig.*100;
 %sig = sig(1:100000);
