@@ -5,10 +5,8 @@ load("G002ecg.mat") % Heavy bias, brady -> 5 missed beats
 load("A1ecg.mat") % Faint
 load("a2f1ecg.mat") % Some Missed beats -> Tweak
 fs = 1000;
-file = "a5c3ecg";
-sig = a5c3ecg;
-sig = sig.*100;
-sig = abs(sig);
+file = "A1ecg";
+sig = transpose(A1ecg);
 orig_sig = sig;
 
 [~,qrs_i_raw,~]=pan_tompkin(sig,fs,0);

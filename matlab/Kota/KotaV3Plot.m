@@ -16,8 +16,8 @@ load("G011ecg.mat")
 load("G013ecg.mat")
 
 fs = 1000;
-file = "a5c3ecg";
-sig = transpose(a5c3ecg);
+file = "G011ecg";
+sig = transpose(G011ecg);
 orig_sig = sig;
 sig = sig.*100;
 %sig = sig(1:100000);
@@ -125,9 +125,9 @@ plot(f,time(R_loc),interval);
 
 %plot(time,full);
 % plot(1:length(interval),interval);
-title("Reconstructed HRV POST Hilbert");
+title("Tachogram - Kota - " + file);
 ylabel("Beats per minute");
-xlabel("Time");
+xlabel("Time (s)");
 ylim([100 200]);
 
 figure;
