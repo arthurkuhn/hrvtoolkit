@@ -1,0 +1,1 @@
+res = rdsamp('picsdb/infant2_ecg')
