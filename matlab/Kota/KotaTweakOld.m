@@ -79,7 +79,7 @@ for i = 1:6
     end
     
     errors{i} = error./numBeats;
-    missedBeats{i} = missedBeat;
+    missedBeats{i} = abs(missedBeat);
     save("errors.mat","errors");
 end
 
@@ -109,4 +109,8 @@ figure;
 surf(X, Y, Z2);
 ylabel("Low-Frequency Cut-Off");
 xlabel("High-Frequency Cut-Off");
-title("Number of beats deviation compared to baseline");
+title("Number of Mis-Detected Beats");
+ix = find(imregionalmin(Z2));
+hold on
+plot3(X(ix),Y(ix),Z(ix),'r*','MarkerSize',24)
+
