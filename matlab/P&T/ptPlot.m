@@ -5,8 +5,8 @@ load("G002ecg.mat") % Heavy bias, brady -> 5 missed beats
 load("A1ecg.mat") % Faint
 load("a2f1ecg.mat") % Some Missed beats -> Tweak
 fs = 1000;
-file = "a5c3ecg";
-sig = a5c3ecg;
+file = "A1c3ecg";
+sig = A1ecg;
 sig = sig.*100;
 sig = abs(sig);
 orig_sig = sig;

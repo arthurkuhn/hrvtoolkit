@@ -46,11 +46,12 @@ plot(time, filt_sig);
 title('filtered signal (BP 16-26Hz)');
 xlabel('Time (s)');
 
-ax3 = subplot(3,1,3);
+figure;
+ax3 = subplot(2,1,1);
 plot(time, filt_sig);
 hold on
 scatter(array, noisy_sig,1,'r');
-title('noise detection (std dev > 0.145)');
+title('G002ecg (std dev > 0.09)');
 xlabel('Time (s)');
 
 linkaxes([ax1, ax2, ax3], 'x')

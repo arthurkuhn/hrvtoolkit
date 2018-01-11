@@ -9,12 +9,12 @@ G011ecg = data;
 load("G013ecg.mat")
 G013ecg = data;
 fs = 1000;
-sig = G013ecg;
-[ R_loc, interval, time ] = kotaFunction3(G002ecg, fs, 0);
+sig = A1ecg;
+[ R_loc, interval, time ] = kotaFunction3(sig, fs, 0);
 
-% ecgtime = 0:(1/fs):((length(sig)-1)/fs);
-% BPM = 60*fs./(interval);
-% %396
+ecgtime = 0:(1/fs):((length(sig)-1)/fs);
+BPM = 60*fs./(interval);
+%396
 % figure;
 % subplot(3,1,1);
 % plot(ecgtime(170013:300000), sig(170013:300000));
@@ -35,12 +35,12 @@ sig = G013ecg;
 % %title('Beats per minute');
 % xlabel('Time (s)');
 % %ylabel('BPM');
-% 
-% %title('G011ecg BPM');
-% %xlabel('Time (s)');
 
-% figure;
-% subplot(2,1,1);
-% plot(time, sig);
-% xlabel('Time (s)');
-%axis([0 4500 -20 50*10^-3]);
+%title('G011ecg BPM');
+%xlabel('Time (s)');
+
+figure;
+subplot(2,1,1);
+plot(time, sig);
+xlabel('Time (s)');
+%axis([0 4500 -5*10^-3 -0.4*10^-3]);
