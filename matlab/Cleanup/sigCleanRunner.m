@@ -11,7 +11,7 @@ G013ecg = data;
 fs = 1000;
 allowedDeviation = 0.10; % 10%
 index=0;
-[ R_loc, interval, time ] = kotaFunction3(a5c3ecg, fs, 0 );
+[ R_loc, interval, time ] = kotaFunction3(G013ecg, fs, 1);
 
 hr = interval;
 orig_interval = interval;
@@ -55,12 +55,19 @@ hr(false) = [];
 %%%%%%%%%%%%%%
 
 figure;
-subplot(2,1,1);
-plot(1:length(hr), hr);
-%axis([0 R_loc(length(R_loc)) 0 700]);
-
 subplot(2,1,2);
+plot(1:length(hr), hr);
+%axis([0 12000 0 1400]);
+xlabel('Beat Number');
+title('Removed peaks at circled locations');
+
+subplot(2,1,1);
 plot(1:length(orig_interval), orig_interval);
 %plot(1:length(hr), hr);
 hold on
 scatter(false, orig_interval(false),10,'r');
+%axis([0 12000 0 1400]);
+xlabel('Beat Number');
+title('RR Interval G013ecg');
+
+
