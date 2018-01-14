@@ -21,13 +21,44 @@ window = 1*fs; % # of secs
 %[array_ecg,noisy_sig_ecg, s] = std_dev(filt_sig, 0.09, window);
 
 [qrs_amp_raw,qrs_i_raw,delay]=pan_tompkin(orig_sig,1000,0);
-period = diff(qrs_i_raw);
-period(length(period)+1) = 0;
-period = period./fs; %period in seconds
-[array_pt,noisy_sig_pt,spt] = std_dev(period, 0.04, 8);
+[R_loc]=kotaFunction3(orig_sig,1000,0);
+pt = 1;
+k = 1;
+m = 1; %matching index
+while (pt < length(qrs_i_raw) | k < length(R_loc))
+    % match: increment both
+    if (qrs_i_raw(pt) <= (R_loc(k) + 5) & qrs_i_raw(pt) >= (R_loc(k) - 5))
+        match(m) = R_loc(k);
+        m = m+1;
+        if (pt < length(qrs_i_raw))
+        pt = pt+1;
+        end
+        if (k < length(R_loc))
+        k = k+1;
+        end
+        
+    %no match: increment smallest of the 2
+    else
+        if (pt < k)
+            if (pt < length(qrs_i_raw))
+            pt = pt+1;
+            end
+        else
+            if (k < length(R_loc))
+            k = k+1;
+            end;
+        end;
+    end;
+end;
 
-[qrs_amp_raw2,qrs_i_raw2]=kotaFunction2(orig_sig,1000,0);
-period2 = diff(qrs_i_raw2);
-period2(length(period2)+1) = 0;
-period2 = period2./fs; %period in seconds
-[array_kt,noisy_sig_kt,skt] = std_dev(period2, 0.04, 8);
+
+        %increment le plus bas des 2 si ca match
+        %les deux si ca match
+    
+    % for i = 2:length(full)
+%     if full(i) == 0
+%         full(i) = full(i-1);
+%     end
+% end
+
+

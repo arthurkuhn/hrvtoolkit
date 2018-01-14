@@ -16,8 +16,8 @@ load("G011ecg.mat")
 load("G013ecg.mat")
 
 fs = 1000;
-file = "G011ecg";
-sig = transpose(G011ecg);
+file = "a2f1ecg";
+sig = transpose(a2f1ecg);
 orig_sig = sig;
 sig = sig.*100;
 %sig = sig(1:100000);
