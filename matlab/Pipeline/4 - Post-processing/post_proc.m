@@ -26,7 +26,7 @@ if (plot_graph == 1)
     title("Kota BPM");
     xlabel("Time (s)");
     ylabel("BPM");
-    axis([0 (1.05*length(BPM)) 0 400]);
+    axis([0 (1.05*length(BPM)) 0 200]);
 
     %median filtered
     bx2 = subplot(3,1,2);
@@ -34,7 +34,7 @@ if (plot_graph == 1)
     title("BPM after 5 sample median filter");
     xlabel("Time (s)");
     ylabel("BPM");
-    axis([0 (1.05*length(BPM)) 0 400]);
+    axis([0 (1.05*length(BPM)) 0 200]);
 
     %noise
     bx3 = subplot(3,1,3);
@@ -45,7 +45,7 @@ if (plot_graph == 1)
     title("Std Dev Noise detection with threshold = "+ threshold);
     xlabel("Time (s)");
     ylabel("BPM");
-    axis([0 (1.05*length(BPM)) 0 400]);
+    axis([0 (1.05*length(BPM)) 0 200]);
 
     linkaxes([bx1,bx2, bx3],'x');
 
