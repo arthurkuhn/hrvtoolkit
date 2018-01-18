@@ -1,19 +1,21 @@
 %% Noise Anomaly Detection %%
-function [mfilt_sig, array_post, noisy_sig_post, std_post] = Post_fct(orig_sig, mfilt_size, window, thresh, plot_graph)
+function [array_post, noisy_sig_post] = post_test(R_loc, fs)
+ 
+%median filter
+mfilt_size = 5;
+%std dev
+window = 10;
+threshold = 4;
+%1 for plot
+plot_graph = 1;
 
-fs = 1000;
-orig_sig = transpose(orig_sig);
-filt = BP(); % Band pass from 16 to 26 Hz
-filt_sig = filter(filt, orig_sig); % new signal
-time = 0:(1/fs):((length(filt_sig)-1)/fs); %time in seconds
-
+interval = diff(R_loc);
 %get BPM Kota
-[R_loc, interval, time]=kotaFunction3(orig_sig,fs,0);
 BPM = 60*fs./(interval);
 %median filter
 mfilt_sig = medfilt1(BPM,mfilt_size);
 %std dev filter
-[array_post,noisy_sig_post,std_post] = std_dev(mfilt_sig, window, thresh);
+[array_post,noisy_sig_post,std_post] = std_dev(mfilt_sig, window, threshold);
 
 if (plot_graph == 1)
     
@@ -40,7 +42,7 @@ if (plot_graph == 1)
     hold on
     %plot(array_pt, noisy_sig_pt, 'rv');
     scatter(array_post, noisy_sig_post,15, 'r');
-    title("Std Dev Noise detection with threshold = "+ thresh);
+    title("Std Dev Noise detection with threshold = "+ threshold);
     xlabel("Time (s)");
     ylabel("BPM");
     axis([0 (1.05*length(BPM)) 0 400]);
