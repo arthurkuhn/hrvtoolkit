@@ -30,6 +30,7 @@ elseif(sigNum==6)
     load("G013ecg.mat")
     sig = transpose(G013ecg);
     sig = sig.*100;
+    sig = -sig;
 end
 
 end
