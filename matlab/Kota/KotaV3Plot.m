@@ -16,8 +16,8 @@ load("G011ecg.mat")
 load("G013ecg.mat")
 
 fs = 1000;
-file = "a2f1ecg";
-sig = transpose(a2f1ecg);
+file = "a5c3ecg";
+sig = transpose(a5c3ecg);
 orig_sig = sig;
 sig = sig.*100;
 %sig = sig(1:100000);
@@ -150,3 +150,37 @@ title("Distribution of RR-Intervals in recording: " + file);
 xlabel("RR-Interval (in ms)");
 ylabel("Frequency");
 set(gca,'YScale','log');
+
+figure;
+bx1 = subplot(2,1,1);
+hold on;
+plot (time,orig_sig);
+plot(time(R_loc),orig_sig(R_loc),'rv','MarkerFaceColor','r')
+legend('ECG','R');
+title('ECG Signal with R points');
+xlabel('Time in seconds');
+ylabel('Amplitude');
+
+
+bx2 = subplot(2,1,2);
+interval = diff(R_loc); % Period
+periods = interval; % For histogram
+interval(length(interval)+1) = interval(length(interval)); % Adding one last index
+interval = interval./fs;
+periodsSecs = interval;
+dlmwrite(file+".ibi",transpose(periodsSecs));
+interval = interval.^-1;
+interval = interval.*60; % To get BPM
+interval(isinf(interval)) = -2;
+
+f=fit(transpose(time(R_loc)),transpose(interval),'smoothingspline');
+plot(f,time(R_loc),interval);
+
+%plot(time,full);
+% plot(1:length(interval),interval);
+title("Tachogram - Kota - " + file);
+ylabel("Beats per minute");
+xlabel("Time (s)");
+ylim([100 400]);
+
+linkaxes([bx1,bx2],'x')
