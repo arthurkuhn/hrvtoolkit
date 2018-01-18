@@ -1,7 +1,33 @@
-function [ R_loc, R_value ] = kota( sig, detrended )
+function [ R_loc, R_value ] = kotaFinalFunc( sig, fs )
 %KOTA QRS detection using Hilbert Transform
 %   Detailed explanation goes here
 
+sig = sig.*100;
+%sig = sig(1:100000);
+
+% every second of the ECG signal was normalized by the standard deviation of the signal in that second. 
+numSecs = floor(length(sig) / fs);
+sigFullSecs = sig(1:numSecs*fs);
+sigSplit = reshape(sigFullSecs, fs, numSecs);
+newsig = sigSplit;
+
+parfor i = 1:numSecs
+    currSec = sigSplit(:,i);
+    M = mean(currSec);
+    S = std(currSec);
+    normalizedSec = arrayfun(@(a) (a - M)/ S, currSec);
+    newsig(:,i) = normalizedSec;
+end
+sigExtend = reshape(newsig,[],1);
+sig(1:length(sigExtend)) = sigExtend;
+
+% ECG was detrended using a 120-ms smoothing filter with a zero-phase distortion.
+sig(isnan(sig)) = 0;
+
+detrended = sig;
+
+sig = preprocessing(sig, fs);
+ecg_h = sig;
 
 % Difference between successive samples of the signal – equivalent to a highpass filter – was calculated and the samples with negative values were set to zero
 
@@ -13,8 +39,6 @@ sig(idx) = 0;
 % A 150 ms running average was calculated for the rectified data.
 timeWind = 150; %In ms
 sig = movmean(sig, timeWind);
-
-movingAverage = sig;
 
 % MOVING WINDOW INTEGRATION
 % MAKE IMPULSE RESPONSE
@@ -33,7 +57,7 @@ transformH = hilbert(sig);
 % Find the angle:
 angleRads = angle(transformH + sig);
 
-[pks,locs] = findpeaks(-angleRads,'MinPeakDistance',250, 'MinPeakHeight',0);
+[~,locs] = findpeaks(-angleRads,'MinPeakDistance',250, 'MinPeakHeight',0);
 
 % FIND R-PEAKS
 %left = find(slips>0);
