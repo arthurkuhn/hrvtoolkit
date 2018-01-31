@@ -2,7 +2,6 @@
 function [ output_args ] = plotEnsemble( detrended_sig, R_locs, windowSize )
 %PLOTENSEMBLE Summary of this function goes here
 %   Detailed explanation goes here
-
 avg = zeros(1,(2*windowSize+1));
 
 parfor i=1:length(R_locs)
