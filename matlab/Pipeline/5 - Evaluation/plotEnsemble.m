@@ -18,9 +18,8 @@ end
 avg = avg./length(R_locs);
 
 figure;
-title("Ensemble average");
 plot(1:length(avg),avg);
-
+title("Ensemble average");
     
 
 end
