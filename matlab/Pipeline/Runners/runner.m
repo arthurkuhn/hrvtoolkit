@@ -9,6 +9,7 @@ clear all;
 
 % Loading 
 [ sig, fs ] = loadSig(1); % Choose a signal number between 1 & 6 (see loadSig function)
+[ sig, fs ] = loadSig(6); % Choose a signal number between 1 & 6 (see loadSig function)
 
 % Pre-processing
 [ sig, detrended ] = preprocessingNew(sig, fs);

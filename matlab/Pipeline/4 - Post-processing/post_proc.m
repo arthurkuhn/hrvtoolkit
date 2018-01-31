@@ -26,7 +26,7 @@ if (plot_graph == 1)
     title("Kota BPM");
     xlabel("Time (s)");
     ylabel("BPM");
-    axis([0 (1.05*length(BPM)) 0 200]);
+    axis([0 (1.05*length(BPM)) 0 300]);
 
     %median filtered
     bx2 = subplot(3,1,2);
@@ -35,6 +35,7 @@ if (plot_graph == 1)
     xlabel("Time (s)");
     ylabel("BPM");
     axis([0 (1.05*length(BPM)) 0 200]);
+    axis([0 (1.05*length(BPM)) 0 300]);
 
     %noise
     bx3 = subplot(3,1,3);
@@ -46,6 +47,7 @@ if (plot_graph == 1)
     xlabel("Time (s)");
     ylabel("BPM");
     axis([0 (1.05*length(BPM)) 0 200]);
+    axis([0 (1.05*length(BPM)) 0 300]);
 
     linkaxes([bx1,bx2, bx3],'x');
 
