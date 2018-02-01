@@ -5,7 +5,7 @@ function [array_post, noisy_sig_post, std_post, diff_sig] = post_proc(detrended,
 % prev out
 % [array_post, noisy_sig_post, std_post, diff_sig]
 time = 0:(1/fs):((length(sig)-1)/fs);
-
+plot_graph = 1;
 %median filter
 %mfilt_size = 15;
 %std dev
