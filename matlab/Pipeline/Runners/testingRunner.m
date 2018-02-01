@@ -18,12 +18,14 @@ close all;
 validLocs = ones(length(R_loc));
 
 % Post-processing
-[ cleanTachogram, noisyBeats ] = post_proc(R_loc, fs);
-%[ cleanTachogram, noisyBeats ] = postprocessingFunc(R_loc, fs);
-
-% plotEnsemble( detrended, R_loc, 200)
+[ cleanTachogram, noisyBeats ] = post_proc(sig, R_loc, fs, 5);
 
 windowSize = 100;
+
 [ validLocs ] = ensembleMethods(detrended, R_loc, validLocs, windowSize);
+
+plotResult( detrended, R_loc, validLocs, fs );
+
+
 
 

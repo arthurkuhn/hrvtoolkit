@@ -15,11 +15,15 @@ close all;
 % Kota
 [ R_loc, R_value ] = kota(sig, detrended);
 
+validLocs = ones(length(R_loc));
+
 % Post-processing
 [ cleanTachogram, noisyBeats ] = post_proc(R_loc, fs);
-%[ cleanTachogram, noisyBeats ] = postprocessingFunc(R_loc, fs);
-
-% plotEnsemble( detrended, R_loc, 200)
 
 windowSize = 100;
-[ avg ] = getEnsembleAverage(detrended, R_loc, validLocs, windowSize);
+
+[ validLocs ] = ensembleMethods(detrended, R_loc, validLocs, windowSize);
+
+
+
+
