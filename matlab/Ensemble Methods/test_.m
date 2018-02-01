@@ -20,9 +20,7 @@ figure;
 plot(1:length(avg),avg);
 title("Ensemble average");
 
-res = zeros(length(detrended_sig), 2*windowSize-1);
-
-for i=1:length(R_locs-200)
+for i=1:2%length(R_locs-200)
     if(R_locs(i) < windowSize + 1)
         continue;
     end

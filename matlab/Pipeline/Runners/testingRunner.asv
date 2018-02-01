@@ -1,5 +1,4 @@
 close all;
-clear all;
 % 1: a5c3
 % 2: G002
 % 3: A1
@@ -23,6 +22,4 @@ clear all;
 % plotEnsemble( detrended, R_loc, 200)
 
 windowSize = 100;
-[ avg ] = getEnsembleAverage(detrended, R_loc, windowSize);
-
-filterWithEnsemble(detrended, R_loc, avg, windowSize);
+[ avg ] = getEnsembleAverage(detrended, R_loc, validLocs, windowSize);

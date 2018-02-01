@@ -1,5 +1,5 @@
 %% Noise Anomaly Detection %%
-function [array_post, noisy_sig_post] = post_test(R_loc, fs)
+function [array_post, noisy_sig_post] = post_proc(R_loc, fs)
  
 %median filter
 mfilt_size = 5;
