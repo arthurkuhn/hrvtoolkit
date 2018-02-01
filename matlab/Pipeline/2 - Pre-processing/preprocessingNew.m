@@ -1,4 +1,4 @@
-function [ sig, detrended ] = preprocessing(sig, fs)
+function [ sig, detrended ] = preprocessingNew(sig, fs)
 
 
 % every second of the ECG signal was normalized by the standard deviation of the signal in that second. 
