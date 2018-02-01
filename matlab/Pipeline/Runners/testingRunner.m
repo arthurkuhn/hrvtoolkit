@@ -18,7 +18,7 @@ close all;
 validLocs = ones(length(R_loc));
 
 % Post-processing
-[ cleanTachogram, noisyBeats ] = post_proc(sig, R_loc, fs, 5);
+[ cleanTachogram, noisyBeats ] = post_proc(detrended, sig, R_loc, fs, 5);
 
 windowSize = 100;
 
