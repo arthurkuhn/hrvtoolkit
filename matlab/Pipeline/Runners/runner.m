@@ -17,7 +17,7 @@ clear all;
 [ R_loc, R_value ] = kota(sig, detrended);
 
 % Post-processing
-[ cleanTachogram, noisyBeats ] = post_proc(sig, R_loc, fs, 5);
+[ cleanTachogram, noisyBeats ] = post_proc(detrended, sig, R_loc, fs, 5);
 
 %[ cleanTachogram, noisyBeats ] = postprocessingFunc(R_loc, fs);
 
