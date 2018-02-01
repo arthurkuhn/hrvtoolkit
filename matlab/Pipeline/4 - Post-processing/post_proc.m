@@ -1,6 +1,7 @@
 %% Noise Anomaly Detection %%
 function [array_post, noisy_sig_post] = post_proc(sig, R_loc, fs, mfilt_size)
- 
+
+orig_sig = sig;
 time = 0:(1/fs):((length(sig)-1)/fs);
 
 %median filter
@@ -23,14 +24,24 @@ mfilt_sig = medfilt1(BPM,mfilt_size);
 
 if (plot_graph == 1)
     
-    figure;
-    %plot BPM
-    bx1 = subplot(3,1,1);
-    plot(time(R_loc), BPM);
-    title("Kota BPM");
-    xlabel("Time (s)");
-    ylabel("BPM");
-    ylim([0 300]);
+figure;
+bx1 = subplot(3,1,1);
+hold on;
+plot (time,orig_sig);
+plot(time(R_loc),orig_sig(R_loc),'rv','MarkerFaceColor','r')
+legend('ECG','R');
+title('ECG Signal with R points');
+xlabel('Time in seconds');
+ylabel('Amplitude');
+
+%     figure;
+%     %plot BPM
+%     bx1 = subplot(3,1,1);
+%     plot(time(R_loc), BPM);
+%     title("Kota BPM");
+%     xlabel("Time (s)");
+%     ylabel("BPM");
+%     ylim([0 300]);
     %axis([0 (1.05*length(time(R_loc))) 0 300]);
     %median filtered
     
@@ -43,15 +54,17 @@ if (plot_graph == 1)
     xlabel("Time (s)");
     ylabel("BPM");
     %axis([0 (1.05*length(BPM)) 0 200]);
-    ylim([0 300]);
+    ylim([100 200]);
     %axis([0 (1.05*length(time(R_loc))) 0 300]);
 
+
+        
     %noise
     bx3 = subplot(3,1,3);
     plot(time(R_loc),mfilt_sig);
     hold on
     %plot(array_pt, noisy_sig_pt, 'rv');
-    scatter(time(array_post), noisy_sig_post,15, 'r');
+    scatter(time(R_loc(array_post)), noisy_sig_post,15, 'r');
     title("Std Dev Noise detection with threshold = "+ threshold);
     xlabel("Time (s)");
     ylabel("BPM");

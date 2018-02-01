@@ -8,7 +8,7 @@ clear all;
 % 6: G013
 
 % Loading 
-[ sig, fs ] = loadSig(2); % Choose a signal number between 1 & 6 (see loadSig function)
+[ sig, fs ] = loadSig(1); % Choose a signal number between 1 & 6 (see loadSig function)
 
 % Pre-processing
 [ sig, detrended ] = preprocessingNew(sig, fs);
@@ -23,7 +23,8 @@ clear all;
 
 % plotEnsemble( detrended, R_loc, 200)
 
-windowSize = 100;
-[ avg ] = getEnsembleAverage(detrended, R_loc, windowSize);
-
-filterWithEnsemble(detrended, R_loc, avg, windowSize);
+% windowSize = 100;
+% %[ avg ] = getEnsembleAverage(detrended, R_loc, windowSize);
+% [ avg ] = plotEnsemble(detrended, R_loc, windowSize);
+% 
+% filterWithEnsemble(detrended, R_loc, avg, windowSize);
