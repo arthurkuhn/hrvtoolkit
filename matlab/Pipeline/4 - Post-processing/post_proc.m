@@ -1,5 +1,5 @@
 %% Noise Anomaly Detection %%
-function [array_post, noisy_sig_post] = post_proc(detrended, sig, R_loc, fs, mfilt_size)
+function [array_post, noisy_sig_post, std_post, diff_sig] = post_proc(detrended, sig, R_loc, fs, mfilt_size)
 
 
 time = 0:(1/fs):((length(sig)-1)/fs);
@@ -54,7 +54,7 @@ ylabel('Amplitude');
     xlabel("Time (s)");
     ylabel("BPM");
     %axis([0 (1.05*length(BPM)) 0 200]);
-    ylim([100 200]);
+    ylim([50 250]);
     %axis([0 (1.05*length(time(R_loc))) 0 300]);
 
 
@@ -65,7 +65,7 @@ ylabel('Amplitude');
     hold on
     %plot(array_pt, noisy_sig_pt, 'rv');
     scatter(time(R_loc(array_post)), noisy_sig_post,15, 'r');
-    title("Std Dev Noise detection with threshold = "+ threshold);
+    title("Std Dev Noise detection with threshold = "+ threshold + " and window size = "+ mfilt_size);
     xlabel("Time (s)");
     ylabel("BPM");
     %axis([0 (1.05*length(BPM)) 0 200]);
@@ -73,5 +73,25 @@ ylabel('Amplitude');
     %axis([0 (1.05*length(time(R_loc))) 0 300]);
 
     linkaxes([bx1,bx2, bx3],'x');
-
+    
+    diff_sig = diff(std_post);
+    diff_sig(length(diff_sig)+1)=0;
+    figure;
+    subplot(3, 1, 1);
+    plot(time(R_loc),mfilt_sig);
+    hold on
+    %plot(array_pt, noisy_sig_pt, 'rv');
+    scatter(time(R_loc(array_post)), noisy_sig_post,15, 'r');
+    title("Std Dev Noise detection with threshold = "+ threshold + " and window size = "+ mfilt_size);
+    xlabel("Time (s)");
+    ylabel("BPM");
+    %axis([0 (1.05*length(BPM)) 0 200]);
+    ylim([0 300]);
+    %axis([0 (1.05*length(time(R_loc))) 0 300]);
+    
+    subplot(3, 1, 2);
+    plot(time(R_loc), std_post);
+    
+    subplot(3, 1, 3);
+    plot(time(R_loc), diff_sig);
 end

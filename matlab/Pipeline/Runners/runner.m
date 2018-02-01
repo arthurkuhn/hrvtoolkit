@@ -8,7 +8,7 @@ clear all;
 % 6: G013
 
 % Loading 
-[ sig, fs ] = loadSig(1); % Choose a signal number between 1 & 6 (see loadSig function)
+[ sig, fs ] = loadSig(4); % Choose a signal number between 1 & 6 (see loadSig function)
 
 % Pre-processing
 [ sig, detrended ] = preprocessingNew(sig, fs);
@@ -17,7 +17,9 @@ clear all;
 [ R_loc, R_value ] = kota(sig, detrended);
 
 % Post-processing
-[ cleanTachogram, noisyBeats ] = post_proc(detrended, sig, R_loc, fs, 5);
+[ cleanTachogram, noisyBeats , std, diff] = post_proc(detrended, sig, R_loc, fs, 5);
+%[ cleanTachogram, noisyBeats ] = post_proc(detrended, sig, R_loc, fs, 10);
+%[ cleanTachogram, noisyBeats ] = post_proc(detrended, sig, R_loc, fs, 15);
 
 %[ cleanTachogram, noisyBeats ] = postprocessingFunc(R_loc, fs);
 
