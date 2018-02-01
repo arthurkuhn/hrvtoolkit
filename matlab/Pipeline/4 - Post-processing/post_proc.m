@@ -1,5 +1,5 @@
 %% Noise Anomaly Detection %%
-function [array_post, noisy_sig_post, std_post, diff_sig, validLocs] = post_proc(detrended, sig, R_loc, fs, mfilt_size, validLocs, plot_graph)
+function [array_post, noisy_sig_post, std_post, diff_sig] = post_proc(detrended, sig, BPM, R_loc, fs, mfilt_size)
 
 
 % prev out
@@ -11,11 +11,6 @@ time = 0:(1/fs):((length(sig)-1)/fs);
 %std dev
 window = 10;
 threshold = 4;
-
-interval = diff(R_loc);
-interval(length(interval)+1) = interval(length(interval)); % Adding one last index
-%get BPM Kota
-BPM = 60*fs./(interval);
 
 %median filter
 mfilt_sig = medfilt1(BPM,mfilt_size);

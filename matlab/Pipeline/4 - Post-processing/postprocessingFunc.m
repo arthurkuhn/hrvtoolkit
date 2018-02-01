@@ -1,4 +1,4 @@
-function [ cleanTachogram, noisyBeats ] = postprocessingFunc( sig, fs )
+function [ cleanTachogram, validLocs ] = postprocessingFunc( sig, fs )
 %POSTPROCESSINGFUNC Median Filters and Detects noise
 %   Inputs:
 %       - Sig: The location of the r-peaks on the ECG
@@ -6,7 +6,7 @@ function [ cleanTachogram, noisyBeats ] = postprocessingFunc( sig, fs )
 %
 %   Outputs:
 %       - cleanTachogram: The filtered BPM signal 
-%       - noisyBeats: An array with the beats that are marked as noisy
+%       - validLocs: An array with the beats that are marked as noisy
 %           AFTER the signal has been filtered. (Therefore beats that are
 %           flagged by the std filter).
 time = 0:(1/fs):((length(sig)-1)/fs);
