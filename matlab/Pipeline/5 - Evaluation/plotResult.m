@@ -4,6 +4,7 @@ function [  ] = plotResult( detrended, R_loc, validLocs, fs )
 
 time = 0:(1/fs):((length(detrended)-1)/fs);
 
+
 figure;
 bx1 = subplot(2,1,1);
 hold on;

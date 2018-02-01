@@ -1,7 +1,9 @@
 %% Noise Anomaly Detection %%
-function [array_post, noisy_sig_post, std_post, diff_sig] = post_proc(detrended, sig, R_loc, fs, mfilt_size)
+function [array_post, noisy_sig_post, std_post, diff_sig, validLocs] = post_proc(detrended, sig, R_loc, fs, mfilt_size, validLocs, plot_graph)
 
 
+% prev out
+% [array_post, noisy_sig_post, std_post, diff_sig]
 time = 0:(1/fs):((length(sig)-1)/fs);
 
 %median filter
@@ -9,8 +11,6 @@ time = 0:(1/fs):((length(sig)-1)/fs);
 %std dev
 window = 10;
 threshold = 4;
-%1 for plot
-plot_graph = 1;
 
 interval = diff(R_loc);
 interval(length(interval)+1) = interval(length(interval)); % Adding one last index
@@ -23,25 +23,24 @@ mfilt_sig = medfilt1(BPM,mfilt_size);
 [array_post,noisy_sig_post,std_post] = std_dev(mfilt_sig, window, threshold);
 
 if (plot_graph == 1)
+    figure;
+    bx1 = subplot(3,1,1);
+    hold on;
+    plot (time,detrended);
+    plot(time(R_loc),detrended(R_loc),'rv','MarkerFaceColor','r')
+    legend('ECG','R');
+    title('ECG Signal with R points');
+    xlabel('Time in seconds');
+    ylabel('Amplitude');
     
-figure;
-bx1 = subplot(3,1,1);
-hold on;
-plot (time,detrended);
-plot(time(R_loc),detrended(R_loc),'rv','MarkerFaceColor','r')
-legend('ECG','R');
-title('ECG Signal with R points');
-xlabel('Time in seconds');
-ylabel('Amplitude');
-
-%     figure;
-%     %plot BPM
-%     bx1 = subplot(3,1,1);
-%     plot(time(R_loc), BPM);
-%     title("Kota BPM");
-%     xlabel("Time (s)");
-%     ylabel("BPM");
-%     ylim([0 300]);
+    %     figure;
+    %     %plot BPM
+    %     bx1 = subplot(3,1,1);
+    %     plot(time(R_loc), BPM);
+    %     title("Kota BPM");
+    %     xlabel("Time (s)");
+    %     ylabel("BPM");
+    %     ylim([0 300]);
     %axis([0 (1.05*length(time(R_loc))) 0 300]);
     %median filtered
     
@@ -56,9 +55,9 @@ ylabel('Amplitude');
     %axis([0 (1.05*length(BPM)) 0 200]);
     ylim([50 250]);
     %axis([0 (1.05*length(time(R_loc))) 0 300]);
-
-
-        
+    
+    
+    
     %noise
     bx3 = subplot(3,1,3);
     plot(time(R_loc),mfilt_sig);
@@ -71,7 +70,7 @@ ylabel('Amplitude');
     %axis([0 (1.05*length(BPM)) 0 200]);
     ylim([0 300]);
     %axis([0 (1.05*length(time(R_loc))) 0 300]);
-
+    
     linkaxes([bx1,bx2, bx3],'x');
     
     diff_sig = diff(std_post);
