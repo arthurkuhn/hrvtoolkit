@@ -18,7 +18,8 @@ clear all;
 [ R_loc, R_value ] = kota(sig, detrended);
 
 % Post-processing
-[ cleanTachogram, noisyBeats ] = post_proc(R_loc, fs);
+[ cleanTachogram, noisyBeats ] = post_proc(sig, R_loc, fs, 5);
+
 %[ cleanTachogram, noisyBeats ] = postprocessingFunc(R_loc, fs);
 
 %plotEnsemble( detrended, R_loc, 200)
