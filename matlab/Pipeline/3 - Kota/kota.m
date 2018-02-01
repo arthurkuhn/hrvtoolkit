@@ -9,7 +9,6 @@ function [ R_loc, R_value ] = kota( sig, detrended )
 fs =1000;
 plot_graph =1;
 time = 0:(1/fs):((length(sig)-1)/fs);
-orig_sig = sig;
 
 sig = diff(sig);
 sig(length(sig)+1)=0;
@@ -53,8 +52,8 @@ end
 figure;
 bx1 = subplot(2,1,1);
 hold on;
-plot (time,orig_sig);
-plot(time(R_loc),orig_sig(R_loc),'rv','MarkerFaceColor','r')
+plot (time,detrended);
+plot(time(R_loc),detrended(R_loc),'rv','MarkerFaceColor','r')
 legend('ECG','R');
 title('ECG Signal with R points');
 xlabel('Time in seconds');
