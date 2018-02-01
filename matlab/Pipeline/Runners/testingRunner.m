@@ -20,6 +20,8 @@ validLocs = ones(length(R_loc));
 windowSize = 100;
 [ validLocs ] = ensembleMethods(detrended, R_loc, validLocs, windowSize);
 
+
+
 % Post-processing
 % [array_post, noisy_sig_post, std_post, diff_sig, validLocs] = post_proc(detrended, sig, R_loc, fs, 5, validLocs, 1);
 
