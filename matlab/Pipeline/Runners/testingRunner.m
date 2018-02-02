@@ -6,7 +6,7 @@ close all;
 % 5: G011
 % 6: G013
 
-% Loading 
+% Loading
 [ sig, fs ] = loadSig(2); % Choose a signal number between 1 & 6 (see loadSig function)
 
 % Pre-processing
@@ -15,17 +15,18 @@ close all;
 % Kota
 [ R_loc, R_value ] = kota(sig, detrended);
 
-validLocs = ones(length(R_loc));
+validLocs = ones(1,length(R_loc));
 
 windowSize = 100;
 [ validLocs ] = ensembleMethods(detrended, R_loc, validLocs, windowSize);
 
-
+BPM = getBpm(R_loc, validLocs);
 
 % Post-processing
-% [array_post, noisy_sig_post, std_post, diff_sig, validLocs] = post_proc(detrended, sig, R_loc, fs, 5, validLocs, 1);
+%[ cleanTachogram, noisyBeats , std, diff] = post_proc(detrended, sig, BPM, R_loc, fs, 5);
 
-plotResult( detrended, R_loc, validLocs, fs );
+
+% plotResult( detrended, R_loc, validLocs, fs );
 
 
 
