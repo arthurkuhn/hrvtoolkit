@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of loadSig</title>
+  <meta name="keywords" content="loadSig">
+  <meta name="description" content="LOADSIG Loads a signal from our limited dataset">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">matlab</a> &gt; <a href="#">Pipeline</a> &gt; <a href="index.html">1-Loading</a> &gt; loadSig.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for matlab\Pipeline\1-Loading&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>loadSig
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>LOADSIG Loads a signal from our limited dataset</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [ sig, fs ] = loadSig( sigNum ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">LOADSIG Loads a signal from our limited dataset
+   Detailed explanation goes here</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="invertIfNecessary.html" class="code" title="function [ res ] = invertIfNecessary( rawEcg, fs, windowInSeconds )">invertIfNecessary</a>	invertIfNecessary Decides whether or not to invert the ECG signal</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../matlab/Pipeline/Runners/guiRunner.html" class="code" title="function [ detrended, R_loc, validLocs ] = guiRunner( sigNum )">guiRunner</a>	GUIRUNNER Summary of this function goes here</li><li><a href="../../../matlab/Pipeline/Runners/runner.html" class="code" title="">runner</a>	</li><li><a href="../../../matlab/Pipeline/Runners/testingRunner.html" class="code" title="">testingRunner</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ sig, fs ] = loadSig( sigNum )</a>
+0002 <span class="comment">%LOADSIG Loads a signal from our limited dataset</span>
+0003 <span class="comment">%   Detailed explanation goes here</span>
+0004 
+0005 fs = 1000;
+0006 windowInSeconds = 60;
+0007 
+0008 <span class="keyword">if</span>(sigNum==1)
+0009     load(&quot;a5c3ecg.mat&quot;) <span class="comment">% visible bradycardia</span>
+0010     sig = transpose(a5c3ecg);
+0011 <span class="keyword">elseif</span>(sigNum==2)
+0012     load(&quot;G002ecg.mat&quot;) <span class="comment">% Heavy bias, brady -&gt; 5 missed beats</span>
+0013     sig = transpose(G002ecg);
+0014 <span class="keyword">elseif</span>(sigNum==3)
+0015     load(&quot;A1ecg.mat&quot;) <span class="comment">% Faint</span>
+0016     sig = transpose(A1ecg);
+0017 <span class="keyword">elseif</span>(sigNum==4)
+0018     load(&quot;a2f1ecg.mat&quot;) <span class="comment">% Some Missed beats -&gt; Tweak</span>
+0019     sig = transpose(a2f1ecg);
+0020 <span class="keyword">elseif</span>(sigNum==5)
+0021     load(&quot;G011ecg.mat&quot;)
+0022     sig = transpose(G011ecg);
+0023 <span class="keyword">elseif</span>(sigNum==6)
+0024     load(&quot;G013ecg.mat&quot;)
+0025     sig = transpose(G013ecg);
+0026 <span class="keyword">end</span>
+0027 
+0028 sig = <a href="invertIfNecessary.html" class="code" title="function [ res ] = invertIfNecessary( rawEcg, fs, windowInSeconds )">invertIfNecessary</a>( sig, fs, windowInSeconds);
+0029 
+0030 <span class="keyword">if</span>(~isrow(sig))
+0031     sig = sig.';
+0032 <span class="keyword">end</span>
+0033 
+0034 <span class="keyword">end</span>
+0035</pre></div>
+<hr><address>Generated on Fri 02-Feb-2018 16:32:53 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

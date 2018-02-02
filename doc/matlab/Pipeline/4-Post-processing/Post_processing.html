@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of Post_processing</title>
+  <meta name="keywords" content="Post_processing">
+  <meta name="description" content="% Noise Anomaly Detection %%">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">matlab</a> &gt; <a href="#">Pipeline</a> &gt; <a href="index.html">4-Post-processing</a> &gt; Post_processing.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for matlab\Pipeline\4-Post-processing&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>Post_processing
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Noise Anomaly Detection %%</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Noise Anomaly Detection %%</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Noise Anomaly Detection %%</span>
+0002 
+0003 close all;
+0004 clear all;
+0005 load(&quot;G002ecg.mat&quot;)
+0006 load(&quot;A1ecg.mat&quot;)
+0007 load(&quot;a2f1ecg.mat&quot;)
+0008 load(&quot;a5c3ecg.mat&quot;)
+0009 
+0010 fs = 1000;
+0011 orig_sig = a5c3ecg;
+0012 filt = BP(); <span class="comment">% Band pass from 16 to 26 Hz</span>
+0013 filt_sig = filter(filt, orig_sig); <span class="comment">% new signal</span>
+0014 time = 0:(1/fs):((length(filt_sig)-1)/fs); <span class="comment">%time in seconds</span>
+0015 window = 1*fs; <span class="comment">% # of secs</span>
+0016 
+0017 <span class="comment">%get BPM Kota</span>
+0018 [R_loc, interval, time]=kotaFunction3(orig_sig,fs,0);
+0019 BPM = 60*fs./(interval);
+0020 <span class="comment">%get noise of original bpm</span>
+0021 [array_kt,noisy_sig_kt,skt] = std_dev(BPM, 5, 8);
+0022 <span class="comment">%filter BPM</span>
+0023 [mfilt_sig,d]=median_fct(R_loc,interval, time, fs);
+0024 <span class="comment">%get noise of filtered bpm</span>
+0025 [array_post,noisy_sig_post,post] = std_dev(mfilt_sig, 5, 8);
+0026 
+0027 <span class="comment">%plot BPM</span>
+0028 bx1 = subplot(4,1,1);
+0029 plot(1:length(BPM), BPM);
+0030 title(<span class="string">'Kota BPM'</span>);
+0031 xlabel(<span class="string">'Time (s)'</span>);
+0032 ylabel(<span class="string">'BPM'</span>);
+0033 axis([0 (1.05*length(BPM)) 0 400]);
+0034 
+0035 <span class="comment">%noise</span>
+0036 bx2 = subplot(4,1,2);
+0037 plot(1:length(BPM), BPM);
+0038 hold on
+0039 scatter(array_kt, noisy_sig_kt,15, <span class="string">'r'</span>);
+0040 title(<span class="string">'Noise detection on Kota BPM'</span>);
+0041 xlabel(<span class="string">'Time (s)'</span>);
+0042 ylabel(<span class="string">'BPM'</span>);
+0043 axis([0 (1.05*length(BPM)) 0 400]);
+0044 
+0045 <span class="comment">%median filtered</span>
+0046 bx3 = subplot(4,1,3);
+0047 plot(1:length(mfilt_sig), mfilt_sig);
+0048 title({<span class="string">'BPM after 5 sample median filter'</span>);
+0049 xlabel(<span class="string">'Time (s)'</span>);
+0050 ylabel(<span class="string">'BPM'</span>);
+0051 axis([0 (1.05*length(BPM)) 0 400]);
+0052 
+0053 <span class="comment">%noise</span>
+0054 bx4 = subplot(4,1,4);
+0055 plot(1:length(mfilt_sig), mfilt_sig);
+0056 hold on
+0057 <span class="comment">%plot(array_pt, noisy_sig_pt, 'rv');</span>
+0058 scatter(array_post, noisy_sig_post,15, <span class="string">'r'</span>);
+0059 title({<span class="string">'Noise detection on median filtered BPM'</span>);
+0060 xlabel(<span class="string">'Time (s)'</span>);
+0061 ylabel(<span class="string">'BPM'</span>);
+0062 axis([0 (1.05*length(BPM)) 0 400]);
+0063 
+0064 linkaxes([bx1,bx2, bx3, bx4],<span class="string">'x'</span>);
+0065 
+0066 <span class="comment">%[mfilt_sig,d]=median_fct(R_loc,interval, time, fs);</span>
+0067 
+0068</pre></div>
+<hr><address>Generated on Fri 02-Feb-2018 16:32:53 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

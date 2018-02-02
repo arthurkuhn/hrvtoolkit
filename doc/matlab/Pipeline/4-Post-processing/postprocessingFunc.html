@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of postprocessingFunc</title>
+  <meta name="keywords" content="postprocessingFunc">
+  <meta name="description" content="POSTPROCESSINGFUNC Median Filters and Detects noise">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">matlab</a> &gt; <a href="#">Pipeline</a> &gt; <a href="index.html">4-Post-processing</a> &gt; postprocessingFunc.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for matlab\Pipeline\4-Post-processing&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>postprocessingFunc
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>POSTPROCESSINGFUNC Median Filters and Detects noise</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [ cleanTachogram, validLocs ] = postprocessingFunc( sig, fs ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">POSTPROCESSINGFUNC Median Filters and Detects noise
+   Inputs:
+       - Sig: The location of the r-peaks on the ECG
+       - Fs: The sampling frequency
+
+   Outputs:
+       - cleanTachogram: The filtered BPM signal 
+       - validLocs: An array with the beats that are marked as noisy
+           AFTER the signal has been filtered. (Therefore beats that are
+           flagged by the std filter).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ cleanTachogram, validLocs ] = postprocessingFunc( sig, fs )</a>
+0002 <span class="comment">%POSTPROCESSINGFUNC Median Filters and Detects noise</span>
+0003 <span class="comment">%   Inputs:</span>
+0004 <span class="comment">%       - Sig: The location of the r-peaks on the ECG</span>
+0005 <span class="comment">%       - Fs: The sampling frequency</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Outputs:</span>
+0008 <span class="comment">%       - cleanTachogram: The filtered BPM signal</span>
+0009 <span class="comment">%       - validLocs: An array with the beats that are marked as noisy</span>
+0010 <span class="comment">%           AFTER the signal has been filtered. (Therefore beats that are</span>
+0011 <span class="comment">%           flagged by the std filter).</span>
+0012 time = 0:(1/fs):((length(sig)-1)/fs);
+0013 interval = diff(sig);
+0014 interval(length(interval)+1) = interval(length(interval));
+0015 
+0016 BPM = 60*fs./(interval);
+0017 <span class="comment">%get noise of original bpm</span>
+0018 [array_kt,noisy_sig_kt,skt] = std_dev(BPM, 5, 8);
+0019 <span class="comment">%filter BPM</span>
+0020 [mfilt_sig,d]=median_fct(sig,interval, time, fs);
+0021 <span class="comment">%get noise of filtered bpm</span>
+0022 [array_post,noisy_sig_post,post] = std_dev(mfilt_sig, 5, 8);
+0023 
+0024 cleanTachogram = mfilt_sig;
+0025 noisyBeats = noisy_sig_post;
+0026 
+0027 <span class="comment">%plot BPM</span>
+0028 bx1 = subplot(4,1,1);
+0029 plot(1:length(BPM), BPM);
+0030 title(<span class="string">'Kota BPM'</span>);
+0031 xlabel(<span class="string">'Time (s)'</span>);
+0032 ylabel(<span class="string">'BPM'</span>);
+0033 axis([0 (1.05*length(BPM)) 0 400]);
+0034 
+0035 <span class="comment">%noise</span>
+0036 bx2 = subplot(4,1,2);
+0037 plot(1:length(BPM), BPM);
+0038 hold on
+0039 scatter(array_kt, noisy_sig_kt,15, <span class="string">'r'</span>);
+0040 title(<span class="string">'Noise detection on Kota BPM'</span>);
+0041 xlabel(<span class="string">'Time (s)'</span>);
+0042 ylabel(<span class="string">'BPM'</span>);
+0043 axis([0 (1.05*length(BPM)) 0 400]);
+0044 
+0045 <span class="comment">%median filtered</span>
+0046 bx3 = subplot(4,1,3);
+0047 plot(1:length(mfilt_sig), mfilt_sig);
+0048 title(<span class="string">'BPM after 5 sample median filter'</span>);
+0049 xlabel(<span class="string">'Time (s)'</span>);
+0050 ylabel(<span class="string">'BPM'</span>);
+0051 axis([0 (1.05*length(BPM)) 0 400]);
+0052 
+0053 <span class="comment">%noise</span>
+0054 bx4 = subplot(4,1,4);
+0055 plot(1:length(mfilt_sig), mfilt_sig);
+0056 hold on
+0057 <span class="comment">%plot(array_pt, noisy_sig_pt, 'rv');</span>
+0058 scatter(array_post, noisy_sig_post,15, <span class="string">'r'</span>);
+0059 title(<span class="string">'Noise detection on median filtered BPM'</span>);
+0060 xlabel(<span class="string">'Time (s)'</span>);
+0061 ylabel(<span class="string">'BPM'</span>);
+0062 axis([0 (1.05*length(BPM)) 0 400]);
+0063 
+0064 linkaxes([bx1,bx2, bx3, bx4],<span class="string">'x'</span>);
+0065 
+0066 <span class="comment">%[mfilt_sig,d]=median_fct(R_loc,interval, time, fs);</span>
+0067 
+0068 
+0069 
+0070 <span class="keyword">end</span>
+0071</pre></div>
+<hr><address>Generated on Fri 02-Feb-2018 16:32:53 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ensembleMethods</title>
+  <meta name="keywords" content="ensembleMethods">
+  <meta name="description" content="GETENSEMBLEAVERAGE Gets the average of all QRS peaks">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">matlab</a> &gt; <a href="#">Pipeline</a> &gt; <a href="index.html">5-Evaluation</a> &gt; ensembleMethods.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for matlab\Pipeline\5-Evaluation&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>ensembleMethods
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>GETENSEMBLEAVERAGE Gets the average of all QRS peaks</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [ validLocs ] = ensembleMethods( detrended_sig, R_locs, validLocs, windowSize ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">GETENSEMBLEAVERAGE Gets the average of all QRS peaks
+   Detailed explanation goes here</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../matlab/Pipeline/Runners/guiRunner.html" class="code" title="function [ detrended, R_loc, validLocs ] = guiRunner( sigNum )">guiRunner</a>	GUIRUNNER Summary of this function goes here</li><li><a href="../../../matlab/Pipeline/Runners/testingRunner.html" class="code" title="">testingRunner</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ validLocs ] = ensembleMethods( detrended_sig, R_locs, validLocs, windowSize )</a>
+0002 <span class="comment">%GETENSEMBLEAVERAGE Gets the average of all QRS peaks</span>
+0003 <span class="comment">%   Detailed explanation goes here</span>
+0004 avg = zeros(1,(2*windowSize+1));
+0005 fs = 1000;
+0006 time = 0:(1/fs):((length(detrended_sig)-1)/fs);
+0007 
+0008 shouldPlot = 0;
+0009 
+0010 left = R_locs-windowSize;
+0011 right = R_locs+windowSize;
+0012 
+0013 parfor i=1:length(R_locs)
+0014     <span class="keyword">if</span>(R_locs(i) &lt; windowSize + 1)
+0015         <span class="keyword">continue</span>;
+0016     <span class="keyword">end</span>
+0017     complex = detrended_sig(left(i):right(i));
+0018     avg = avg + complex;
+0019 <span class="keyword">end</span>
+0020 
+0021 correlationCoefArray = zeros(1,length(R_locs));
+0022 maxCorrelationArray = zeros(1,length(R_locs));
+0023 
+0024 <span class="keyword">for</span> i=1:length(R_locs)
+0025     <span class="keyword">if</span>(R_locs(i) &lt; windowSize + 1)
+0026         <span class="keyword">continue</span>;
+0027     <span class="keyword">end</span>
+0028     complex2 = detrended_sig(left(i):right(i));
+0029     crossCorr = xcorr(complex2, avg);
+0030     corrCoeff = corrcoef(complex2, avg);
+0031     correlationCoefArray(i) = corrCoeff(1,2);
+0032     maxCorrelationArray(i) = max(crossCorr);
+0033     <span class="keyword">if</span>(corrCoeff(1,2) &gt; 0.65)
+0034         <span class="keyword">continue</span>
+0035     <span class="keyword">else</span>
+0036         validLocs(i) = 0;
+0037     <span class="keyword">end</span>
+0038 <span class="keyword">end</span>
+0039 
+0040 
+0041 
+0042 detrended = detrended_sig;
+0043 R_loc = R_locs;
+0044 validIndices = [];
+0045 invalidIndices = [];
+0046 <span class="keyword">for</span> i = 1:length(validLocs)
+0047     <span class="keyword">if</span>(validLocs(i) == 1)
+0048         validIndices = [validIndices R_loc(i)];
+0049     <span class="keyword">else</span>
+0050         invalidIndices = [invalidIndices R_loc(i)];
+0051     <span class="keyword">end</span>
+0052 <span class="keyword">end</span>
+0053 
+0054 interval = [];
+0055 intervalPrev = 0;
+0056 currInterval = 0;
+0057 <span class="keyword">for</span> i=2:length(R_loc)
+0058     <span class="keyword">if</span>(validLocs(i-1) ~= 1 || validLocs(i) ~= 1)
+0059         currInterval = intervalPrev;
+0060     <span class="keyword">else</span>
+0061         currInterval = R_loc(i) - R_loc(i-1);
+0062     <span class="keyword">end</span>
+0063     interval(i-1) = currInterval;
+0064     intervalPrev = currInterval;
+0065 <span class="keyword">end</span>
+0066 interval(length(interval)+1) = currInterval;
+0067 
+0068 <span class="comment">% interval = diff(R_loc);</span>
+0069 <span class="comment">% interval(length(interval)+1) = interval(length(interval)); % Adding one last index</span>
+0070 <span class="comment">% %get BPM Kota</span>
+0071 BPM = 60*fs./(interval);
+0072 
+0073 <span class="keyword">if</span>(shouldPlot == 1)
+0074     
+0075     avgValid = zeros(1,(2*windowSize+1));
+0076     avgInvalid = zeros(1,(2*windowSize+1));
+0077     <span class="keyword">for</span> i=1:length(validLocs)
+0078         <span class="keyword">if</span>(R_locs(i) &lt; windowSize + 1)
+0079             <span class="keyword">continue</span>;
+0080         <span class="keyword">end</span>
+0081         complex = detrended_sig(left(i):right(i));
+0082         <span class="keyword">if</span>(validLocs(i) == 1)
+0083             avgValid = avgValid + complex;
+0084         <span class="keyword">else</span>
+0085             avgInvalid = avgInvalid + complex;
+0086         <span class="keyword">end</span>
+0087     <span class="keyword">end</span>
+0088     
+0089     figure;
+0090     plot(avgValid);
+0091     title(&quot;Valid Ensemble Average&quot;);
+0092     
+0093     figure;
+0094     plot(avgInvalid);
+0095     title(&quot;Invalid Ensemble Average&quot;);
+0096     
+0097     
+0098     figure(<span class="string">'NumberTitle'</span>, <span class="string">'off'</span>, <span class="string">'Name'</span>, <span class="string">'G013'</span>);
+0099     bx1 = subplot(4,1,1);
+0100     hold on;
+0101     plot (time,detrended);
+0102     plot(time(validIndices),detrended(validIndices),<span class="string">'bv'</span>,<span class="string">'MarkerFaceColor'</span>,<span class="string">'b'</span>);
+0103     plot(time(invalidIndices),detrended(invalidIndices),<span class="string">'rv'</span>,<span class="string">'MarkerFaceColor'</span>,<span class="string">'r'</span>);
+0104     legend(<span class="string">'ECG'</span>,<span class="string">'R'</span>);
+0105     title(<span class="string">'ECG Signal with R points'</span>);
+0106     xlabel(<span class="string">'Time in seconds'</span>);
+0107     ylabel(<span class="string">'Amplitude'</span>);
+0108     
+0109     <span class="comment">%     figure;</span>
+0110     <span class="comment">%     %plot BPM</span>
+0111     <span class="comment">%     bx1 = subplot(3,1,1);</span>
+0112     <span class="comment">%     plot(time(R_loc), BPM);</span>
+0113     <span class="comment">%     title(&quot;Kota BPM&quot;);</span>
+0114     <span class="comment">%     xlabel(&quot;Time (s)&quot;);</span>
+0115     <span class="comment">%     ylabel(&quot;BPM&quot;);</span>
+0116     <span class="comment">%     ylim([0 300]);</span>
+0117     <span class="comment">%axis([0 (1.05*length(time(R_loc))) 0 300]);</span>
+0118     <span class="comment">%median filtered</span>
+0119     
+0120     bx2 = subplot(4,1,2);
+0121     BPM(isinf(BPM)) = mean(BPM);
+0122     f=fit(transpose(time(R_loc)),transpose(BPM),<span class="string">'smoothingspline'</span>);
+0123     plot(f,time(R_loc),interval);
+0124     <span class="comment">%plot(1:length(mfilt_sig), mfilt_sig);</span>
+0125     title(&quot;BPM Arthur&quot;);
+0126     <span class="comment">%title(&quot;BPM after 5 sample median filter&quot;);</span>
+0127     xlabel(&quot;Time (s)&quot;);
+0128     ylabel(&quot;BPM&quot;);
+0129     <span class="comment">%axis([0 (1.05*length(BPM)) 0 200]);</span>
+0130     ylim([50 250]);
+0131     <span class="comment">%axis([0 (1.05*length(time(R_loc))) 0 300]);</span>
+0132     
+0133     bx3 = subplot(4,1,3);
+0134     plot(time(R_loc),correlationCoefArray);
+0135     <span class="comment">%plot(1:length(mfilt_sig), mfilt_sig);</span>
+0136     title(&quot;Correlation with Average Beat:&quot;);
+0137     <span class="comment">%title(&quot;BPM after 5 sample median filter&quot;);</span>
+0138     xlabel(&quot;Time (s)&quot;);
+0139     ylabel(&quot;Correlation Coefficient&quot;);
+0140     <span class="comment">%axis([0 (1.05*length(BPM)) 0 200]);</span>
+0141     ylim([0 1]);
+0142     <span class="comment">%axis([0 (1.05*length(time(R_loc))) 0 300]);</span>
+0143     
+0144     bx4 = subplot(4,1,4);
+0145     plot(time(R_loc),maxCorrelationArray);
+0146     <span class="comment">%plot(1:length(mfilt_sig), mfilt_sig);</span>
+0147     title(&quot;Maximum Cross Correlation with avg beat:&quot;);
+0148     <span class="comment">%title(&quot;BPM after 5 sample median filter&quot;);</span>
+0149     xlabel(&quot;Time (s)&quot;);
+0150     ylabel(&quot;Max&quot;);
+0151     <span class="comment">%axis([0 (1.05*length(BPM)) 0 200]);</span>
+0152     <span class="comment">%ylim([0 1]);</span>
+0153     <span class="comment">%axis([0 (1.05*length(time(R_loc))) 0 300]);</span>
+0154     
+0155     
+0156     
+0157     
+0158     linkaxes([bx1,bx2, bx3, bx4],<span class="string">'x'</span>);
+0159     
+0160 <span class="keyword">end</span>
+0161</pre></div>
+<hr><address>Generated on Fri 02-Feb-2018 16:32:53 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

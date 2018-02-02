@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of runner</title>
+  <meta name="keywords" content="runner">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">matlab</a> &gt; <a href="#">Pipeline</a> &gt; <a href="index.html">Runners</a> &gt; runner.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for matlab\Pipeline\Runners&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>runner
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../matlab/Pipeline/1-Loading/loadSig.html" class="code" title="function [ sig, fs ] = loadSig( sigNum )">loadSig</a>	LOADSIG Loads a signal from our limited dataset</li><li><a href="../../../matlab/Pipeline/2-Pre-processing/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>	every second of the ECG signal was normalized by the standard deviation of the signal in that second.</li><li><a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc, R_value ] = kota( sig, detrended )">kota</a>	KOTA QRS detection using Hilbert Transform</li><li><a href="../../../matlab/Pipeline/4-Post-processing/getBpm.html" class="code" title="function [ BPM ] = getBpm( R_loc, validLocs )">getBpm</a>	GETBPM Summary of this function goes here</li><li><a href="../../../matlab/Pipeline/4-Post-processing/post_proc.html" class="code" title="function [array_post, noisy_sig_post, std_post, diff_sig] = post_proc(detrended, sig, BPM, R_loc, fs, mfilt_size)">post_proc</a>	% Noise Anomaly Detection %%</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 close all;
+0002 clear all;
+0003 <span class="comment">% 1: a5c3</span>
+0004 <span class="comment">% 2: G002</span>
+0005 <span class="comment">% 3: A1</span>
+0006 <span class="comment">% 4: a2f1</span>
+0007 <span class="comment">% 5: G011</span>
+0008 <span class="comment">% 6: G013</span>
+0009 
+0010 <span class="comment">% Loading</span>
+0011 [ sig, fs ] = <a href="../../../matlab/Pipeline/1-Loading/loadSig.html" class="code" title="function [ sig, fs ] = loadSig( sigNum )">loadSig</a>(1); <span class="comment">% Choose a signal number between 1 &amp; 6 (see loadSig function)</span>
+0012 
+0013 <span class="comment">% Pre-processing</span>
+0014 [ sig, detrended ] = <a href="../../../matlab/Pipeline/2-Pre-processing/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>(sig, fs);
+0015 
+0016 <span class="comment">% Kota</span>
+0017 [ R_loc, R_value ] = <a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc, R_value ] = kota( sig, detrended )">kota</a>(sig, detrended);
+0018 
+0019 validLocs = ones(length(R_loc));
+0020 
+0021 BPM = <a href="../../../matlab/Pipeline/4-Post-processing/getBpm.html" class="code" title="function [ BPM ] = getBpm( R_loc, validLocs )">getBpm</a>(R_Loc, validLocs);
+0022 
+0023 <span class="comment">% Post-processing</span>
+0024 [ cleanTachogram, noisyBeats , std, diff] = <a href="../../../matlab/Pipeline/4-Post-processing/post_proc.html" class="code" title="function [array_post, noisy_sig_post, std_post, diff_sig] = post_proc(detrended, sig, BPM, R_loc, fs, mfilt_size)">post_proc</a>(detrended, sig, BPM, R_loc, fs, 5);
+0025 <span class="comment">%[ cleanTachogram, noisyBeats ] = post_proc(detrended, sig, R_loc, fs, 10);</span>
+0026 <span class="comment">%[ cleanTachogram, noisyBeats ] = post_proc(detrended, sig, R_loc, fs, 15);</span>
+0027 
+0028 <span class="comment">%[ cleanTachogram, noisyBeats ] = postprocessingFunc(R_loc, fs);</span>
+0029 
+0030 <span class="comment">% plotEnsemble( detrended, R_loc, 200)</span>
+0031 
+0032 <span class="comment">% windowSize = 100;</span>
+0033 <span class="comment">% %[ avg ] = getEnsembleAverage(detrended, R_loc, windowSize);</span>
+0034 <span class="comment">% [ avg ] = plotEnsemble(detrended, R_loc, windowSize);</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">% filterWithEnsemble(detrended, R_loc, avg, windowSize);</span></pre></div>
+<hr><address>Generated on Fri 02-Feb-2018 16:32:53 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
