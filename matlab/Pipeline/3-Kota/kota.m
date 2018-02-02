@@ -1,7 +1,16 @@
-function [ R_loc, R_value ] = kota( sig, detrended )
+function [ R_loc ] = kota( sig, detrended )
+%kota QRS detection using Hilbert Transform
+% Skips beats already marked as invalid (and does not take them into
+% account for the other points.
+%
+% Inputs:
+%    sig - The preprocessed signal
+%    detrended - The detrended signal
+%
+% Outputs:
+%    R_loc - Boolean Array, 1 for valid peaks
 %KOTA QRS detection using Hilbert Transform
 %   Detailed explanation goes here
-
 
 % Difference between successive samples of the signal – equivalent to a highpass filter – was calculated and the samples with negative values were set to zero
 

@@ -8,7 +8,7 @@ function [ detrended, R_loc, validLocs ] = guiRunner( sigNum )
 [ sig, detrended ] = preprocessingNew(sig, fs);
 
 % Kota
-[ R_loc, ~ ] = kota(sig, detrended);
+[ R_loc ] = kota(sig, detrended);
 
 validLocs = ones(1,length(R_loc));
 
