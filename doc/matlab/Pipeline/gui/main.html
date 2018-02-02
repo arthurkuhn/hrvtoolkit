@@ -6,17 +6,16 @@
   <meta name="keywords" content="main">
   <meta name="description" content="MAIN MATLAB code for main.fig">
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
   <meta name="robots" content="index, follow">
   <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
 </head>
 <body>
 <a name="_top"></a>
-<div><a href="../../../index.html">Home</a> &gt;  <a href="#">matlab</a> &gt; <a href="#">Pipeline</a> &gt; <a href="index.html">gui</a> &gt; main.m</div>
-
-<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
-<td align="right"><a href="index.html">Index for matlab\Pipeline\gui&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
-
+<!-- # matlab --><!-- # Pipeline --><!-- menu.html gui -->
 <h1>main
 </h1>
 
@@ -60,7 +59,7 @@ This function is called by:
 
 <h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <ul style="list-style-image:url(../../../matlabicon.gif)">
-<li><a href="#_sub1" class="code">function main_OpeningFcn(hObject, eventdata, handles, varargin)</a></li><li><a href="#_sub2" class="code">function varargout = main_OutputFcn(hObject, eventdata, handles)</a></li><li><a href="#_sub3" class="code">function pushbutton1_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub4" class="code">function FileMenu_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub5" class="code">function OpenMenuItem_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub6" class="code">function PrintMenuItem_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub7" class="code">function CloseMenuItem_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub8" class="code">function popupmenu1_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub9" class="code">function popupmenu1_CreateFcn(hObject, eventdata, handles)</a></li></ul>
+<li><a href="#_sub1" class="code">function main_OpeningFcn(hObject, eventdata, handles, varargin)</a></li><li><a href="#_sub2" class="code">function varargout = main_OutputFcn(hObject, eventdata, handles)</a></li><li><a href="#_sub3" class="code">function pushbutton1_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub4" class="code">function FileMenu_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub5" class="code">function OpenMenuItem_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub6" class="code">function PrintMenuItem_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub7" class="code">function CloseMenuItem_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub8" class="code">function popupmenu1_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub9" class="code">function popupmenu1_CreateFcn(hObject, eventdata, handles)</a></li><li><a href="#_sub10" class="code">function checkbox1_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub11" class="code">function checkbox2_Callback(hObject, eventdata, handles)</a></li></ul>
 
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function varargout = main(varargin)</a>
@@ -87,7 +86,7 @@ This function is called by:
 0022 
 0023 <span class="comment">% Edit the above text to modify the response to help main</span>
 0024 
-0025 <span class="comment">% Last Modified by GUIDE v2.5 02-Feb-2018 11:46:57</span>
+0025 <span class="comment">% Last Modified by GUIDE v2.5 02-Feb-2018 17:10:53</span>
 0026 
 0027 <span class="comment">% Begin initialization code - DO NOT EDIT</span>
 0028 gui_Singleton = 1;
@@ -216,7 +215,25 @@ This function is called by:
 0151      set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
 0152 <span class="keyword">end</span>
 0153 
-0154 set(hObject, <span class="string">'String'</span>, {<span class="string">'plot(rand(5))'</span>, <span class="string">'plot(sin(1:0.01:25))'</span>, <span class="string">'bar(1:.5:10)'</span>, <span class="string">'plot(membrane)'</span>, <span class="string">'surf(peaks)'</span>});</pre></div>
-<hr><address>Generated on Fri 02-Feb-2018 16:32:53 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0154 set(hObject, <span class="string">'String'</span>, {<span class="string">'a5c3ecg'</span>, <span class="string">'G002ecg'</span>, <span class="string">'A1ecg'</span>, <span class="string">'a2f1ecg'</span>, <span class="string">'G011ecg'</span>, <span class="string">'G013ecg'</span>});
+0155 
+0156 
+0157 <span class="comment">% --- Executes on button press in checkbox1.</span>
+0158 <a name="_sub10" href="#_subfunctions" class="code">function checkbox1_Callback(hObject, eventdata, handles)</a>
+0159 <span class="comment">% hObject    handle to checkbox1 (see GCBO)</span>
+0160 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0161 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0162 
+0163 <span class="comment">% Hint: get(hObject,'Value') returns toggle state of checkbox1</span>
+0164 
+0165 
+0166 <span class="comment">% --- Executes on button press in checkbox2.</span>
+0167 <a name="_sub11" href="#_subfunctions" class="code">function checkbox2_Callback(hObject, eventdata, handles)</a>
+0168 <span class="comment">% hObject    handle to checkbox2 (see GCBO)</span>
+0169 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0170 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0171 
+0172 <span class="comment">% Hint: get(hObject,'Value') returns toggle state of checkbox2</span></pre></div>
+<hr><address>Generated on Fri 02-Feb-2018 18:15:25 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

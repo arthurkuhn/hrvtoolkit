@@ -1,0 +1,38 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  invertIfNecessary -> preprocessingNew;
+  invertIfNecessary -> kota;
+  loadSig -> invertIfNecessary;
+  guiRunner -> loadSig;
+  guiRunner -> preprocessingNew;
+  guiRunner -> kota;
+  guiRunner -> ensembleMethods;
+  guiRunner -> plotResult;
+  runner -> loadSig;
+  runner -> preprocessingNew;
+  runner -> kota;
+  runner -> getBpm;
+  runner -> post_proc;
+  testingRunner -> loadSig;
+  testingRunner -> preprocessingNew;
+  testingRunner -> kota;
+  testingRunner -> ensembleMethods;
+  testingRunner -> getBpm;
+  main -> guiRunner;
+
+  invertIfNecessary [URL="matlab/Pipeline/1-Loading/invertIfNecessary.html"];
+  loadSig [URL="matlab/Pipeline/1-Loading/loadSig.html"];
+  preprocessingNew [URL="matlab/Pipeline/2-Pre-processing/preprocessingNew.html"];
+  kota [URL="matlab/Pipeline/3-Kota/kota.html"];
+  Post_processing [URL="matlab/Pipeline/4-Post-processing/Post_processing.html"];
+  ensembleMethods [URL="matlab/Pipeline/4-Post-processing/ensembleMethods.html"];
+  getBpm [URL="matlab/Pipeline/4-Post-processing/getBpm.html"];
+  medFilter [URL="matlab/Pipeline/4-Post-processing/medFilter.html"];
+  post_proc [URL="matlab/Pipeline/4-Post-processing/post_proc.html"];
+  postprocessingFunc [URL="matlab/Pipeline/4-Post-processing/postprocessingFunc.html"];
+  plotResult [URL="matlab/Pipeline/5-Evaluation/plotResult.html"];
+  guiRunner [URL="matlab/Pipeline/Runners/guiRunner.html"];
+  runner [URL="matlab/Pipeline/Runners/runner.html"];
+  testingRunner [URL="matlab/Pipeline/Runners/testingRunner.html"];
+  main [URL="matlab/Pipeline/gui/main.html"];
+}

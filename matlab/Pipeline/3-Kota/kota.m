@@ -5,8 +5,6 @@ function [ R_loc, R_value ] = kota( sig, detrended )
 
 % Difference between successive samples of the signal – equivalent to a highpass filter – was calculated and the samples with negative values were set to zero
 
-
-
 sig = diff(sig);
 sig(length(sig)+1)=0;
 idx = sig < 0;
