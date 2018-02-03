@@ -15,7 +15,7 @@ validLocs = ones(1,length(R_loc));
 windowSize = 100;
 [ validLocs ] = ensembleMethods(detrended, R_loc, validLocs, windowSize);
 
-plotResult( detrended, R_loc, validLocs, fs );
+%plotResult( detrended, R_loc, validLocs, fs );
 
 end
 

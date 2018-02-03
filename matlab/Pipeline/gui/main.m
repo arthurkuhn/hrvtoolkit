@@ -57,11 +57,88 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
+init(hObject);
+
 % This sets up the initial plot - only do when we are invisible
 % so window can get raised using main.
 if strcmp(get(hObject,'Visible'),'off')
-    plot(rand(5));
+    %plot(rand(5));
 end
+
+function init(hObject)
+handles = guidata(hObject);
+handles.time = [];
+handles.detrended = [];
+handles.R_loc = [];
+handles.fit = {};
+handles.fs = 0;
+handles.interval = [];
+guidata(hObject,handles);
+
+function makePlots(hObject)
+handles = guidata(hObject);
+axes(handles.axes1);
+cla();
+hold on;
+plot (handles.time,handles.detrended);
+plot(handles.time(handles.R_loc),handles.detrended(handles.R_loc),'rv','MarkerFaceColor','r')
+legend('ECG','R');
+title('ECG Signal with R points');
+xlabel('Time in seconds');
+ylabel('Amplitude');
+
+axes(handles.axes2);
+cla();
+plot(handles.f,handles.time(handles.R_loc),handles.interval);
+
+%plot(time,full);
+% plot(1:length(interval),interval);
+title("Tachogram - Kota - ");
+ylabel("Beats per minute");
+xlabel("Time (s)");
+ylim([100 200]);
+guidata(hObject, handles);
+
+
+
+function compute(hObject, sigNum)
+h = waitbar(0,'Loading Signal');
+[ sig, fs ] = loadSig( sigNum );
+
+waitbar(0.1, h, 'Preprocessing');
+% Pre-processing
+[ sig, detrended ] = preprocessingNew(sig, fs);
+
+% Kota
+waitbar(0.4, h, 'Detecting R-Peaks (might take a couple of minutes)');
+[ R_loc ] = kota(sig, detrended);
+
+validLocs = ones(1,length(R_loc));
+
+windowSize = 100;
+waitbar(0.7, h, 'Running Ensemble Methods');
+[ validLocs ] = ensembleMethods(detrended, R_loc, validLocs, windowSize);
+
+waitbar(0.9, h, 'Preparing Plots');
+interval = diff(R_loc); % Period
+interval(length(interval)+1) = interval(length(interval)); % Adding one last index
+interval = interval./fs;
+%dlmwrite(file+".ibi",transpose(periodsSecs));
+interval = interval.^-1;
+interval = interval.*60; % To get BPM
+interval(isinf(interval)) = -2;
+
+close(h)
+
+handles = guidata(hObject);
+handles.time = 0:(1/fs):((length(detrended)-1)/fs);
+handles.detrended = detrended;
+handles.R_loc = R_loc;
+handles.f = fit(transpose(handles.time(R_loc)),transpose(interval),'smoothingspline');
+handles.interval = interval;
+handles.fs = fs;
+
+guidata(hObject, handles);
 
 % UIWAIT makes main wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -82,11 +159,13 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-axes(handles.axes1);
-cla;
 
 popup_sel_index = get(handles.popupmenu1, 'Value');
-guiRunner(popup_sel_index);
+
+compute(hObject, popup_sel_index);
+
+makePlots(hObject);
+
 
 
 

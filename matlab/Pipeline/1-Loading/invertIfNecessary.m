@@ -8,14 +8,14 @@ windowSize = 200;
 
 % Normal Signal
 [ sig, detrended ] = preprocessingNew(rawEcgSample, fs);
-[ R_locs, ~ ] = kota(sig, detrended);
+[ R_locs ] = kota(sig, detrended);
 [ peakVal, meanVal, stdVal ] = getEnsembleInfo(detrended, R_locs, windowSize);
 
 
 % Inverted Signal
 invEcg = - rawEcgSample;
 [ sig, detrended ] = preprocessingNew(invEcg, fs);
-[ R_locs, ~ ] = kota(sig, detrended);
+[ R_locs ] = kota(sig, detrended);
 [ invPeakVal, invMeanVal, invStdVal ] = getEnsembleInfo(detrended, R_locs, windowSize);
 
 
