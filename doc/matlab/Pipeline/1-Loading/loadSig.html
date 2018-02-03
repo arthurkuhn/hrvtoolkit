@@ -4,7 +4,7 @@
 <head>
   <title>Description of loadSig</title>
   <meta name="keywords" content="loadSig">
-  <meta name="description" content="LOADSIG Loads a signal from our limited dataset">
+  <meta name="description" content="loadSig Loads a signal from our limited dataset">
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
   <meta name="robots" content="index, follow">
@@ -20,14 +20,35 @@
 </h1>
 
 <h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
-<div class="box"><strong>LOADSIG Loads a signal from our limited dataset</strong></div>
+<div class="box"><strong>loadSig Loads a signal from our limited dataset</strong></div>
 
 <h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <div class="box"><strong>function [ sig, fs ] = loadSig( sigNum ) </strong></div>
 
 <h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
-<div class="fragment"><pre class="comment">LOADSIG Loads a signal from our limited dataset
-   Detailed explanation goes here</pre></div>
+<div class="fragment"><pre class="comment">loadSig Loads a signal from our limited dataset
+ Accepts an input in the range 1-6 correponding to the signals detailled
+ below. Returns a signal ready for processing.
+ 
+ Signals:
+   1: a5c3
+   2: G002
+   3: A1
+   4: a2f1
+   5: G011
+   6: G013
+
+ Process:
+   1. The signal is first formatted in a row vector.
+   2. The first minute of the signal is processed using our full 
+      pipeline. If necessary, the signal is reversed (see invertIfNeeded).
+
+ Inputs:
+    sigNum - Index of the signal of interest
+
+ Outputs:
+    sig - The raw ECG signal
+    fs - The sampling frequency</pre></div>
 
 <!-- crossreference -->
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
@@ -43,40 +64,61 @@ This function is called by:
 
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ sig, fs ] = loadSig( sigNum )</a>
-0002 <span class="comment">%LOADSIG Loads a signal from our limited dataset</span>
-0003 <span class="comment">%   Detailed explanation goes here</span>
-0004 
-0005 fs = 1000;
-0006 windowInSeconds = 60;
-0007 
-0008 <span class="keyword">if</span>(sigNum==1)
-0009     load(&quot;a5c3ecg.mat&quot;) <span class="comment">% visible bradycardia</span>
-0010     sig = transpose(a5c3ecg);
-0011 <span class="keyword">elseif</span>(sigNum==2)
-0012     load(&quot;G002ecg.mat&quot;) <span class="comment">% Heavy bias, brady -&gt; 5 missed beats</span>
-0013     sig = transpose(G002ecg);
-0014 <span class="keyword">elseif</span>(sigNum==3)
-0015     load(&quot;A1ecg.mat&quot;) <span class="comment">% Faint</span>
-0016     sig = transpose(A1ecg);
-0017 <span class="keyword">elseif</span>(sigNum==4)
-0018     load(&quot;a2f1ecg.mat&quot;) <span class="comment">% Some Missed beats -&gt; Tweak</span>
-0019     sig = transpose(a2f1ecg);
-0020 <span class="keyword">elseif</span>(sigNum==5)
-0021     load(&quot;G011ecg.mat&quot;)
-0022     sig = transpose(G011ecg);
-0023 <span class="keyword">elseif</span>(sigNum==6)
-0024     load(&quot;G013ecg.mat&quot;)
-0025     sig = transpose(G013ecg);
-0026 <span class="keyword">end</span>
-0027 
-0028 sig = <a href="invertIfNecessary.html" class="code" title="function [ res ] = invertIfNecessary( rawEcg, fs, windowInSeconds )">invertIfNecessary</a>( sig, fs, windowInSeconds);
-0029 
-0030 <span class="keyword">if</span>(~isrow(sig))
-0031     sig = sig.';
-0032 <span class="keyword">end</span>
-0033 
-0034 <span class="keyword">end</span>
-0035</pre></div>
-<hr><address>Generated on Fri 02-Feb-2018 18:15:25 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+0002 <span class="comment">%loadSig Loads a signal from our limited dataset</span>
+0003 <span class="comment">% Accepts an input in the range 1-6 correponding to the signals detailled</span>
+0004 <span class="comment">% below. Returns a signal ready for processing.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Signals:</span>
+0007 <span class="comment">%   1: a5c3</span>
+0008 <span class="comment">%   2: G002</span>
+0009 <span class="comment">%   3: A1</span>
+0010 <span class="comment">%   4: a2f1</span>
+0011 <span class="comment">%   5: G011</span>
+0012 <span class="comment">%   6: G013</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Process:</span>
+0015 <span class="comment">%   1. The signal is first formatted in a row vector.</span>
+0016 <span class="comment">%   2. The first minute of the signal is processed using our full</span>
+0017 <span class="comment">%      pipeline. If necessary, the signal is reversed (see invertIfNeeded).</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% Inputs:</span>
+0020 <span class="comment">%    sigNum - Index of the signal of interest</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% Outputs:</span>
+0023 <span class="comment">%    sig - The raw ECG signal</span>
+0024 <span class="comment">%    fs - The sampling frequency</span>
+0025 
+0026 fs = 1000;
+0027 windowInSeconds = 60;
+0028 
+0029 <span class="keyword">if</span>(sigNum==1)
+0030     load(&quot;a5c3ecg.mat&quot;) <span class="comment">% visible bradycardia</span>
+0031     sig = transpose(a5c3ecg);
+0032 <span class="keyword">elseif</span>(sigNum==2)
+0033     load(&quot;G002ecg.mat&quot;) <span class="comment">% Heavy bias, brady -&gt; 5 missed beats</span>
+0034     sig = transpose(G002ecg);
+0035 <span class="keyword">elseif</span>(sigNum==3)
+0036     load(&quot;A1ecg.mat&quot;) <span class="comment">% Faint</span>
+0037     sig = transpose(A1ecg);
+0038 <span class="keyword">elseif</span>(sigNum==4)
+0039     load(&quot;a2f1ecg.mat&quot;) <span class="comment">% Some Missed beats -&gt; Tweak</span>
+0040     sig = transpose(a2f1ecg);
+0041 <span class="keyword">elseif</span>(sigNum==5)
+0042     load(&quot;G011ecg.mat&quot;)
+0043     sig = transpose(G011ecg);
+0044 <span class="keyword">elseif</span>(sigNum==6)
+0045     load(&quot;G013ecg.mat&quot;)
+0046     sig = transpose(G013ecg);
+0047 <span class="keyword">end</span>
+0048 
+0049 sig = <a href="invertIfNecessary.html" class="code" title="function [ res ] = invertIfNecessary( rawEcg, fs, windowInSeconds )">invertIfNecessary</a>( sig, fs, windowInSeconds);
+0050 
+0051 <span class="keyword">if</span>(~isrow(sig))
+0052     sig = sig.';
+0053 <span class="keyword">end</span>
+0054 
+0055 <span class="keyword">end</span>
+0056</pre></div>
+<hr><address>Generated on Fri 02-Feb-2018 19:49:36 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

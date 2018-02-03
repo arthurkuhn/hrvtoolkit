@@ -1,6 +1,27 @@
 function [ sig, fs ] = loadSig( sigNum )
-%LOADSIG Loads a signal from our limited dataset
-%   Detailed explanation goes here
+%loadSig Loads a signal from our limited dataset
+% Accepts an input in the range 1-6 correponding to the signals detailled
+% below. Returns a signal ready for processing.
+% 
+% Signals:
+%   1: a5c3
+%   2: G002
+%   3: A1
+%   4: a2f1
+%   5: G011
+%   6: G013
+%
+% Process:
+%   1. The signal is first formatted in a row vector.
+%   2. The first minute of the signal is processed using our full 
+%      pipeline. If necessary, the signal is reversed (see invertIfNeeded).
+%
+% Inputs:
+%    sigNum - Index of the signal of interest
+%
+% Outputs:
+%    sig - The raw ECG signal
+%    fs - The sampling frequency
 
 fs = 1000;
 windowInSeconds = 60;

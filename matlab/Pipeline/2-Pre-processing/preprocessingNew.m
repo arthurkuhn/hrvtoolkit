@@ -1,4 +1,26 @@
 function [ sig, detrended ] = preprocessingNew(sig, fs)
+%preprocessingNew Pre-processing of ECG signal
+% Pre-processing using normalization and filtering.
+%
+% Process:
+%   1. Each second was detrended by removing the mean from each sample and
+%      dividing by the standard deviation.
+%   2. The signal is then band-passed filtered at 16Hz-26Hz using a
+%      butterworth filter.
+%
+% Inputs:
+%    sig - The raw ECG
+%    fs - The sampling frequency
+%
+% Outputs:
+%    sig - The preprocessed signal
+%    detrended - The signal after the first step only (no time shifting).
+%
+%
+% Reference:
+% Kota, S., Swisher, C.B. & al (2017). "Identification of QRS complex in
+% non-stationary electrocardiogram of sick infants."
+% Computers in Biology and Medicine 87 (2017) 211–216
 
 
 % every second of the ECG signal was normalized by the standard deviation of the signal in that second. 

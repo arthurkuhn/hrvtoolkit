@@ -32,7 +32,7 @@
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../../../matlabicon.gif)">
-<li><a href="../../../matlab/Pipeline/1-Loading/loadSig.html" class="code" title="function [ sig, fs ] = loadSig( sigNum )">loadSig</a>	LOADSIG Loads a signal from our limited dataset</li><li><a href="../../../matlab/Pipeline/2-Pre-processing/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>	every second of the ECG signal was normalized by the standard deviation of the signal in that second.</li><li><a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc, R_value ] = kota( sig, detrended )">kota</a>	KOTA QRS detection using Hilbert Transform</li><li><a href="../../../matlab/Pipeline/4-Post-processing/getBpm.html" class="code" title="function [ BPM ] = getBpm( R_loc, validLocs )">getBpm</a>	GETBPM Summary of this function goes here</li><li><a href="../../../matlab/Pipeline/4-Post-processing/post_proc.html" class="code" title="function [array_post, noisy_sig_post, std_post, diff_sig] = post_proc(detrended, sig, BPM, R_loc, fs, mfilt_size)">post_proc</a>	% Noise Anomaly Detection %%</li></ul>
+<li><a href="../../../matlab/Pipeline/1-Loading/loadSig.html" class="code" title="function [ sig, fs ] = loadSig( sigNum )">loadSig</a>	loadSig Loads a signal from our limited dataset</li><li><a href="../../../matlab/Pipeline/2-Pre-processing/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>	preprocessingNew Pre-processing of ECG signal</li><li><a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc ] = kota( sig, detrended )">kota</a>	kota QRS detection using Hilbert Transform</li><li><a href="../../../matlab/Pipeline/4-Post-processing/getBpm.html" class="code" title="function [ BPM ] = getBpm( R_loc, validLocs )">getBpm</a>	GETBPM Summary of this function goes here</li><li><a href="../../../matlab/Pipeline/4-Post-processing/post_proc.html" class="code" title="function [array_post, noisy_sig_post, std_post, diff_sig] = post_proc(detrended, sig, BPM, R_loc, fs, mfilt_size)">post_proc</a>	% Noise Anomaly Detection %%</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../../../matlabicon.gif)">
 </ul>
@@ -57,7 +57,7 @@ This function is called by:
 0014 [ sig, detrended ] = <a href="../../../matlab/Pipeline/2-Pre-processing/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>(sig, fs);
 0015 
 0016 <span class="comment">% Kota</span>
-0017 [ R_loc, R_value ] = <a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc, R_value ] = kota( sig, detrended )">kota</a>(sig, detrended);
+0017 [ R_loc ] = <a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc ] = kota( sig, detrended )">kota</a>(sig, detrended);
 0018 
 0019 validLocs = ones(length(R_loc));
 0020 
@@ -77,6 +77,6 @@ This function is called by:
 0034 <span class="comment">% [ avg ] = plotEnsemble(detrended, R_loc, windowSize);</span>
 0035 <span class="comment">%</span>
 0036 <span class="comment">% filterWithEnsemble(detrended, R_loc, avg, windowSize);</span></pre></div>
-<hr><address>Generated on Fri 02-Feb-2018 18:15:25 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Fri 02-Feb-2018 19:49:36 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

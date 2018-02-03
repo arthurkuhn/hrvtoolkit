@@ -1,16 +1,30 @@
 function [ R_loc ] = kota( sig, detrended )
 %kota QRS detection using Hilbert Transform
-% Skips beats already marked as invalid (and does not take them into
-% account for the other points.
+% Detects the location of R-peaks using the algorithm described by Kota &
+% al.
+%
+% Process:
+%   1. High-Pass filtering
+%   2. Half-Wave rectifier
+%   3. Moving average (150ms)
+%   4. Moving window integration
+%   5. Find the instantaneous phase using the Hilbert Transform
+%   6. Find the R-Peak between each phase slip
+%
 %
 % Inputs:
 %    sig - The preprocessed signal
 %    detrended - The detrended signal
 %
 % Outputs:
-%    R_loc - Boolean Array, 1 for valid peaks
-%KOTA QRS detection using Hilbert Transform
-%   Detailed explanation goes here
+%    R_loc - Array with the R-Peak locations
+%
+%
+% Reference:
+% Kota, S., Swisher, C.B. & al (2017). "Identification of QRS complex in
+% non-stationary electrocardiogram of sick infants."
+% Computers in Biology and Medicine 87 (2017) 211–216
+
 
 % Difference between successive samples of the signal – equivalent to a highpass filter – was calculated and the samples with negative values were set to zero
 

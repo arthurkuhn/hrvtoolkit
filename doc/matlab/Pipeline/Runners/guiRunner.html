@@ -33,7 +33,7 @@
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../../../matlabicon.gif)">
-<li><a href="../../../matlab/Pipeline/1-Loading/loadSig.html" class="code" title="function [ sig, fs ] = loadSig( sigNum )">loadSig</a>	LOADSIG Loads a signal from our limited dataset</li><li><a href="../../../matlab/Pipeline/2-Pre-processing/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>	every second of the ECG signal was normalized by the standard deviation of the signal in that second.</li><li><a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc, R_value ] = kota( sig, detrended )">kota</a>	KOTA QRS detection using Hilbert Transform</li><li><a href="../../../matlab/Pipeline/4-Post-processing/ensembleMethods.html" class="code" title="function [ validLocs ] = ensembleMethods( detrended_sig, R_locs, validLocs, windowSize )">ensembleMethods</a>	GETENSEMBLEAVERAGE Gets the average of all QRS peaks</li><li><a href="../../../matlab/Pipeline/5-Evaluation/plotResult.html" class="code" title="function [  ] = plotResult( detrended, R_loc, validLocs, fs )">plotResult</a>	PLOTRESULT Summary of this function goes here</li></ul>
+<li><a href="../../../matlab/Pipeline/1-Loading/loadSig.html" class="code" title="function [ sig, fs ] = loadSig( sigNum )">loadSig</a>	loadSig Loads a signal from our limited dataset</li><li><a href="../../../matlab/Pipeline/2-Pre-processing/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>	preprocessingNew Pre-processing of ECG signal</li><li><a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc ] = kota( sig, detrended )">kota</a>	kota QRS detection using Hilbert Transform</li><li><a href="../../../matlab/Pipeline/4-Post-processing/ensembleMethods.html" class="code" title="function [ validLocs ] = ensembleMethods( detrended_sig, R_locs, validLocs, windowSize )">ensembleMethods</a>	GETENSEMBLEAVERAGE Gets the average of all QRS peaks</li><li><a href="../../../matlab/Pipeline/5-Evaluation/plotResult.html" class="code" title="function [  ] = plotResult( detrended, R_loc, validLocs, fs )">plotResult</a>	PLOTRESULT Summary of this function goes here</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../../../matlabicon.gif)">
 <li><a href="../../../matlab/Pipeline/gui/main.html" class="code" title="function varargout = main(varargin)">main</a>	MAIN MATLAB code for main.fig</li></ul>
@@ -52,7 +52,7 @@ This function is called by:
 0008 [ sig, detrended ] = <a href="../../../matlab/Pipeline/2-Pre-processing/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>(sig, fs);
 0009 
 0010 <span class="comment">% Kota</span>
-0011 [ R_loc, ~ ] = <a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc, R_value ] = kota( sig, detrended )">kota</a>(sig, detrended);
+0011 [ R_loc ] = <a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc ] = kota( sig, detrended )">kota</a>(sig, detrended);
 0012 
 0013 validLocs = ones(1,length(R_loc));
 0014 
@@ -63,6 +63,6 @@ This function is called by:
 0019 
 0020 <span class="keyword">end</span>
 0021</pre></div>
-<hr><address>Generated on Fri 02-Feb-2018 18:15:25 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Fri 02-Feb-2018 19:49:36 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

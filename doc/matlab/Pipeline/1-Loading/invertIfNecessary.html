@@ -34,10 +34,10 @@
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../../../matlabicon.gif)">
-<li><a href="../../../matlab/Pipeline/2-Pre-processing/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>	every second of the ECG signal was normalized by the standard deviation of the signal in that second.</li><li><a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc, R_value ] = kota( sig, detrended )">kota</a>	KOTA QRS detection using Hilbert Transform</li></ul>
+<li><a href="../../../matlab/Pipeline/2-Pre-processing/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>	preprocessingNew Pre-processing of ECG signal</li><li><a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc ] = kota( sig, detrended )">kota</a>	kota QRS detection using Hilbert Transform</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../../../matlabicon.gif)">
-<li><a href="loadSig.html" class="code" title="function [ sig, fs ] = loadSig( sigNum )">loadSig</a>	LOADSIG Loads a signal from our limited dataset</li></ul>
+<li><a href="loadSig.html" class="code" title="function [ sig, fs ] = loadSig( sigNum )">loadSig</a>	loadSig Loads a signal from our limited dataset</li></ul>
 <!-- crossreference -->
 
 <h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
@@ -55,14 +55,14 @@ This function is called by:
 0008 
 0009 <span class="comment">% Normal Signal</span>
 0010 [ sig, detrended ] = <a href="../../../matlab/Pipeline/2-Pre-processing/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>(rawEcgSample, fs);
-0011 [ R_locs, ~ ] = <a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc, R_value ] = kota( sig, detrended )">kota</a>(sig, detrended);
+0011 [ R_locs, ~ ] = <a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc ] = kota( sig, detrended )">kota</a>(sig, detrended);
 0012 [ peakVal, meanVal, stdVal ] = <a href="#_sub1" class="code" title="subfunction [ ensemble_peak, ensemble_mean, ensemble_std ] = getEnsembleInfo(detrended_sig, R_locs, windowSize)">getEnsembleInfo</a>(detrended, R_locs, windowSize);
 0013 
 0014 
 0015 <span class="comment">% Inverted Signal</span>
 0016 invEcg = - rawEcgSample;
 0017 [ sig, detrended ] = <a href="../../../matlab/Pipeline/2-Pre-processing/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>(invEcg, fs);
-0018 [ R_locs, ~ ] = <a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc, R_value ] = kota( sig, detrended )">kota</a>(sig, detrended);
+0018 [ R_locs, ~ ] = <a href="../../../matlab/Pipeline/3-Kota/kota.html" class="code" title="function [ R_loc ] = kota( sig, detrended )">kota</a>(sig, detrended);
 0019 [ invPeakVal, invMeanVal, invStdVal ] = <a href="#_sub1" class="code" title="subfunction [ ensemble_peak, ensemble_mean, ensemble_std ] = getEnsembleInfo(detrended_sig, R_locs, windowSize)">getEnsembleInfo</a>(detrended, R_locs, windowSize);
 0020 
 0021 
@@ -96,6 +96,6 @@ This function is called by:
 0049 
 0050 <span class="keyword">end</span>
 0051</pre></div>
-<hr><address>Generated on Fri 02-Feb-2018 18:15:25 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Fri 02-Feb-2018 19:49:36 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

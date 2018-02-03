@@ -27,16 +27,16 @@
 
 <h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <div class="fragment"><pre class="comment">medFilter Finds the outliers in the signal using a median filter
-
- Syntax:  [validLocs] = function_name(signal, validLocs, tau)
+ Skips beats already marked as invalid (and does not take them into
+ account for the other points.
 
  Inputs:
-    signal - Description
-    validLocs - Description
-    tau - Description
+    signal - The RR-interval data
+    validLocs - Boolean Array, 1 for valid peaks
+    tau - Parameter
 
  Outputs:
-    validLocs - Description
+    validLocs - Boolean Array, 1 for valid peaks
 
  Reference:
  Thuraisingham, R. A. (2006). &quot;Preprocessing RR interval time
@@ -59,16 +59,16 @@ This function is called by:
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ validLocs ] = medFilter( s, validLocs, tau )</a>
 0002 <span class="comment">%medFilter Finds the outliers in the signal using a median filter</span>
-0003 <span class="comment">%</span>
-0004 <span class="comment">% Syntax:  [validLocs] = function_name(signal, validLocs, tau)</span>
+0003 <span class="comment">% Skips beats already marked as invalid (and does not take them into</span>
+0004 <span class="comment">% account for the other points.</span>
 0005 <span class="comment">%</span>
 0006 <span class="comment">% Inputs:</span>
-0007 <span class="comment">%    signal - Description</span>
-0008 <span class="comment">%    validLocs - Description</span>
-0009 <span class="comment">%    tau - Description</span>
+0007 <span class="comment">%    signal - The RR-interval data</span>
+0008 <span class="comment">%    validLocs - Boolean Array, 1 for valid peaks</span>
+0009 <span class="comment">%    tau - Parameter</span>
 0010 <span class="comment">%</span>
 0011 <span class="comment">% Outputs:</span>
-0012 <span class="comment">%    validLocs - Description</span>
+0012 <span class="comment">%    validLocs - Boolean Array, 1 for valid peaks</span>
 0013 <span class="comment">%</span>
 0014 <span class="comment">% Reference:</span>
 0015 <span class="comment">% Thuraisingham, R. A. (2006). &quot;Preprocessing RR interval time</span>
@@ -84,6 +84,6 @@ This function is called by:
 0025 
 0026 <span class="keyword">end</span>
 0027</pre></div>
-<hr><address>Generated on Fri 02-Feb-2018 18:15:25 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Fri 02-Feb-2018 19:49:36 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>
