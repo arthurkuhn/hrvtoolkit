@@ -12,7 +12,7 @@
 | Tachogram Processing | Post-process the tachogram to remove any remaining noise |
 
 
-# TODO List
+## TODO List
 
 - Improve GUI (to open, type ```guide``` then open matlab/pipeline/gui/main.fig)
 - Improve documentation (see guidelines below)
@@ -20,9 +20,9 @@
 - Add UI functionality
 
 
-# Coding Practices
+## Coding Practices
 
-## Comments
+### Comments
 All functions should be commented as follows:
 
 ```Matlab
@@ -45,10 +45,9 @@ All functions should be commented as follows:
 % Comput. Methods Programs Biomed.
 ```
 
-## Documentation
+### Documentation
 
-### To Generate
-Generated using [M2HTML](https://www.artefact.tk/software/matlab/m2html).
+Generated in /doc using [M2HTML](https://www.artefact.tk/software/matlab/m2html).
 To generate documentation for the Pipeline, run from the root of the repo:
 ```Matlab
 rmdir doc s
