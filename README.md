@@ -1,7 +1,30 @@
+# The Tacho Toolbox
+
+## Structure
+
+| Pipeline Stage | Function |
+| ------ | ------ |
+| Loading | Load the raw ECG signal and invert it if necessary |
+| Pre-Processing | Detrends and filters the signal |
+| Beat Detection | Detects R-Peaks using the Kota algorithm |
+| Beat Processing | Analyse detected beats to remove noise |
+| Tachogram Generation | Generate the tachogram from the valid beat data |
+| Tachogram Processing | Post-process the tachogram to remove any remaining noise |
+
+
+# TODO List
+
+- Improve GUI (to open, type ```guide``` then open matlab/pipeline/gui/main.fig)
+- Improve documentation (see guidelines below)
+- Standardize post-processing functions
+- Add UI functionality
+
+
 # Coding Practices
 
 ## Comments
 All functions should be commented as follows:
+
 ```Matlab
 %medFilter Finds the outliers in the signal using a median filter
 % Skips beats already marked as invalid (and does not take them into
