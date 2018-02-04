@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 03-Feb-2018 16:34:11
+% Last Modified by GUIDE v2.5 04-Feb-2018 10:56:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -162,7 +162,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-popup_sel_index = get(handles.popupmenu1, 'Value');
+popup_sel_index = get(handles.fileSelect, 'Value');
 
 compute(hObject, popup_sel_index);
 
@@ -210,9 +210,9 @@ end
 delete(handles.figure1)
 
 
-% --- Executes on selection change in popupmenu1.
-function popupmenu1_Callback(hObject, eventdata, handles)
-% hObject    handle to popupmenu1 (see GCBO)
+% --- Executes on selection change in fileSelect.
+function fileSelect_Callback(hObject, eventdata, handles)
+% hObject    handle to fileSelect (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -220,13 +220,13 @@ init(hObject);
 makePlots(hObject);
 
 
-% Hints: contents = get(hObject,'String') returns popupmenu1 contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from popupmenu1
+% Hints: contents = get(hObject,'String') returns fileSelect contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from fileSelect
 
 
 % --- Executes during object creation, after setting all properties.
-function popupmenu1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to popupmenu1 (see GCBO)
+function fileSelect_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to fileSelect (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -239,46 +239,46 @@ end
 set(hObject, 'String', {'a5c3ecg', 'G002ecg', 'A1ecg', 'a2f1ecg', 'G011ecg', 'G013ecg'});
 
 
-% --- Executes on button press in checkbox1.
-function checkbox1_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox1 (see GCBO)
+% --- Executes on button press in mediaCheckBox.
+function mediaCheckBox_Callback(hObject, eventdata, handles)
+% hObject    handle to mediaCheckBox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of checkbox1
+% Hint: get(hObject,'Value') returns toggle state of mediaCheckBox
 
 
-% --- Executes on button press in checkbox2.
-function checkbox2_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox2 (see GCBO)
+% --- Executes on button press in ensembleCheckBox.
+function ensembleCheckBox_Callback(hObject, eventdata, handles)
+% hObject    handle to ensembleCheckBox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of checkbox2
+% Hint: get(hObject,'Value') returns toggle state of ensembleCheckBox
 
 
-% --- Executes on button press in checkbox3.
-function checkbox3_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox3 (see GCBO)
+% --- Executes on button press in medianFilterPostCheckBox.
+function medianFilterPostCheckBox_Callback(hObject, eventdata, handles)
+% hObject    handle to medianFilterPostCheckBox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of checkbox3
+% Hint: get(hObject,'Value') returns toggle state of medianFilterPostCheckBox
 
 
 
-function edit3_Callback(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
+function windowSizePostEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to windowSizePostEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit3 as text
-%        str2double(get(hObject,'String')) returns contents of edit3 as a double
+% Hints: get(hObject,'String') returns contents of windowSizePostEdit as text
+%        str2double(get(hObject,'String')) returns contents of windowSizePostEdit as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit3_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
+function windowSizePostEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to windowSizePostEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -290,18 +290,18 @@ end
 
 
 
-function edit1_Callback(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
+function windowSizeEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to windowSizeEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit1 as text
-%        str2double(get(hObject,'String')) returns contents of edit1 as a double
+% Hints: get(hObject,'String') returns contents of windowSizeEdit as text
+%        str2double(get(hObject,'String')) returns contents of windowSizeEdit as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
+function windowSizeEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to windowSizeEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -313,18 +313,18 @@ end
 
 
 
-function edit2_Callback(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
+function minimumCorrelationEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to minimumCorrelationEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit2 as text
-%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+% Hints: get(hObject,'String') returns contents of minimumCorrelationEdit as text
+%        str2double(get(hObject,'String')) returns contents of minimumCorrelationEdit as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
+function minimumCorrelationEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to minimumCorrelationEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -333,3 +333,26 @@ function edit2_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in missedBeatsCheckBox.
+function missedBeatsCheckBox_Callback(hObject, eventdata, handles)
+% hObject    handle to missedBeatsCheckBox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of missedBeatsCheckBox
+
+
+% --- Executes on button press in openFigsWindow.
+function openFigsWindow_Callback(hObject, eventdata, handles)
+% hObject    handle to openFigsWindow (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton5.
+function pushbutton5_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
