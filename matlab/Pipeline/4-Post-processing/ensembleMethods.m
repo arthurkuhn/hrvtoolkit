@@ -1,6 +1,9 @@
-function [ validLocs ] = ensembleMethods( detrended_sig, R_locs, validLocs, windowSize )
+function outliers = ensembleMethods( detrended_sig, R_locs, windowSize )
 %GETENSEMBLEAVERAGE Gets the average of all QRS peaks
 %   Detailed explanation goes here
+
+outliers = zeros(1,length(R_locs));
+
 avg = zeros(1,(2*windowSize+1));
 fs = 1000;
 time = 0:(1/fs):((length(detrended_sig)-1)/fs);
@@ -33,7 +36,7 @@ for i=1:length(R_locs)
     if(corrCoeff(1,2) > 0.65)
         continue
     else
-        validLocs(i) = 0;
+        outliers(i) = 1;
     end
 end
 
@@ -43,8 +46,9 @@ detrended = detrended_sig;
 R_loc = R_locs;
 validIndices = [];
 invalidIndices = [];
+validLocs = ones(1,lenght(R_locs));
 for i = 1:length(validLocs)
-    if(validLocs(i) == 1)
+    if(outliers(i) == 0)
         validIndices = [validIndices R_loc(i)];
     else
         invalidIndices = [invalidIndices R_loc(i)];
