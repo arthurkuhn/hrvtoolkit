@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 04-Feb-2018 10:56:53
+% Last Modified by GUIDE v2.5 07-Feb-2018 10:56:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,10 +54,16 @@ function main_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for main
 handles.output = hObject;
 
+% Create a cluster
+% if isempty(gcp)
+%     parpool;
+% end
+
 % Update handles structure
 guidata(hObject, handles);
 
 init(hObject);
+makePlots(hObject);
 
 % This sets up the initial plot - only do when we are invisible
 % so window can get raised using main.
@@ -65,45 +71,69 @@ if strcmp(get(hObject,'Visible'),'off')
     %plot(rand(5));
 end
 
-function init(hObject)
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                       %
+%                   Initialization Functions                            %
+%                                                                       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Parsing Parameters
+% Parses the GUI parameters into the handles.p object
+function parseParameters(hObject)
 handles = guidata(hObject);
-handles.time = [];
-handles.detrended = [];
-handles.R_loc = [];
-handles.fit = {};
-handles.fs = 0;
-handles.interval = [];
+
+% Parse Checkboxes
+hCheckboxes = [handles.mediaCheckBox ; handles.ensembleCheckBox; handles.missedBeatsCheckBox; handles.medianFilterPostCheckBox; handles.directInterpolationRadio; handles.smoothingSplinesRadio];
+checkboxValues = cell2mat(get(hCheckboxes, 'Value'));
+
+% Parse TextBoxes
+hEditTextboxes = [handles.windowSizeEdit ; handles.minimumCorrelationEdit; handles.windowSizePostEdit];
+editValues = get(hEditTextboxes, 'String');
+p = {};
+
+% File select
+popup_sel_index = get(handles.fileSelect, 'Value');
+p.fileSelect = popup_sel_index;
+
+% Preprocessing
+p.mediaCheckBox = checkboxValues(1);
+p.windowSizeEdit = str2double(editValues(1));
+p.ensembleCheckBox = checkboxValues(2);
+p.minimumCorrelationEdit = str2double(editValues(2));
+p.missedBeatsCheckBox = checkboxValues(3);
+p.medianFilterPostCheckBox = checkboxValues(4);
+p.windowSizePostEdit = str2double(editValues(3));
+
+% Techo Generation
+p.directInterpolationRadio = checkboxValues(5);
+p.smoothingSplinesRadio = checkboxValues(6);
+
+% Save handles
+handles.p = p;
 guidata(hObject,handles);
 
-function makePlots(hObject)
+function init(hObject)
 handles = guidata(hObject);
-axes(handles.axes1);
-cla();
-hold on;
-plot (handles.time,handles.detrended);
-plot(handles.time(handles.R_loc),handles.detrended(handles.R_loc),'rv','MarkerFaceColor','r')
-legend('ECG','R');
-title('ECG Signal with R points');
-xlabel('Time in seconds');
-ylabel('Amplitude');
-
-axes(handles.axes2);
-cla();
-if(~isempty(handles.time))
-    plot(handles.f,handles.time(handles.R_loc),handles.interval);
-end
-
-%plot(time,full);
-% plot(1:length(interval),interval);
-title("Tachogram - Kota - ");
-ylabel("Beats per minute");
-xlabel("Time (s)");
-ylim([100 200]);
-guidata(hObject, handles);
+handles.sig.t = [];
+handles.sig.detrended = [];
+handles.sig.R_locs = [];
+handles.sig.f = {};
+handles.sig.fs = 0;
+handles.sig.interval = [];
+guidata(hObject,handles);
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                       %
+%                      Computation Functions                            %
+%                                                                       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function compute(hObject)
+handles = guidata(hObject);
+sigNum = handles.p.fileSelect;
 
-function compute(hObject, sigNum)
 h = waitbar(0,'Loading Signal');
 [ sig, fs ] = loadSig( sigNum );
 
@@ -119,7 +149,7 @@ validLocs = ones(1,length(R_loc));
 
 windowSize = 100;
 waitbar(0.7, h, 'Running Ensemble Methods');
-[ validLocs ] = ensembleMethods(detrended, R_loc, validLocs, windowSize);
+validLocs  = ensembleMethods(detrended, R_loc, windowSize);
 
 waitbar(0.9, h, 'Preparing Plots');
 interval = diff(R_loc); % Period
@@ -133,14 +163,161 @@ interval(isinf(interval)) = -2;
 close(h)
 
 handles = guidata(hObject);
-handles.time = 0:(1/fs):((length(detrended)-1)/fs);
-handles.detrended = detrended;
-handles.R_loc = R_loc;
-handles.f = fit(transpose(handles.time(R_loc)),transpose(interval),'smoothingspline');
-handles.interval = interval;
-handles.fs = fs;
+handles.sig.t = 0:(1/fs):((length(detrended)-1)/fs);
+handles.sig.detrended = detrended;
+handles.sig.R_locs = R_loc;
+handles.sig.f = fit(transpose(handles.sig.t(R_loc)),transpose(interval),'smoothingspline');
+handles.sig.interval = interval;
+handles.sig.fs = fs;
 
 guidata(hObject, handles);
+
+function findPeaks(hObject)
+handles = guidata(hObject);
+p = handles.p;
+data = {};
+
+% Load Sig
+[ sig, fs ] = loadSig( p.fileSelect );
+
+% Pre-processing
+[ sig, detrended ] = preprocessingNew(sig, fs);
+
+% Kota
+[ R_loc ] = kota(sig, detrended);
+
+
+% Save Data Back
+data.fs = fs;
+data.detrended = detrended;
+data.R_locs = R_loc;
+data.t = 0:(1/fs):((length(detrended)-1)/fs);
+data.interval = diff(R_loc);
+
+handles.sig = data;
+guidata(hObject, handles);
+
+function postProcessIbi(hObject)
+handles = guidata(hObject);
+p = handles.p;
+data = handles.sig;
+
+if(p.ensembleCheckBox == 1)
+    windowSize = 200;
+    nonCorrelated = ensembleNonCorrelatedDetector( data.detrended, data.R_locs, p.minimumCorrelationEdit, windowSize );
+end
+
+% Make the interval array with the valid beats
+
+% Check for missed beat signs
+
+if(p.missedBeatsCheckBox == 1)
+    toleratedeviationPercent = 20;
+    errors = missedBeatDetector( interval, toleratedeviationPercent );
+end
+
+% Use the non-destructive median filter:
+p.mediaCheckBox = checkboxValues(1);
+p.windowSizeEdit = str2double(editValues(1));
+
+
+
+p.medianFilterPostCheckBox = checkboxValues(4);
+p.windowSizePostEdit = str2double(editValues(3));
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                       %
+%                           Output Functions                            %
+%                                                                       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function makePlots(hObject)
+handles = guidata(hObject);
+axes(handles.axes1);
+cla();
+hold on;
+if(~isempty(handles.sig.t))
+    plot (handles.sig.t,handles.sig.detrended);
+    plot(handles.sig.t(handles.sig.R_locs),handles.sig.detrended(handles.sig.R_locs),'rv','MarkerFaceColor','r')
+    legend('ECG','R');
+end
+title('ECG Signal with R points');
+xlabel('Time in seconds');
+ylabel('Amplitude');
+
+axes(handles.axes2);
+cla();
+if(~isempty(handles.sig.t))
+    plot(handles.sig.f,handles.sig.t(handles.sig.R_locs),handles.sig.interval);
+end
+
+%plot(time,full);
+% plot(1:length(interval),interval);
+title("Tachogram - Kota - ");
+ylabel("Beats per minute");
+xlabel("Time (s)");
+ylim([100 200]);
+guidata(hObject, handles);
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                       %
+%                           Used CallBacks                              %
+%                                                                       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Executes the main code
+% --- Executes on button press in pushbutton1.
+function pushbutton1_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+parseParameters(hObject);
+
+compute(hObject);
+
+makePlots(hObject);
+
+
+%% Resets the graph when changing the selected Signal
+% --- Executes on selection change in fileSelect.
+function fileSelect_Callback(hObject, eventdata, handles)
+% hObject    handle to fileSelect (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+init(hObject);
+makePlots(hObject);
+
+%% Open in a new figure window
+% --- Executes on button press in openFigsWindow.
+function openFigsWindow_Callback(hObject, eventdata, handles)
+% hObject    handle to openFigsWindow (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+parseParameters(hObject);
+
+%% Export to HRVAS
+% --- Executes on button press in hrvasExport.
+function hrvasExport_Callback(hObject, eventdata, handles)
+% hObject    handle to hrvasExport (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                       %
+%                           Unused CallBacks                            %
+%                                                                       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 % UIWAIT makes main wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -155,20 +332,6 @@ function varargout = main_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
-
-% --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-popup_sel_index = get(handles.fileSelect, 'Value');
-
-compute(hObject, popup_sel_index);
-
-makePlots(hObject);
-
-
 
 
 % --------------------------------------------------------------------
@@ -208,16 +371,6 @@ if strcmp(selection,'No')
 end
 
 delete(handles.figure1)
-
-
-% --- Executes on selection change in fileSelect.
-function fileSelect_Callback(hObject, eventdata, handles)
-% hObject    handle to fileSelect (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-init(hObject);
-makePlots(hObject);
 
 
 % Hints: contents = get(hObject,'String') returns fileSelect contents as cell array
@@ -342,17 +495,3 @@ function missedBeatsCheckBox_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of missedBeatsCheckBox
-
-
-% --- Executes on button press in openFigsWindow.
-function openFigsWindow_Callback(hObject, eventdata, handles)
-% hObject    handle to openFigsWindow (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in pushbutton5.
-function pushbutton5_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton5 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
