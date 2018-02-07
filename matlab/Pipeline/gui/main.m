@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 07-Feb-2018 10:56:06
+% Last Modified by GUIDE v2.5 07-Feb-2018 17:50:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -85,11 +85,11 @@ function parseParameters(hObject)
 handles = guidata(hObject);
 
 % Parse Checkboxes
-hCheckboxes = [handles.mediaCheckBox ; handles.ensembleCheckBox; handles.missedBeatsCheckBox; handles.medianFilterPostCheckBox; handles.directInterpolationRadio; handles.smoothingSplinesRadio];
+hCheckboxes = [handles.mediaCheckBox ; handles.ensembleCheckBox; handles.missedBeatsCheckBox; handles.medianFilterPostCheckBox; handles.smoothingSplinesCheckBox];
 checkboxValues = cell2mat(get(hCheckboxes, 'Value'));
 
 % Parse TextBoxes
-hEditTextboxes = [handles.windowSizeEdit ; handles.minimumCorrelationEdit; handles.windowSizePostEdit];
+hEditTextboxes = [handles.windowSizeEdit ; handles.minimumCorrelationEdit; handles.windowSizePostEdit; handles.missedBeatsTolerancePercentEdit; handles.smoothingSplinesCoefEdit];
 editValues = get(hEditTextboxes, 'String');
 p = {};
 
@@ -103,17 +103,17 @@ p.windowSizeEdit = str2double(editValues(1));
 p.ensembleCheckBox = checkboxValues(2);
 p.minimumCorrelationEdit = str2double(editValues(2));
 p.missedBeatsCheckBox = checkboxValues(3);
+p.missedBeatsTolerancePercentEdit = str2double(editValues(4));
+p.smoothingSplinesCheckBox = checkboxValues(5);
+p.smoothingSplinesCoefEdit = str2double(editValues(5));
 p.medianFilterPostCheckBox = checkboxValues(4);
 p.windowSizePostEdit = str2double(editValues(3));
-
-% Techo Generation
-p.directInterpolationRadio = checkboxValues(5);
-p.smoothingSplinesRadio = checkboxValues(6);
 
 % Save handles
 handles.p = p;
 guidata(hObject,handles);
 
+%% Initializes the Sig handles object
 function init(hObject)
 handles = guidata(hObject);
 handles.sig.t = [];
@@ -147,9 +147,6 @@ waitbar(0.4, h, 'Detecting R-Peaks');
 
 validLocs = ones(1,length(R_loc));
 
-windowSize = 100;
-waitbar(0.7, h, 'Running Ensemble Methods');
-validLocs  = ensembleMethods(detrended, R_loc, windowSize);
 
 waitbar(0.9, h, 'Preparing Plots');
 interval = diff(R_loc); % Period
@@ -217,9 +214,9 @@ if(p.missedBeatsCheckBox == 1)
 end
 
 % Use the non-destructive median filter:
-p.mediaCheckBox = checkboxValues(1);
-p.windowSizeEdit = str2double(editValues(1));
-
+if(p.mediaCheckBox == 1)
+    p.windowSizeEdit
+end
 
 
 p.medianFilterPostCheckBox = checkboxValues(4);
@@ -228,7 +225,7 @@ p.windowSizePostEdit = str2double(editValues(3));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                       %
 %                           Output Functions                            %
-%                                                                       %
+ %                                                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function makePlots(hObject)
 handles = guidata(hObject);
@@ -259,6 +256,7 @@ ylim([100 200]);
 guidata(hObject, handles);
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                       %
 %                           Used CallBacks                              %
@@ -266,9 +264,9 @@ guidata(hObject, handles);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Executes the main code
-% --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton1 (see GCBO)
+% --- Executes on button press in runButton.
+function runButton_Callback(hObject, eventdata, handles)
+% hObject    handle to runButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -495,3 +493,58 @@ function missedBeatsCheckBox_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of missedBeatsCheckBox
+
+
+% --- Executes on button press in smoothingSplinesCheckBox.
+function smoothingSplinesCheckBox_Callback(hObject, eventdata, handles)
+% hObject    handle to smoothingSplinesCheckBox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of smoothingSplinesCheckBox
+
+
+
+function smoothingSplinesCoefEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to smoothingSplinesCoefEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of smoothingSplinesCoefEdit as text
+%        str2double(get(hObject,'String')) returns contents of smoothingSplinesCoefEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function smoothingSplinesCoefEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to smoothingSplinesCoefEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function missedBeatsTolerancePercentEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to missedBeatsTolerancePercentEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of missedBeatsTolerancePercentEdit as text
+%        str2double(get(hObject,'String')) returns contents of missedBeatsTolerancePercentEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function missedBeatsTolerancePercentEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to missedBeatsTolerancePercentEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
