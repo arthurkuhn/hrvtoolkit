@@ -215,17 +215,35 @@ end
 
 % Use the non-destructive median filter:
 if(p.mediaCheckBox == 1)
-    p.windowSizeEdit
+    outliers = medFilter( interval, p.windowSizeEdit )
 end
 
 
-p.medianFilterPostCheckBox = checkboxValues(4);
-p.windowSizePostEdit = str2double(editValues(3));
+function smoothing(hObject)
+handles = guidata(hObject);
+p = handles.p;
+data = handles.sig;
+
+% Assume they exist:
+bpm = []; % The BPM array (ex: 110 115 112 110 120 ... )
+smoothingSplinesCoef = 0.8; % The smoothing parameter
+windowSize = 15; % The median filter window size
+
+if(p.smoothingSplinesCheckBox == 1)
+    % Do magic:
+    % smoothBpm = smoothWithSplines(bpm, smoothingSplinesCoef);
+end
+
+if(p.medianFilterPostCheckBox == 1)
+    % Do magic:
+    % smoothBpm = medianFilterSmoothing(bpm, windowSize);
+end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                       %
 %                           Output Functions                            %
- %                                                                       %
+%                                                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function makePlots(hObject)
 handles = guidata(hObject);
