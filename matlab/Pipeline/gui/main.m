@@ -310,13 +310,12 @@ interval = diff(R_locs);
 BPM = 60*fs./(interval);
 intervalLocs = R_locs(1:end-1);
 
-
 percentClean = ( length(data.R_locs)-1 - noisyIntervals ) / ( length(data.R_locs)-1 ) * 100;
 
 if(p.smoothingSplinesCheckBox == 1)
-    [curvefit,gof,output] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',p.smoothingSplinesCoefEdit);
+    [~,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',p.smoothingSplinesCoefEdit);
 else
-    [curvefit,gof,output] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline');
+    [~,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline');
 end
 
 r_squarred = gof.rsquare;
@@ -360,7 +359,7 @@ if(~isempty(time))
     end
 end
 title('ECG Signal with R points');
-xlabel('Time in seconds');
+xlabel('Time (s)');
 ylabel('Amplitude');
 
 if(plotInSeparateFigure)
@@ -383,8 +382,8 @@ if(~isempty(time))
     end
 end
 
-title("Tachogram - Kota");
-ylabel("Beats per minute");
+title("Tachogram");
+ylabel("BPM");
 xlabel("Time (s)");
 ylim([100 200]);
 
@@ -396,10 +395,11 @@ else
     cla();
 end
 if(~isempty(time))
-    plot(time(~noisyIntervals),handles.smoothSig);
+    plot(time(intervalLocs(~noisyIntervals)),handles.smoothSig);
+    legend('Final Tachogram');
 end
 title("Tachogram Filtered");
-ylabel("Beats per minute");
+ylabel("BPM");
 xlabel("Time (s)");
 ylim([100 200]);
 if(plotInSeparateFigure)
