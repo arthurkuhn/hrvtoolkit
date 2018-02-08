@@ -18,7 +18,8 @@ clear all;
 
 validLocs = ones(length(R_loc));
 
-BPM = getBpm(R_Loc, validLocs);
+
+BPM = getBpm(R_loc, validLocs);
 
 % Post-processing
 [ cleanTachogram, noisyBeats , std, diff] = post_proc(detrended, sig, BPM, R_loc, fs, 5);

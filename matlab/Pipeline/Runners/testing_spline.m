@@ -1,0 +1,1 @@
+[f_spline] = smoothing_spline(fs, detrended, R_loc, BPM);

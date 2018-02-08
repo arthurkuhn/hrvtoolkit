@@ -1,4 +1,4 @@
-function outliers = ensembleMethods( detrended_sig, R_locs, windowSize )
+function [outliers] = ensembleMethods( detrended_sig, R_locs, windowSize )
 %GETENSEMBLEAVERAGE Gets the average of all QRS peaks
 %   Detailed explanation goes here
 
