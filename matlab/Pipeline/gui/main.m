@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 08-Feb-2018 12:32:55
+% Last Modified by GUIDE v2.5 08-Feb-2018 15:16:09
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -420,12 +420,11 @@ guidata(hObject, handles);
 function showEvaluationResults(hObject)
 handles = guidata(hObject);
 eval = handles.eval;
-set(handles.staticText1, 'String', num2str(value));
-eval.ibiPercentClean = percentClean;
-eval.fitRSquare = r_squarred;
-eval.nonCorrelatedBeats = nonCorrelatedBeats;
-eval.missedBeats = missedBeats;
-eval.madFilterNoise = madFilterNoise;
+set(handles.numRemovedBeatsEnsembleText, 'String', num2str(eval.nonCorrelatedBeats));
+set(handles.numRemovedBeatsMadFilterText, 'String', num2str(eval.madFilterNoise));
+set(handles.numMissedBeatsText, 'String', num2str(eval.missedBeats));
+set(handles.rPeaksValidText, 'String', num2str(eval.ibiPercentClean));
+set(handles.splinesRSquareText, 'String', num2str(eval.fitRSquare));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                       %
@@ -457,6 +456,7 @@ smoothing(hObject);
 
 waitbar(0.95, h, 'Evaluating');
 evaluate(hObject);
+showEvaluationResults(hObject);
 
 waitbar(0.99, h, 'Plotting');
 makePlots(hObject,false);
