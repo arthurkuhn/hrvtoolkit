@@ -63,7 +63,7 @@ handles.output = hObject;
 guidata(hObject, handles);
 
 init(hObject);
-makePlots(hObject);
+makePlots(hObject, false);
 
 % This sets up the initial plot - only do when we are invisible
 % so window can get raised using main.
@@ -271,7 +271,6 @@ handles.madFilter.intervalNoise = outliers;
 
 guidata(hObject, handles);
 
-
 function smoothing(hObject)
 handles = guidata(hObject);
 p = handles.p;
@@ -297,7 +296,6 @@ end
 
 handles.smoothSig = smoothSignal;
 guidata(hObject, handles);
-
 
 function evaluate(hObject)
 handles = guidata(hObject);
@@ -336,15 +334,21 @@ handles.eval = eval;
 guidata(hObject, handles);
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                       %
 %                           Output Functions                            %
 %                                                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function makePlots(hObject)
+function makePlots(hObject, plotInSeparateFigure)
 handles = guidata(hObject);
-axes(handles.axes1);
-cla();
+if(plotInSeparateFigure)
+    figure;
+    ax1 = subplot(3,1,1);
+else
+    axes(handles.axes1);
+    cla();
+end
 hold on;
 ecgErrors = logical(handles.ensemble.ecgErrors); % Logical to allow indexing
 noisyIntervals = logical(handles.noisyIntervals);
@@ -365,11 +369,15 @@ if(~isempty(time))
     end
 end
 title('ECG Signal with R points');
-xlabel('Time in seconds');
+xlabel('Time (s)');
 ylabel('Amplitude');
 
-axes(handles.axes2);
-cla();
+if(plotInSeparateFigure)
+    ax2 = subplot(3,1,2);
+else
+    axes(handles.axes2);
+    cla();
+end
 hold on;
 intervalLocs = R_locs(1:end-1);
 BPM = 60*fs./(interval);
@@ -384,21 +392,29 @@ if(~isempty(time))
     end
 end
 
-title("Tachogram - Kota");
-ylabel("Beats per minute");
+title("Tachogram");
+ylabel("BPM");
 xlabel("Time (s)");
 ylim([100 200]);
 
 
-axes(handles.axes3);
-cla();
+if(plotInSeparateFigure)
+    ax3 = subplot(3,1,3);
+else
+    axes(handles.axes3);
+    cla();
+end
 if(~isempty(time))
-    plot(time(~noisyIntervals),handles.smoothSig);
+    plot(time(intervalLocs(~noisyIntervals)),handles.smoothSig);
+    legend('Final Tachogram');
 end
 title("Tachogram Filtered");
-ylabel("Beats per minute");
+ylabel("BPM");
 xlabel("Time (s)");
 ylim([100 200]);
+if(plotInSeparateFigure)
+    linkaxes([ax1,ax2, ax3],'x');
+end
 guidata(hObject, handles);
 
 function showEvaluationResults(hObject)
@@ -432,12 +448,20 @@ h = waitbar(0.2,'Finding Peaks');
 if(isempty(handles.sig.t))
     findPeaks(hObject);
 end
+
 waitbar(0.8, h, 'Post-Processing');
 postProcessIbi(hObject);
+
 waitbar(0.9, h, 'Smoothing');
 smoothing(hObject);
-waitbar(0.95, h, 'Plotting');
-makePlots(hObject);
+
+waitbar(0.95, h, 'Evaluating');
+evaluate(hObject);
+
+waitbar(0.99, h, 'Plotting');
+makePlots(hObject,false);
+
+
 close(h);
 
 %% Resets the graph when changing the selected Signal
@@ -456,7 +480,9 @@ function openFigsWindow_Callback(hObject, eventdata, handles)
 % hObject    handle to openFigsWindow (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-parseParameters(hObject);
+if(~isempty(handles.sig.t))
+    makePlots(hObject,true);
+end
 
 %% Export to HRVAS
 % --- Executes on button press in hrvasExport.
