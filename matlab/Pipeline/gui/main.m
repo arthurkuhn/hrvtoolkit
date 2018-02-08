@@ -310,7 +310,8 @@ interval = diff(R_locs);
 BPM = 60*fs./(interval);
 intervalLocs = R_locs(1:end-1);
 
-percentClean = ( length(data.R_locs)-1 - noisyIntervals ) / ( length(data.R_locs)-1 ) * 100;
+percentClean = ( length(data.R_locs)-1 - sum(noisyIntervals) ) / ( length(data.R_locs)-1 ) * 100;
+noisyPerThousand = sum(noisyIntervals) / ( length(data.R_locs)-1 ) * 1000;
 
 if(p.smoothingSplinesCheckBox == 1)
     [~,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',p.smoothingSplinesCoefEdit);
@@ -326,6 +327,7 @@ madFilterNoise = sum(handles.madFilter.intervalNoise);
 
 eval = {};
 eval.ibiPercentClean = percentClean;
+eval.noisyPerThousand = noisyPerThousand;
 eval.fitRSquare = r_squarred;
 eval.nonCorrelatedBeats = nonCorrelatedBeats;
 eval.missedBeats = missedBeats;
@@ -342,7 +344,7 @@ guidata(hObject, handles);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function makePlots(hObject, plotInSeparateFigure)
 handles = guidata(hObject);
-if(plotInSeparateFigure)
+if(plotInSeparateFigure == true)
     figure;
     ax1 = subplot(3,1,1);
 else
@@ -372,7 +374,7 @@ title('ECG Signal with R points');
 xlabel('Time (s)');
 ylabel('Amplitude');
 
-if(plotInSeparateFigure)
+if(plotInSeparateFigure == true)
     ax2 = subplot(3,1,2);
 else
     axes(handles.axes2);
@@ -398,7 +400,7 @@ xlabel("Time (s)");
 ylim([100 200]);
 
 
-if(plotInSeparateFigure)
+if(plotInSeparateFigure == true)
     ax3 = subplot(3,1,3);
 else
     axes(handles.axes3);
@@ -423,7 +425,7 @@ eval = handles.eval;
 set(handles.numRemovedBeatsEnsembleText, 'String', num2str(eval.nonCorrelatedBeats));
 set(handles.numRemovedBeatsMadFilterText, 'String', num2str(eval.madFilterNoise));
 set(handles.numMissedBeatsText, 'String', num2str(eval.missedBeats));
-set(handles.rPeaksValidText, 'String', num2str(eval.ibiPercentClean));
+set(handles.rPeaksValidText, 'String', num2str(eval.noisyPerThousand));
 set(handles.splinesRSquareText, 'String', num2str(eval.fitRSquare));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
