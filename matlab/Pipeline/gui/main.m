@@ -135,6 +135,8 @@ handles.missedBeats.intervalNoise = [];
 handles.madFilter = {};
 handles.madFilter.intervalNoise = [];
 
+%Smoothing Data
+handles.smoothSig = [];
 guidata(hObject,handles);
 
 
@@ -273,22 +275,28 @@ guidata(hObject, handles);
 function smoothing(hObject)
 handles = guidata(hObject);
 p = handles.p;
-data = handles.sig;
 
-% Assume they exist:
-bpm = []; % The BPM array (ex: 110 115 112 110 120 ... )
-smoothingSplinesCoef = 0.8; % The smoothing parameter
-windowSize = 15; % The median filter window size
-
+noisyIntervals = logical(handles.noisyIntervals);
+time = handles.sig.t;
+R_locs = handles.sig.R_locs;
+fs = handles.sig.fs;
+interval = diff(R_locs);
+BPM = 60*fs./(interval);
+smoothSignal = BPM(~noisyIntervals);
+intervalLocs = R_locs(1:end-1);
 if(p.smoothingSplinesCheckBox == 1)
-    % Do magic:
-    % smoothBpm = smoothWithSplines(bpm, smoothingSplinesCoef);
+    f = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',p.smoothingSplinesCoefEdit);
+    smoothSignal = f(time(intervalLocs(~noisyIntervals)));
+    % The line below makes the median filter run on the spline smoothed
+    % signal
+    BPM = smoothSignal;
+end
+if(p.medianFilterPostCheckBox == 1)
+    smoothSignal = medfilt1(BPM(~noisyIntervals),p.windowSizePostEdit);
 end
 
-if(p.medianFilterPostCheckBox == 1)
-    % Do magic:
-    % smoothBpm = medianFilterSmoothing(bpm, windowSize);
-end
+handles.smoothSig = smoothSignal;
+guidata(hObject, handles);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -339,15 +347,22 @@ if(~isempty(time))
     end
 end
 
-%plot(time,full);
-% plot(1:length(interval),interval);
 title("Tachogram - Kota");
 ylabel("Beats per minute");
 xlabel("Time (s)");
 ylim([100 200]);
+
+
+axes(handles.axes3);
+cla();
+if(~isempty(time))
+    plot(time(~noisyIntervals),handles.smoothSig);
+end
+title("Tachogram Filtered");
+ylabel("Beats per minute");
+xlabel("Time (s)");
+ylim([100 200]);
 guidata(hObject, handles);
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                       %
@@ -372,6 +387,8 @@ if(isempty(handles.sig.t))
 end
 waitbar(0.8, h, 'Post-Processing');
 postProcessIbi(hObject);
+waitbar(0.9, h, 'Smoothing');
+smoothing(hObject);
 waitbar(0.95, h, 'Plotting');
 makePlots(hObject);
 close(h);
