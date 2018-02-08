@@ -19,6 +19,19 @@ parfor i=1:length(R_locs)
     avg = avg + complex;
 end
 
+avg = avg./length(R_locs);
+
+% We now get a clean average without the worse data:
+parfor i=1:length(R_locs)
+    leftIndex = left(i);
+    rightIndex = right(i);
+    if(leftIndex < 0 || rightIndex > length(R_locs))
+        continue;
+    end
+    complex = detrended_sig(leftIndex:rightIndex);
+    avg = avg + complex;
+end
+
 correlationCoefArray = zeros(1,length(R_locs));
 maxCorrelationArray = zeros(1,length(R_locs));
 print
