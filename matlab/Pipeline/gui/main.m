@@ -63,7 +63,7 @@ handles.output = hObject;
 guidata(hObject, handles);
 
 init(hObject);
-makePlots(hObject);
+makePlots(hObject, false);
 
 % This sets up the initial plot - only do when we are invisible
 % so window can get raised using main.
@@ -271,7 +271,6 @@ handles.madFilter.intervalNoise = outliers;
 
 guidata(hObject, handles);
 
-
 function smoothing(hObject)
 handles = guidata(hObject);
 p = handles.p;
@@ -298,16 +297,49 @@ end
 handles.smoothSig = smoothSignal;
 guidata(hObject, handles);
 
+function evaluate(hObject)
+handles = guidata(hObject);
+data = handles.sig;
+p = handles.p;
+noisyIntervals = handles.noisyIntervals;
+
+time = handles.sig.t;
+R_locs = handles.sig.R_locs;
+fs = handles.sig.fs;
+interval = diff(R_locs);
+BPM = 60*fs./(interval);
+intervalLocs = R_locs(1:end-1);
+
+
+percentClean = ( length(data.R_locs)-1 - noisyIntervals ) / ( length(data.R_locs)-1 ) * 100;
+
+if(p.smoothingSplinesCheckBox == 1)
+    [curvefit,gof,output] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',p.smoothingSplinesCoefEdit);
+else
+    [curvefit,gof,output] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline');
+end
+
+r_squarred = gof.rsquare;
+
+nonCorrelatedBeats = sum(handles.ensemble.ecgErrors);
+missedBeats = sum(handles.missedBeats.intervalNoise);
+madFilterNoise = sum(handles.madFilter.intervalNoise);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                       %
 %                           Output Functions                            %
 %                                                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function makePlots(hObject)
+function makePlots(hObject, plotInSeparateFigure)
 handles = guidata(hObject);
-axes(handles.axes1);
-cla();
+if(plotInSeparateFigure)
+    figure;
+    ax1 = subplot(3,1,1);
+else
+    axes(handles.axes1);
+    cla();
+end
 hold on;
 ecgErrors = logical(handles.ensemble.ecgErrors); % Logical to allow indexing
 noisyIntervals = logical(handles.noisyIntervals);
@@ -331,8 +363,12 @@ title('ECG Signal with R points');
 xlabel('Time in seconds');
 ylabel('Amplitude');
 
-axes(handles.axes2);
-cla();
+if(plotInSeparateFigure)
+    ax2 = subplot(3,1,2);
+else
+    axes(handles.axes2);
+    cla();
+end
 hold on;
 intervalLocs = R_locs(1:end-1);
 BPM = 60*fs./(interval);
@@ -353,8 +389,12 @@ xlabel("Time (s)");
 ylim([100 200]);
 
 
-axes(handles.axes3);
-cla();
+if(plotInSeparateFigure)
+    ax3 = subplot(3,1,3);
+else
+    axes(handles.axes3);
+    cla();
+end
 if(~isempty(time))
     plot(time(~noisyIntervals),handles.smoothSig);
 end
@@ -362,6 +402,9 @@ title("Tachogram Filtered");
 ylabel("Beats per minute");
 xlabel("Time (s)");
 ylim([100 200]);
+if(plotInSeparateFigure)
+    linkaxes([ax1,ax2, ax3],'x');
+end
 guidata(hObject, handles);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -385,12 +428,20 @@ h = waitbar(0.2,'Finding Peaks');
 if(isempty(handles.sig.t))
     findPeaks(hObject);
 end
+
 waitbar(0.8, h, 'Post-Processing');
 postProcessIbi(hObject);
+
 waitbar(0.9, h, 'Smoothing');
 smoothing(hObject);
-waitbar(0.95, h, 'Plotting');
-makePlots(hObject);
+
+waitbar(0.95, h, 'Evaluating');
+evaluate(hObject);
+
+waitbar(0.99, h, 'Plotting');
+makePlots(hObject,false);
+
+
 close(h);
 
 %% Resets the graph when changing the selected Signal
@@ -409,7 +460,9 @@ function openFigsWindow_Callback(hObject, eventdata, handles)
 % hObject    handle to openFigsWindow (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-parseParameters(hObject);
+if(~isempty(handles.sig.t))
+    makePlots(hObject,true);
+end
 
 %% Export to HRVAS
 % --- Executes on button press in hrvasExport.
