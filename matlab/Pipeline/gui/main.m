@@ -231,6 +231,7 @@ windowSize = 15; % The median filter window size
 
 if(p.smoothingSplinesCheckBox == 1)
     % Do magic:
+    % 
     % smoothBpm = smoothWithSplines(bpm, smoothingSplinesCoef);
 end
 
