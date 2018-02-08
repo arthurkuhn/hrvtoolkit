@@ -6,7 +6,7 @@ allowedDeviation = toleratedeviationPercent / 100;
 
 errors = zeros(1,length(interval));
 
-for i = 2:interval(R_loc)-1
+for i = 2:length(interval)-1
     % double of 2 adjacent hardbeats: missed peak
     sumPrevNext = interval(i-1) + interval(i+1);
     deviation = allowedDeviation * sumPrevNext;

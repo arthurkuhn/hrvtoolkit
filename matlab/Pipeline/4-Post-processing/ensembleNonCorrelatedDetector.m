@@ -10,21 +10,26 @@ left = R_locs-windowSize;
 right = R_locs+windowSize;
 
 parfor i=1:length(R_locs)
-    if(R_locs(i) < windowSize + 1)
+    leftIndex = left(i);
+    rightIndex = right(i);
+    if(leftIndex < 0 || rightIndex > length(R_locs))
         continue;
     end
-    complex = detrended_sig(left(i):right(i));
+    complex = detrended_sig(leftIndex:rightIndex);
     avg = avg + complex;
 end
 
 correlationCoefArray = zeros(1,length(R_locs));
 maxCorrelationArray = zeros(1,length(R_locs));
+print
 
-for i=1:length(R_locs)
-    if(R_locs(i) < windowSize + 1)
+parfor i=1:length(R_locs)
+    leftIndex = left(i);
+    rightIndex = right(i);
+    if(leftIndex < 0 || rightIndex > length(detrended_sig))
         continue;
     end
-    complex2 = detrended_sig(left(i):right(i));
+    complex2 = detrended_sig(leftIndex:rightIndex);
     crossCorr = xcorr(complex2, avg);
     corrCoeff = corrcoef(complex2, avg);
     correlationCoefArray(i) = corrCoeff(1,2);
