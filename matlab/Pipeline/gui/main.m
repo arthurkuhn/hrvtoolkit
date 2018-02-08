@@ -299,6 +299,43 @@ handles.smoothSig = smoothSignal;
 guidata(hObject, handles);
 
 
+function evaluate(hObject)
+handles = guidata(hObject);
+data = handles.sig;
+p = handles.p;
+noisyIntervals = handles.noisyIntervals;
+
+time = handles.sig.t;
+R_locs = handles.sig.R_locs;
+fs = handles.sig.fs;
+interval = diff(R_locs);
+BPM = 60*fs./(interval);
+intervalLocs = R_locs(1:end-1);
+
+percentClean = ( length(data.R_locs)-1 - noisyIntervals ) / ( length(data.R_locs)-1 ) * 100;
+
+if(p.smoothingSplinesCheckBox == 1)
+    [~,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',p.smoothingSplinesCoefEdit);
+else
+    [~,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline');
+end
+
+r_squarred = gof.rsquare;
+
+nonCorrelatedBeats = sum(handles.ensemble.ecgErrors);
+missedBeats = sum(handles.missedBeats.intervalNoise);
+madFilterNoise = sum(handles.madFilter.intervalNoise);
+
+eval = {};
+eval.ibiPercentClean = percentClean;
+eval.fitRSquare = r_squarred;
+eval.nonCorrelatedBeats = nonCorrelatedBeats;
+eval.missedBeats = missedBeats;
+eval.madFilterNoise = madFilterNoise;
+handles.eval = eval;
+guidata(hObject, handles);
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                       %
 %                           Output Functions                            %
@@ -363,6 +400,16 @@ ylabel("Beats per minute");
 xlabel("Time (s)");
 ylim([100 200]);
 guidata(hObject, handles);
+
+function showEvaluationResults(hObject)
+handles = guidata(hObject);
+eval = handles.eval;
+set(handles.staticText1, 'String', num2str(value));
+eval.ibiPercentClean = percentClean;
+eval.fitRSquare = r_squarred;
+eval.nonCorrelatedBeats = nonCorrelatedBeats;
+eval.missedBeats = missedBeats;
+eval.madFilterNoise = madFilterNoise;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                       %
