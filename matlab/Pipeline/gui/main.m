@@ -115,6 +115,8 @@ guidata(hObject,handles);
 
 %% Initializes the Sig handles object
 function init(hObject)
+
+%Processing Data
 handles = guidata(hObject);
 handles.sig.t = [];
 handles.sig.detrended = [];
@@ -122,6 +124,17 @@ handles.sig.R_locs = [];
 handles.sig.f = {};
 handles.sig.fs = 0;
 handles.sig.interval = [];
+
+%Post-Processing Data
+handles.ensemble = {};
+handles.ensemble.ecgErrors = [];
+handles.ensemble.intervalNoise = [];
+handles.noisyIntervals = [];
+handles.missedBeats = {};
+handles.missedBeats.intervalNoise = [];
+handles.madFilter = {};
+handles.madFilter.intervalNoise = [];
+
 guidata(hObject,handles);
 
 
@@ -198,25 +211,63 @@ function postProcessIbi(hObject)
 handles = guidata(hObject);
 p = handles.p;
 data = handles.sig;
-
 if(p.ensembleCheckBox == 1)
     windowSize = 200;
-    nonCorrelated = ensembleNonCorrelatedDetector( data.detrended, data.R_locs, p.minimumCorrelationEdit, windowSize );
+    errors = ensembleNonCorrelatedDetector( data.detrended, data.R_locs, p.minimumCorrelationEdit, windowSize );
+else
+    errors = zeros(1,length(data.R_locs));
 end
 
+
 % Make the interval array with the valid beats
+interval = diff(data.R_locs);
+noisy = zeros(1,length(interval));
+for i = 1:length(data.R_locs)-1
+    % Since here interval(i) = R_locs(i+1)-R_locs(i)
+    if(errors(i) == 1)
+        if(i > 1)
+            noisy(i-1) = 1;
+            noisy(i) = 1;
+        else
+            noisy(i) = 1;
+        end
+    end
+end
+        
+handles.ensemble = {};
+handles.ensemble.ecgErrors = errors;
+handles.ensemble.intervalNoise = noisy;
 
 % Check for missed beat signs
 
 if(p.missedBeatsCheckBox == 1)
-    toleratedeviationPercent = 20;
-    errors = missedBeatDetector( interval, toleratedeviationPercent );
+    missedBeatErrors = missedBeatDetector( interval, p.missedBeatsTolerancePercentEdit );
+else 
+    missedBeatErrors = zeros(1, length(interval));
 end
+
+handles.missedBeats = {};
+handles.missedBeats.intervalNoise = missedBeatErrors;
 
 % Use the non-destructive median filter:
 if(p.mediaCheckBox == 1)
-    outliers = medFilter( interval, p.windowSizeEdit )
+    outliers = medFilter( interval, p.windowSizeEdit );
+else 
+    outliers = zeros(1, length(interval));
 end
+
+totalNoisyIntervals = noisy | missedBeatErrors | outliers;
+
+handles.ensemble = {};
+handles.ensemble.ecgErrors = errors;
+handles.ensemble.intervalNoise = noisy;
+handles.noisyIntervals = totalNoisyIntervals;
+handles.missedBeats = {};
+handles.missedBeats.intervalNoise = missedBeatErrors;
+handles.madFilter = {};
+handles.madFilter.intervalNoise = outliers;
+
+guidata(hObject, handles);
 
 
 function smoothing(hObject)
@@ -231,7 +282,6 @@ windowSize = 15; % The median filter window size
 
 if(p.smoothingSplinesCheckBox == 1)
     % Do magic:
-    % 
     % smoothBpm = smoothWithSplines(bpm, smoothingSplinesCoef);
 end
 
@@ -251,10 +301,23 @@ handles = guidata(hObject);
 axes(handles.axes1);
 cla();
 hold on;
-if(~isempty(handles.sig.t))
-    plot (handles.sig.t,handles.sig.detrended);
-    plot(handles.sig.t(handles.sig.R_locs),handles.sig.detrended(handles.sig.R_locs),'rv','MarkerFaceColor','r')
-    legend('ECG','R');
+ecgErrors = logical(handles.ensemble.ecgErrors); % Logical to allow indexing
+noisyIntervals = logical(handles.noisyIntervals);
+time = handles.sig.t;
+R_locs = handles.sig.R_locs;
+detrended = handles.sig.detrended;
+fs = handles.sig.fs;
+interval = diff(R_locs);
+
+if(~isempty(time))
+    plot(time,detrended);
+    plot(time(R_locs(~ecgErrors)),detrended(R_locs(~ecgErrors)),'bv','MarkerFaceColor','b')
+    if(sum(ecgErrors) ~= 0)
+        plot(time(R_locs(ecgErrors)),detrended(R_locs(ecgErrors)),'rv','MarkerFaceColor','r')
+        legend('ECG','R-Peaks', 'Uncorrelated Beats');
+    else
+        legend('ECG','R-Peaks');
+    end
 end
 title('ECG Signal with R points');
 xlabel('Time in seconds');
@@ -262,13 +325,23 @@ ylabel('Amplitude');
 
 axes(handles.axes2);
 cla();
-if(~isempty(handles.sig.t))
-    plot(handles.sig.f,handles.sig.t(handles.sig.R_locs),handles.sig.interval);
+hold on;
+intervalLocs = R_locs(1:end-1);
+BPM = 60*fs./(interval);
+if(~isempty(time))
+    f = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline');
+    plot(f,time(intervalLocs(~noisyIntervals)),BPM(~noisyIntervals));
+    scatter(time(intervalLocs(noisyIntervals)),BPM(noisyIntervals));
+    if(sum(noisyIntervals) ~= 0)
+        legend('Valid Intervals', 'Fit', 'Noisy Intervals');
+    else
+        legend('Valid Intervals', 'Fit');
+    end
 end
 
 %plot(time,full);
 % plot(1:length(interval),interval);
-title("Tachogram - Kota - ");
+title("Tachogram - Kota");
 ylabel("Beats per minute");
 xlabel("Time (s)");
 ylim([100 200]);
@@ -289,12 +362,19 @@ function runButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+
 parseParameters(hObject);
 
-compute(hObject);
-
+% compute(hObject);
+h = waitbar(0.2,'Finding Peaks');
+if(isempty(handles.sig.t))
+    findPeaks(hObject);
+end
+waitbar(0.8, h, 'Post-Processing');
+postProcessIbi(hObject);
+waitbar(0.95, h, 'Plotting');
 makePlots(hObject);
-
+close(h);
 
 %% Resets the graph when changing the selected Signal
 % --- Executes on selection change in fileSelect.
