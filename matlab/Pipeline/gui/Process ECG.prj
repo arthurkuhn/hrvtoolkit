@@ -1,15 +1,15 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="1939789748" file="C:\Users\Arthur\Documents\SpiderOak Hive\Cours\Sem 2\DP\Github\matlab\Pipeline\gui\Process ECG.prj" location="C:\Users\Arthur\Documents\SpiderOak Hive\Cours\Sem 2\DP\Github\matlab\Pipeline\gui" name="Process ECG" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="1391478608" file="C:\Users\Arthur\Documents\SpiderOak Hive\Cours\Sem 2\DP\Github\matlab\Pipeline\gui\Process ECG.prj" location="C:\Users\Arthur\Documents\SpiderOak Hive\Cours\Sem 2\DP\Github\matlab\Pipeline\gui" name="Process ECG" target="target.mlapps" target-name="Package App">
     <param.appname>Process ECG</param.appname>
     <param.authnamewatermark>A. Kuhn, C. Dionet</param.authnamewatermark>
     <param.email>arthur.kuhn@mail.mcgill.ca</param.email>
     <param.company>McGill Design Project</param.company>
     <param.icon />
     <param.icons />
-    <param.summary />
+    <param.summary>Complete Pipeline for R-R interval detection</param.summary>
     <param.description />
     <param.screenshot />
-    <param.version>1.0</param.version>
+    <param.version>1.1</param.version>
     <param.products.name>
       <item>MATLAB</item>
       <item>Curve Fitting Toolbox</item>
@@ -31,10 +31,8 @@
     <unset>
       <param.icon />
       <param.icons />
-      <param.summary />
       <param.description />
       <param.screenshot />
-      <param.version />
       <param.platforms />
     </unset>
     <fileset.main>
@@ -51,7 +49,9 @@
       <file>C:\Users\Arthur\Documents\SpiderOak Hive\Cours\Sem 2\DP\Github\matlab\Pipeline\1-Loading\loadSig.m</file>
       <file>C:\Users\Arthur\Documents\SpiderOak Hive\Cours\Sem 2\DP\Github\matlab\Pipeline\2-Pre-processing\preprocessingNew.m</file>
       <file>C:\Users\Arthur\Documents\SpiderOak Hive\Cours\Sem 2\DP\Github\matlab\Pipeline\3-Kota\kota.m</file>
-      <file>C:\Users\Arthur\Documents\SpiderOak Hive\Cours\Sem 2\DP\Github\matlab\Pipeline\4-Post-processing\ensembleMethods.m</file>
+      <file>C:\Users\Arthur\Documents\SpiderOak Hive\Cours\Sem 2\DP\Github\matlab\Pipeline\4-Post-processing\ensembleNonCorrelatedDetector.m</file>
+      <file>C:\Users\Arthur\Documents\SpiderOak Hive\Cours\Sem 2\DP\Github\matlab\Pipeline\4-Post-processing\medFilter.m</file>
+      <file>C:\Users\Arthur\Documents\SpiderOak Hive\Cours\Sem 2\DP\Github\matlab\Pipeline\4-Post-processing\missedBeatDetector.m</file>
       <file>${PROJECT_ROOT}\main.fig</file>
     </fileset.depfun>
     <fileset.resources />
