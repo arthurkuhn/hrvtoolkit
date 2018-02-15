@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 08-Feb-2018 15:16:09
+% Last Modified by GUIDE v2.5 15-Feb-2018 13:40:23
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -85,7 +85,7 @@ function parseParameters(hObject)
 handles = guidata(hObject);
 
 % Parse Checkboxes
-hCheckboxes = [handles.mediaCheckBox ; handles.ensembleCheckBox; handles.missedBeatsCheckBox; handles.medianFilterPostCheckBox; handles.smoothingSplinesCheckBox];
+hCheckboxes = [handles.mediaCheckBox ; handles.ensembleCheckBox; handles.missedBeatsCheckBox; handles.medianFilterPostCheckBox];
 checkboxValues = cell2mat(get(hCheckboxes, 'Value'));
 
 % Parse TextBoxes
@@ -104,7 +104,6 @@ p.ensembleCheckBox = checkboxValues(2);
 p.minimumCorrelationEdit = str2double(editValues(2));
 p.missedBeatsCheckBox = checkboxValues(3);
 p.missedBeatsTolerancePercentEdit = str2double(editValues(4));
-p.smoothingSplinesCheckBox = checkboxValues(5);
 p.smoothingSplinesCoefEdit = str2double(editValues(5));
 p.medianFilterPostCheckBox = checkboxValues(4);
 p.windowSizePostEdit = str2double(editValues(3));
@@ -281,17 +280,16 @@ R_locs = handles.sig.R_locs;
 fs = handles.sig.fs;
 interval = diff(R_locs);
 BPM = 60*fs./(interval);
-smoothSignal = BPM(~noisyIntervals);
 intervalLocs = R_locs(1:end-1);
-if(p.smoothingSplinesCheckBox == 1)
-    f = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',p.smoothingSplinesCoefEdit);
-    smoothSignal = f(time(intervalLocs(~noisyIntervals)));
-    % The line below makes the median filter run on the spline smoothed
-    % signal
-    BPM = smoothSignal;
+switch get(get(handles.tachoGeneration,'SelectedObject'),'Tag')
+      case 'smoothingSplinesRadio'
+          f = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',p.smoothingSplinesCoefEdit);
+          smoothSignal = f(time(intervalLocs(~noisyIntervals)));
+      case 'directRadio'
+          smoothSignal = BPM(~noisyIntervals);
 end
 if(p.medianFilterPostCheckBox == 1)
-    smoothSignal = medfilt1(BPM(~noisyIntervals),p.windowSizePostEdit);
+    smoothSignal = medfilt1(smoothSignal,p.windowSizePostEdit);
 end
 
 handles.smoothSig = smoothSignal;
@@ -312,20 +310,20 @@ intervalLocs = R_locs(1:end-1);
 
 percentClean = ( length(data.R_locs)-1 - sum(noisyIntervals) ) / ( length(data.R_locs)-1 ) * 100;
 noisyPerThousand = sum(noisyIntervals) / ( length(data.R_locs)-1 ) * 1000;
-
-if(p.smoothingSplinesCheckBox == 1)
-    [~,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',p.smoothingSplinesCoefEdit);
-else
-    [~,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline');
+switch get(get(handles.tachoGeneration,'SelectedObject'),'Tag')
+    case 'smoothingSplinesRadio'
+        [~,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',p.smoothingSplinesCoefEdit);
+        r_squarred = gof.rsquare;
+    case 'directRadio'
+        r_squarred = 0;
 end
-
-r_squarred = gof.rsquare;
 
 nonCorrelatedBeats = sum(handles.ensemble.ecgErrors);
 missedBeats = sum(handles.missedBeats.intervalNoise);
 madFilterNoise = sum(handles.madFilter.intervalNoise);
 
 eval = {};
+eval.numBeats = length(R_locs);
 eval.ibiPercentClean = percentClean;
 eval.noisyPerThousand = noisyPerThousand;
 eval.fitRSquare = r_squarred;
@@ -354,6 +352,10 @@ end
 hold on;
 ecgErrors = logical(handles.ensemble.ecgErrors); % Logical to allow indexing
 noisyIntervals = logical(handles.noisyIntervals);
+noisyIntsEnsemble = logical(handles.ensemble.intervalNoise);
+noisyIntsMissedBeats = logical(handles.missedBeats.intervalNoise);
+noisyIntsMadFilter = logical(handles.madFilter.intervalNoise);
+
 time = handles.sig.t;
 R_locs = handles.sig.R_locs;
 detrended = handles.sig.detrended;
@@ -385,13 +387,12 @@ intervalLocs = R_locs(1:end-1);
 BPM = 60*fs./(interval);
 if(~isempty(time))
     f = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline');
-    plot(f,time(intervalLocs(~noisyIntervals)),BPM(~noisyIntervals));
-    scatter(time(intervalLocs(noisyIntervals)),BPM(noisyIntervals));
-    if(sum(noisyIntervals) ~= 0)
-        legend('Valid Intervals', 'Fit', 'Noisy Intervals');
-    else
-        legend('Valid Intervals', 'Fit');
-    end
+    h = plot(f,time(intervalLocs(~noisyIntervals)),BPM(~noisyIntervals));
+    legend(h,{'Valid RR-Intervals', 'Default Fit'});
+    scatter(time(intervalLocs(noisyIntsEnsemble)),BPM(noisyIntsEnsemble),'DisplayName','Ensemble Filtered');
+    scatter(time(intervalLocs(noisyIntsMissedBeats)),BPM(noisyIntsMissedBeats),'DisplayName','Missed Beats');
+    scatter(time(intervalLocs(noisyIntsMadFilter)),BPM(noisyIntsMadFilter),'DisplayName','MAD Filtered');
+    legend('show');
 end
 
 title("Tachogram");
@@ -407,8 +408,10 @@ else
     cla();
 end
 if(~isempty(time))
-    plot(time(intervalLocs(~noisyIntervals)),handles.smoothSig);
-    legend('Final Tachogram');
+    hold on;
+    plot(time(intervalLocs(~noisyIntervals)),handles.smoothSig, 'DisplayName', 'Final Tachogram');
+    scatter(time(intervalLocs(noisyIntervals)),BPM(noisyIntervals),'DisplayName','Interpolated Data');
+    legend('show');
 end
 title("Tachogram Filtered");
 ylabel("BPM");
@@ -425,8 +428,10 @@ eval = handles.eval;
 set(handles.numRemovedBeatsEnsembleText, 'String', num2str(eval.nonCorrelatedBeats));
 set(handles.numRemovedBeatsMadFilterText, 'String', num2str(eval.madFilterNoise));
 set(handles.numMissedBeatsText, 'String', num2str(eval.missedBeats));
-set(handles.rPeaksValidText, 'String', num2str(eval.noisyPerThousand));
+outputString = num2str(eval.noisyPerThousand / 10) + "%";
+set(handles.rPeaksValidText, 'String', outputString);
 set(handles.splinesRSquareText, 'String', num2str(eval.fitRSquare));
+set(handles.detectedBeatsText, 'String', num2str(eval.numBeats));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                       %
@@ -731,6 +736,38 @@ function missedBeatsTolerancePercentEdit_Callback(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function missedBeatsTolerancePercentEdit_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to missedBeatsTolerancePercentEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in medianFilterPostCheckBox.
+function checkbox8_Callback(hObject, eventdata, handles)
+% hObject    handle to medianFilterPostCheckBox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of medianFilterPostCheckBox
+
+
+
+function edit10_Callback(hObject, eventdata, handles)
+% hObject    handle to windowSizePostEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of windowSizePostEdit as text
+%        str2double(get(hObject,'String')) returns contents of windowSizePostEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit10_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to windowSizePostEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 

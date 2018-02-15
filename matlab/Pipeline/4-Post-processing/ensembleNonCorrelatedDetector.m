@@ -20,24 +20,6 @@ parfor i=1:length(R_locs)
 end
 
 avg = avg./length(R_locs);
-avgClean = zeros(1,(2*windowSize+1));
-
-% We now get a clean average without the worse data:
-parfor i=1:length(R_locs)
-    leftIndex = left(i);
-    rightIndex = right(i);
-    if(leftIndex < 0 || rightIndex > length(R_locs))
-        continue;
-    end
-    complex = detrended_sig(leftIndex:rightIndex);
-    corrCoeff = corrcoef(complex, avg);
-    if(corrCoeff(1,2) > 0.3)
-        avgClean = avgClean + complex;
-        continue;
-    end
-end
-
-avgClean = avgClean./length(R_locs);
 
 parfor i=1:length(R_locs)
     leftIndex = left(i);
@@ -46,7 +28,7 @@ parfor i=1:length(R_locs)
         continue;
     end
     complex2 = detrended_sig(leftIndex:rightIndex);
-    corrCoeff = corrcoef(complex2, avgClean);
+    corrCoeff = corrcoef(complex2, avg);
     if(corrCoeff(1,2) > minCorrelation)
         continue
     else
