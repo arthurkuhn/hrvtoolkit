@@ -409,8 +409,17 @@ else
 end
 if(~isempty(time))
     hold on;
-    plot(time(intervalLocs(~noisyIntervals)),handles.smoothSig, 'DisplayName', 'Final Tachogram');
-    scatter(time(intervalLocs(noisyIntervals)),BPM(noisyIntervals),'DisplayName','Interpolated Data');
+    switch get(get(handles.tachoGeneration,'SelectedObject'),'Tag')
+        case 'smoothingSplinesRadio'
+        smoothInterpolated = interp1(time(intervalLocs(~noisyIntervals)),handles.smoothSig,time,'spline');
+        case 'directRadio'
+        smoothInterpolated = interp1(time(intervalLocs(~noisyIntervals)),handles.smoothSig,time,'linear');
+    end
+    plot(time,smoothInterpolated, 'DisplayName', 'Final Tachogram');
+    scatter(time(intervalLocs(noisyIntervals)),smoothInterpolated(intervalLocs(noisyIntervals)),'DisplayName','Interpolated Data', ...
+        'MarkerEdgeColor','r',...
+        'MarkerFaceColor','r',...
+        'LineWidth',0);
     legend('show');
 end
 title("Tachogram Filtered");
