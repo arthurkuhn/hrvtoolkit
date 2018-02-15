@@ -474,7 +474,7 @@ function fileSelect_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 init(hObject);
-makePlots(hObject);
+makePlots(hObject, false);
 
 %% Open in a new figure window
 % --- Executes on button press in openFigsWindow.
