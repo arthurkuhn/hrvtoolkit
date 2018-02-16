@@ -3,7 +3,7 @@
     <param.appname>HeartBeat_Detector</param.appname>
     <param.icon />
     <param.icons />
-    <param.version>1.0</param.version>
+    <param.version>2.0</param.version>
     <param.authnamewatermark>A. Kuhn, C. Dionet</param.authnamewatermark>
     <param.email>arthur.kuhn@mail.mcgill.ca</param.email>
     <param.company>McGill</param.company>
@@ -36,7 +36,8 @@
     <unset>
       <param.icon />
       <param.icons />
-      <param.version />
+      <param.authnamewatermark />
+      <param.email />
       <param.company />
       <param.summary />
       <param.description />
