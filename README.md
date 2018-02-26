@@ -83,14 +83,14 @@ The WFDB Toolbox allows the user to transparently use signals from the entire da
 | ------ | ------ | ------ |
 | tach | Gets a uniformly sampled and smoothed heart signal. [DOC](https://physionet.org/physiotools/matlab/wfdb-app-matlab/html/tach.html) | ```[hr]=tach('picsdb/infant1_ecg','qrsc'); plot(hr);grid on;hold on``` |
 | rdsamp | Reads a signal from the database [DOC](https://physionet.org/physiotools/matlab/wfdb-app-matlab/html/rdsamp.html) | ```[signal,Fs,tm]=rdsamp('picsdb/infant1_ecg',[],1000); plot(tm,signal(:,1))``` |
-| rdann | Reads an annotation file from the database [DOC](https://physionet.org/physiotools/matlab/wfdb-app-matlab/html/rdann.html)| ```[ann]=rdann('picsdb/infant1_ecg','fqrs');``` |
+| rdann | Reads an annotation file from the database [DOC](https://physionet.org/physiotools/matlab/wfdb-app-matlab/html/rdann.html)| ```[ann]=rdann('picsdb/infant1_ecg','qrsc');``` |
 
 ### Complete Example
 
 ```
 record = 'picsdb/infant1_ecg';
 [signal,Fs,tm]=rdsamp(record);
-[ann]=rdann(record,'fqrs');
+[ann]=rdann(record,'qrsc');
 plot(tm,signal(:,1));hold on;grid on
 plot(tm(ann),signal(ann,1),'ro','MarkerSize',4);
 ```
