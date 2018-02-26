@@ -1,6 +1,6 @@
 *.DS_Store
 *.asv
 *.m~
-WFDB Toolbox/database/**
+WFDBToolbox/database/**
 matlab/Pipeline/gui/HeartBeat_Detector/**
 matlab/Pipeline/Package/**
