@@ -63,17 +63,13 @@ m2html('mfiles','matlab/Pipeline', 'htmldir','doc', 'recursive','on', 'global','
 
 ### WFDB ToolBox
 
-Important note: This plugin can be slow due to the large datafiles downloaded in the background.
-
-#### Installation
-
-Needs to be installed on your machine. [Install Link](https://physionet.org/physiotools/matlab/wfdb-app-matlab/)
-
 #### Database Info
 
 Preterm Infant Cardio-Respiratory Signals Database [Info](https://physionet.org/physiobank/database/picsdb/)
 
 ### Accessing Records
+
+Important note: This plugin can be slow due to the large datafiles downloaded in the background.
 
 The WFDB Toolbox allows the user to transparently use signals from the entire dataset. Signals are lazily downloaded in the cache folder as required.
 
