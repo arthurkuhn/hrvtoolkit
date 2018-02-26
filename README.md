@@ -59,3 +59,40 @@ To get the doc with the graph (needs dot from graphviz in path):
 ```Matlab
 m2html('mfiles','matlab/Pipeline', 'htmldir','doc', 'recursive','on', 'global','on', 'template','frame', 'index','menu', 'graph','on');
 ```
+
+
+### WFDB ToolBox
+
+Important note: This plugin can be slow due to the large datafiles downloaded in the background.
+
+#### Installation
+
+Needs to be installed on your machine. [Install Link](https://physionet.org/physiotools/matlab/wfdb-app-matlab/)
+
+#### Database Info
+
+Preterm Infant Cardio-Respiratory Signals Database [Info](https://physionet.org/physiobank/database/picsdb/)
+
+### Accessing Records
+
+The WFDB Toolbox allows the user to transparently use signals from the entire dataset. Signals are lazily downloaded in the cache folder as required.
+
+### Useful commands
+
+| Command | Function | Example |
+| ------ | ------ | ------ |
+| tach | Gets a uniformly sampled and smoothed heart signal. [DOC](https://physionet.org/physiotools/matlab/wfdb-app-matlab/html/tach.html) | ```[hr]=tach('picsdb/infant1_ecg','qrsc'); plot(hr);grid on;hold on``` |
+| rdsamp | Reads a signal from the database [DOC](https://physionet.org/physiotools/matlab/wfdb-app-matlab/html/rdsamp.html) | ```[signal,Fs,tm]=rdsamp('picsdb/infant1_ecg',[],1000);plot(tm,signal(:,1))``` |
+| rdann | Reads an annotation file from the database [DOC] (https://physionet.org/physiotools/matlab/wfdb-app-matlab/html/rdann.html)| ```[ann]=rdann('picsdb/infant1_ecg','fqrs');``` |
+
+### Complete Example
+
+```
+record = 'picsdb/infant1_ecg';
+[signal,Fs,tm]=rdsamp(record);
+[ann]=rdann(record,'fqrs');
+plot(tm,signal(:,1));hold on;grid on
+plot(tm(ann),signal(ann,1),'ro','MarkerSize',4);
+```
+
+
