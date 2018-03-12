@@ -1,4 +1,4 @@
-function [ result ] = hrvDetect( params )
+function [ result ] = hrvDetectShort( params, proportion )
 %RUNHRVANALYSIS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -7,7 +7,7 @@ ensembleFilterWindowSize = 200; % in ms
 smoothingSplinesCoefficient = 0.5; % between 0 and 1
 
 % Load Sig
-[ sig, fs ] = loadFromFile( params.ecgFile );
+[ sig, fs ] = loadShort( params.ecgFile, proportion );
 
 % Pre-processing
 [ sig, detrended ] = preprocessingNew(sig, fs);

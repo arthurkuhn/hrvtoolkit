@@ -1,4 +1,5 @@
-record = "infant1_ecg";
+record = "infant2_ecg";
+proportion = 0.1; % Proportion of record that we want to evaluate
 
 % General algorithm parameters:
 ensembleFilter = struct('isOn', 1, 'threshold', 0.55);
@@ -12,7 +13,7 @@ params = struct('ecgFile', record, 'postProcessing', postProcessing, 'tachoProce
 fprintf("Running Algorithm ");
 
 % Get the algorithm results:
-result = hrvDetect( params );
+result = hrvDetectShort( params, proportion );
 R_locs = result.R_locs;
 fs = result.fs;
 maxDeviation = fs / 4;  % Quarter of a second is max deviation
@@ -21,7 +22,7 @@ maxDeviation = fs / 4;  % Quarter of a second is max deviation
 fprintf("Getting Valid Data ");
 
 % Get the official annotations:
-[R_locs_valid, ecg_sig] = getOfficialResults( record );
+[R_locs_valid, ecg_sig] = getOfficialResultsShort( record, proportion );
 time = 0:(1/fs):((length(ecg_sig)-1)/fs);
 
 index = 1;
@@ -88,7 +89,7 @@ end
 
 bx3 = subplot(3,1,3);
 hold on;
-plot (time(result.cleanIntervals),result.tachogram);
+plot (time(result.cleanIntervals),result.heartRate);
 legend('Tachogram');
 title('Tachogram');
 xlabel('Time in seconds');

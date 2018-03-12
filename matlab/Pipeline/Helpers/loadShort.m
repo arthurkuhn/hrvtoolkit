@@ -1,5 +1,5 @@
-function [ sig, fs ] = loadFromFile( file )
-%LOADFROMFILE Loads the ECG signal from the full APEX recording file
+function [ sig, fs ] = loadShort( file, proportion )
+%LOADSHORT Cuts the desired input signal and leaves the proportion requested
 %   Input:
 %       filePath can be absolute or relative to working directory
 %   Outputs:
@@ -7,14 +7,9 @@ function [ sig, fs ] = loadFromFile( file )
 %       fs is the sampling 
 %
 %   Example:
-%       [sig, fs] = loadFromFile('a2ecg.mat');
+%       [sig, fs] = shorten('infant1+ecg', 0.1);
 %
-%   Process:
-%   1. The signal is first formatted in a row vector.
-%   2. The first minute of the signal is processed using our full 
-%      pipeline. If necessary, the signal is reversed (see invertIfNeeded).
 load(file + ".mat");
-
 data = eval(file);
 
 if(string(data.channels(1)) ~= 'ECG')
@@ -26,6 +21,12 @@ sig = data.data(:,1);
 if(~isrow(sig))
     sig = sig.';
 end
+
+totalSize = length(sig);
+newSize = floor(length(sig) * proportion);
+
+sig = sig(1:newSize);
+
 
 fs = data.Fs;
 windowInSeconds = 60;
