@@ -34,9 +34,12 @@ end
         avg = zeros(1,(2*windowSize+1));
         left = R_locs-windowSize;
         right = R_locs+windowSize;
+        totalLength = length(R_locs);
         
         parfor i=1:length(R_locs)
             if(R_locs(i) < windowSize + 1)
+                continue;
+            elseif(R_locs(i) > totalLength-windowSize)
                 continue;
             end
             complex = detrended_sig(left(i):right(i));
