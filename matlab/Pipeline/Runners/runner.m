@@ -14,7 +14,7 @@ clear all;
 [ sig, detrended ] = preprocessingNew(sig, fs);
 
 % Kota
-[ R_loc ] = kota(sig, detrended);
+[ R_loc ] = kota(sig, detrended, fs);
 
 validLocs = ones(length(R_loc));
 

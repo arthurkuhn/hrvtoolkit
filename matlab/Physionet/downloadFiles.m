@@ -4,7 +4,7 @@
 % to enable compatibility with normal pipeline.
 
     clear();
-    i = 8;
+    i = 9;
     record = strcat('picsdb/infant', int2str(i), '_ecg');
 
     % Load the data

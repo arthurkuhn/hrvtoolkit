@@ -13,7 +13,7 @@ smoothingSplinesCoefficient = 0.5; % between 0 and 1
 [ sig, detrended ] = preprocessingNew(sig, fs);
 
 % Kota
-[ R_locs ] = kota(sig, detrended);
+[ R_locs ] = kota(sig, detrended, fs);
 
 if(params.postProcessing.ensembleFilter.isOn == 1)
     errors = ensembleNonCorrelatedDetector( detrended, R_locs, params.postProcessing.ensembleFilter.threshold, ensembleFilterWindowSize );
@@ -80,6 +80,7 @@ switch (params.tachoProcessing.interpolationMethod)
 end
 
 result = {};
+result.fs = fs;
 result.tachogram = interval;
 result.R_locs = R_locs;
 result.heartRate = smoothSignal;

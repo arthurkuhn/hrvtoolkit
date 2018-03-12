@@ -1,4 +1,4 @@
-function [ R_loc ] = kota( sig, detrended )
+function [ R_loc ] = kota( sig, detrended, fs )
 %kota QRS detection using Hilbert Transform
 % Detects the location of R-peaks using the algorithm described by Kota &
 % al.
@@ -34,7 +34,7 @@ idx = sig < 0;
 sig(idx) = 0;
 
 % A 150 ms running average was calculated for the rectified data.
-timeWind = 150; %In ms
+timeWind = floor(fs * 150 / 1000); %150 ms window
 sig = movmean(sig, timeWind);
 
 movingAverage = sig;
@@ -56,7 +56,9 @@ transformH = hilbert(sig);
 % Find the angle:
 angleRads = angle(transformH + sig);
 
-[pks,locs] = findpeaks(-angleRads,'MinPeakDistance',250, 'MinPeakHeight',0);
+minPeakSeparation = floor( fs / 4); % Minimum separation between beats is a quarter of a second
+
+[pks,locs] = findpeaks(-angleRads,'MinPeakDistance', minPeakSeparation, 'MinPeakHeight',0);
 
 % FIND R-PEAKS
 %left = find(slips>0);

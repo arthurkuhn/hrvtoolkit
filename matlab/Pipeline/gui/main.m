@@ -157,7 +157,7 @@ waitbar(0.1, h, 'Preprocessing');
 
 % Kota
 waitbar(0.4, h, 'Detecting R-Peaks');
-[ R_loc ] = kota(sig, detrended);
+[ R_loc ] = kota(sig, detrended, fs);
 
 validLocs = ones(1,length(R_loc));
 
@@ -195,7 +195,7 @@ data = {};
 [ sig, detrended ] = preprocessingNew(sig, fs);
 
 % Kota
-[ R_loc ] = kota(sig, detrended);
+[ R_loc ] = kota(sig, detrended, fs);
 
 
 % Save Data Back
