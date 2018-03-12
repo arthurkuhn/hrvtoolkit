@@ -4,3 +4,4 @@
 WFDBToolbox/database/**
 matlab/Pipeline/gui/HeartBeat_Detector/**
 matlab/Pipeline/Package/**
+data/Physionet/**
