@@ -14,10 +14,9 @@
 
 ## TODO List
 
-- Improve GUI (to open, type ```guide``` then open matlab/pipeline/gui/main.fig)
-- Improve documentation (see guidelines below)
-- Standardize post-processing functions
-- Add UI functionality
+- Interpolated Flag in Pipeling
+- Finish Evaluator function
+- GUI update to enable any file selection
 
 
 ## Coding Practices

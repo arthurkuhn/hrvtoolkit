@@ -3,7 +3,8 @@
 % Saves the records in a format very similar to the native APEX format
 % to enable compatibility with normal pipeline.
 
-for i = 1:10
+    clear();
+    i = 8;
     record = strcat('picsdb/infant', int2str(i), '_ecg');
 
     % Load the data
@@ -20,5 +21,8 @@ for i = 1:10
     filename = char(strcat("infant",int2str(i),"_ecg"));
     eval([ filename '=result']);
     save(filename, filename);
+
+for i = 2:3
+    
 end
 
