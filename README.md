@@ -17,6 +17,7 @@
 - Interpolated Flag in Pipeling
 - Finish Evaluator function
 - GUI update to enable any file selection
+- InvertIfNecessary: infant1_ecg suggests bad idea, temporarily removed
 
 
 ## Coding Practices
