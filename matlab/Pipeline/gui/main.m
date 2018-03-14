@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 15-Feb-2018 13:40:23
+% Last Modified by GUIDE v2.5 13-Mar-2018 22:54:18
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -94,8 +94,7 @@ editValues = get(hEditTextboxes, 'String');
 p = {};
 
 % File select
-popup_sel_index = get(handles.fileSelect, 'Value');
-p.fileSelect = popup_sel_index;
+p.fileName = handles.fileName;
 
 % Preprocessing
 p.mediaCheckBox = checkboxValues(1);
@@ -189,7 +188,7 @@ p = handles.p;
 data = {};
 
 % Load Sig
-[ sig, fs ] = loadSig( p.fileSelect );
+[ sig, fs ] = loadFromFile( p.fileName(1:end-4) );
 
 % Pre-processing
 [ sig, detrended ] = preprocessingNew(sig, fs);
@@ -480,15 +479,21 @@ makePlots(hObject,false);
 
 close(h);
 
-%% Resets the graph when changing the selected Signal
-% --- Executes on selection change in fileSelect.
-function fileSelect_Callback(hObject, eventdata, handles)
-% hObject    handle to fileSelect (see GCBO)
+%% Allows the user to select a signal
+% --- Executes on selection change in fileSelectButton.
+function fileSelectButton_Callback(hObject, eventdata, handles)
+% hObject    handle to fileSelectButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 init(hObject);
 makePlots(hObject, false);
+[fileName,pathName] = uigetfile('*.mat','Select the APEX file');
+handles = guidata(hObject);
+set(handles.filename,'String', fileName(1:end-4));
+handles.fileName = fileName;
+handles.pathName = pathName;
+guidata(hObject, handles);
 
 %% Open in a new figure window
 % --- Executes on button press in openFigsWindow.
@@ -576,13 +581,13 @@ end
 delete(handles.figure1)
 
 
-% Hints: contents = get(hObject,'String') returns fileSelect contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from fileSelect
+% Hints: contents = get(hObject,'String') returns fileSelectButton contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from fileSelectButton
 
 
 % --- Executes during object creation, after setting all properties.
-function fileSelect_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to fileSelect (see GCBO)
+function fileSelectButton_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to fileSelectButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -592,7 +597,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
      set(hObject,'BackgroundColor','white');
 end
 
-set(hObject, 'String', {'a5c3ecg', 'G002ecg', 'A1ecg', 'a2f1ecg', 'G011ecg', 'G013ecg'});
+%set(hObject, 'String', {'a5c3ecg', 'G002ecg', 'A1ecg', 'a2f1ecg', 'G011ecg', 'G013ecg'});
 
 
 % --- Executes on button press in mediaCheckBox.
