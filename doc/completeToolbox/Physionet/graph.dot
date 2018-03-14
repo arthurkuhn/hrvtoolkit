@@ -1,0 +1,15 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  evaluator -> getOfficialResults;
+  evaluatorShort -> getOfficialResultsShort;
+  evaluatorShort -> hrvDetectShort;
+  hrvDetectShort -> loadShort;
+
+  downloadFiles [URL="downloadFiles.html"];
+  evaluator [URL="evaluator.html"];
+  evaluatorShort [URL="evaluatorShort.html"];
+  getOfficialResults [URL="getOfficialResults.html"];
+  getOfficialResultsShort [URL="getOfficialResultsShort.html"];
+  hrvDetectShort [URL="hrvDetectShort.html"];
+  loadShort [URL="loadShort.html"];
+}

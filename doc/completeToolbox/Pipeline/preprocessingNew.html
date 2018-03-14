@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of preprocessingNew</title>
+  <meta name="keywords" content="preprocessingNew">
+  <meta name="description" content="preprocessingNew Pre-processing of ECG signal">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html completeToolbox --><!-- menu.html Pipeline -->
+<h1>preprocessingNew
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>preprocessingNew Pre-processing of ECG signal</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [ sig, detrended ] = preprocessingNew(sig, fs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">preprocessingNew Pre-processing of ECG signal
+ Pre-processing using normalization and filtering.
+
+ Process:
+   1. Each second was detrended by removing the mean from each sample and
+      dividing by the standard deviation.
+   2. The signal is then band-passed filtered at 16Hz-26Hz using a
+      butterworth filter.
+
+ Inputs:
+    sig - The raw ECG
+    fs - The sampling frequency
+
+ Outputs:
+    sig - The preprocessed signal
+    detrended - The signal after the first step only (no time shifting).
+
+
+ Reference:
+ Kota, S., Swisher, C.B. &amp; al (2017). &quot;Identification of QRS complex in
+ non-stationary electrocardiogram of sick infants.&quot;
+ Computers in Biology and Medicine 87 (2017) 211–216</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../completeToolbox/Physionet/hrvDetectShort.html" class="code" title="function [ result ] = hrvDetectShort( params, proportion )">hrvDetectShort</a>	RUNHRVANALYSIS Summary of this function goes here</li><li><a href="hrvDetect.html" class="code" title="function [ result ] = hrvDetect( params )">hrvDetect</a>	RUNHRVANALYSIS Summary of this function goes here</li><li><a href="invertIfNecessary.html" class="code" title="function [ res ] = invertIfNecessary( rawEcg, fs, windowInSeconds )">invertIfNecessary</a>	invertIfNecessary Decides whether or not to invert the ECG signal</li><li><a href="../../completeToolbox/gui/main.html" class="code" title="function varargout = main(varargin)">main</a>	MAIN MATLAB code for main.fig</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ sig, detrended ] = preprocessingNew(sig, fs)</a>
+0002 <span class="comment">%preprocessingNew Pre-processing of ECG signal</span>
+0003 <span class="comment">% Pre-processing using normalization and filtering.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Process:</span>
+0006 <span class="comment">%   1. Each second was detrended by removing the mean from each sample and</span>
+0007 <span class="comment">%      dividing by the standard deviation.</span>
+0008 <span class="comment">%   2. The signal is then band-passed filtered at 16Hz-26Hz using a</span>
+0009 <span class="comment">%      butterworth filter.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Inputs:</span>
+0012 <span class="comment">%    sig - The raw ECG</span>
+0013 <span class="comment">%    fs - The sampling frequency</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% Outputs:</span>
+0016 <span class="comment">%    sig - The preprocessed signal</span>
+0017 <span class="comment">%    detrended - The signal after the first step only (no time shifting).</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% Reference:</span>
+0021 <span class="comment">% Kota, S., Swisher, C.B. &amp; al (2017). &quot;Identification of QRS complex in</span>
+0022 <span class="comment">% non-stationary electrocardiogram of sick infants.&quot;</span>
+0023 <span class="comment">% Computers in Biology and Medicine 87 (2017) 211–216</span>
+0024 
+0025 
+0026 <span class="comment">% every second of the ECG signal was normalized by the standard deviation of the signal in that second.</span>
+0027 numSecs = floor(length(sig) / fs);
+0028 sigFullSecs = sig(1:numSecs*fs);
+0029 sigSplit = reshape(sigFullSecs, fs, numSecs);
+0030 newsig = sigSplit;
+0031 
+0032 parfor i = 1:numSecs
+0033     currSec = sigSplit(:,i);
+0034     M = mean(currSec);
+0035     S = std(currSec);
+0036     normalizedSec = arrayfun(@(a) (a - M)/ S, currSec);
+0037     newsig(:,i) = normalizedSec;
+0038 <span class="keyword">end</span>
+0039 sigExtend = reshape(newsig,[],1);
+0040 sig(1:length(sigExtend)) = sigExtend;
+0041 
+0042 <span class="comment">% ECG was detrended using a 120-ms smoothing filter with a zero-phase distortion.</span>
+0043 sig(isnan(sig)) = 0;
+0044 
+0045 detrended = sig;
+0046 
+0047 f1=16; <span class="comment">%cuttoff low frequency to get rid of baseline wander</span>
+0048 f2=26; <span class="comment">%cuttoff frequency to discard high frequency noise</span>
+0049 Wn=[f1 f2]*2/fs; <span class="comment">% cutt off based on fs</span>
+0050 N = 3; <span class="comment">% order of 3 less processing</span>
+0051 [a,b] = butter(N,Wn); <span class="comment">%bandpass filtering</span>
+0052 ecg_h = filtfilt(a,b,sig);
+0053 sig = ecg_h/ max( abs(ecg_h));
+0054 
+0055</pre></div>
+<hr><address>Generated on Wed 14-Mar-2018 09:58:43 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

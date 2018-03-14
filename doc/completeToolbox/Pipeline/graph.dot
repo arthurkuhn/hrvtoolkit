@@ -1,0 +1,20 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  hrvDetect -> ensembleNonCorrelatedDetector;
+  hrvDetect -> kota;
+  hrvDetect -> loadFromFile;
+  hrvDetect -> medFilter;
+  hrvDetect -> missedBeatDetector;
+  hrvDetect -> preprocessingNew;
+  invertIfNecessary -> kota;
+  invertIfNecessary -> preprocessingNew;
+
+  ensembleNonCorrelatedDetector [URL="ensembleNonCorrelatedDetector.html"];
+  hrvDetect [URL="hrvDetect.html"];
+  invertIfNecessary [URL="invertIfNecessary.html"];
+  kota [URL="kota.html"];
+  loadFromFile [URL="loadFromFile.html"];
+  medFilter [URL="medFilter.html"];
+  missedBeatDetector [URL="missedBeatDetector.html"];
+  preprocessingNew [URL="preprocessingNew.html"];
+}

@@ -1,7 +1,0 @@
-/* Created by mdot for Matlab */
-digraph m2html {
-
-  guiRunner [URL="guiRunner.html"];
-  runner [URL="runner.html"];
-  testingRunner [URL="testingRunner.html"];
-}

@@ -1,0 +1,859 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of main</title>
+  <meta name="keywords" content="main">
+  <meta name="description" content="MAIN MATLAB code for main.fig">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html completeToolbox --><!-- menu.html gui -->
+<h1>main
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>MAIN MATLAB code for main.fig</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function varargout = main(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> MAIN MATLAB code for main.fig
+      MAIN, by itself, creates a new MAIN or raises the existing
+      singleton*.
+
+      H = MAIN returns the handle to a new MAIN or the handle to
+      the existing singleton*.
+
+      MAIN('CALLBACK',hObject,eventData,handles,...) calls the local
+      function named CALLBACK in MAIN.M with the given input arguments.
+
+      MAIN('Property','Value',...) creates a new MAIN or raises the
+      existing singleton*.  Starting from the left, property value pairs are
+      applied to the GUI before main_OpeningFcn gets called.  An
+      unrecognized property name or invalid value makes property application
+      stop.  All inputs are passed to main_OpeningFcn via varargin.
+
+      *See GUI Options on GUIDE's Tools menu.  Choose &quot;GUI allows only one
+      instance to run (singleton)&quot;.
+
+ See also: GUIDE, GUIDATA, GUIHANDLES</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../completeToolbox/Pipeline/ensembleNonCorrelatedDetector.html" class="code" title="function nonCorrelated = ensembleNonCorrelatedDetector( detrended_sig, R_locs, minCorrelation, windowSize )">ensembleNonCorrelatedDetector</a>	ENSEMBLEOUTLIERDETECTOR Summary of this function goes here</li><li><a href="../../completeToolbox/Pipeline/kota.html" class="code" title="function [ R_loc ] = kota( sig, detrended, fs )">kota</a>	kota QRS detection using Hilbert Transform</li><li><a href="../../completeToolbox/Pipeline/loadFromFile.html" class="code" title="function [ sig, fs ] = loadFromFile( file )">loadFromFile</a>	LOADFROMFILE Loads the ECG signal from the full APEX recording file</li><li><a href="../../completeToolbox/Pipeline/medFilter.html" class="code" title="function outliers = medFilter( s, tau )">medFilter</a>	medFilter Finds the outliers in the signal using a median filter</li><li><a href="../../completeToolbox/Pipeline/missedBeatDetector.html" class="code" title="function errors = missedBeatDetector( interval, toleratedeviationPercent )">missedBeatDetector</a>	MISSEDBEATDETECTOR Summary of this function goes here</li><li><a href="../../completeToolbox/Pipeline/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>	preprocessingNew Pre-processing of ECG signal</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function main_OpeningFcn(hObject, eventdata, handles, varargin)</a></li><li><a href="#_sub2" class="code">function parseParameters(hObject)</a></li><li><a href="#_sub3" class="code">function init(hObject)</a></li><li><a href="#_sub4" class="code">function compute(hObject)</a></li><li><a href="#_sub5" class="code">function findPeaks(hObject)</a></li><li><a href="#_sub6" class="code">function postProcessIbi(hObject)</a></li><li><a href="#_sub7" class="code">function smoothing(hObject)</a></li><li><a href="#_sub8" class="code">function evaluate(hObject)</a></li><li><a href="#_sub9" class="code">function makePlots(hObject, plotInSeparateFigure)</a></li><li><a href="#_sub10" class="code">function showEvaluationResults(hObject)</a></li><li><a href="#_sub11" class="code">function runButton_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub12" class="code">function fileSelectButton_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub13" class="code">function openFigsWindow_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub14" class="code">function hrvasExport_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub15" class="code">function varargout = main_OutputFcn(hObject, eventdata, handles)</a></li><li><a href="#_sub16" class="code">function FileMenu_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub17" class="code">function OpenMenuItem_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub18" class="code">function PrintMenuItem_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub19" class="code">function CloseMenuItem_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub20" class="code">function fileSelectButton_CreateFcn(hObject, eventdata, handles)</a></li><li><a href="#_sub21" class="code">function mediaCheckBox_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub22" class="code">function ensembleCheckBox_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub23" class="code">function medianFilterPostCheckBox_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub24" class="code">function windowSizePostEdit_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub25" class="code">function windowSizePostEdit_CreateFcn(hObject, eventdata, handles)</a></li><li><a href="#_sub26" class="code">function windowSizeEdit_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub27" class="code">function windowSizeEdit_CreateFcn(hObject, eventdata, handles)</a></li><li><a href="#_sub28" class="code">function minimumCorrelationEdit_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub29" class="code">function minimumCorrelationEdit_CreateFcn(hObject, eventdata, handles)</a></li><li><a href="#_sub30" class="code">function missedBeatsCheckBox_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub31" class="code">function smoothingSplinesCheckBox_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub32" class="code">function smoothingSplinesCoefEdit_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub33" class="code">function smoothingSplinesCoefEdit_CreateFcn(hObject, eventdata, handles)</a></li><li><a href="#_sub34" class="code">function missedBeatsTolerancePercentEdit_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub35" class="code">function missedBeatsTolerancePercentEdit_CreateFcn(hObject, eventdata, handles)</a></li><li><a href="#_sub36" class="code">function checkbox8_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub37" class="code">function edit10_Callback(hObject, eventdata, handles)</a></li><li><a href="#_sub38" class="code">function edit10_CreateFcn(hObject, eventdata, handles)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function varargout = main(varargin)</a>
+0002 <span class="comment">% MAIN MATLAB code for main.fig</span>
+0003 <span class="comment">%      MAIN, by itself, creates a new MAIN or raises the existing</span>
+0004 <span class="comment">%      singleton*.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%      H = MAIN returns the handle to a new MAIN or the handle to</span>
+0007 <span class="comment">%      the existing singleton*.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%      MAIN('CALLBACK',hObject,eventData,handles,...) calls the local</span>
+0010 <span class="comment">%      function named CALLBACK in MAIN.M with the given input arguments.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%      MAIN('Property','Value',...) creates a new MAIN or raises the</span>
+0013 <span class="comment">%      existing singleton*.  Starting from the left, property value pairs are</span>
+0014 <span class="comment">%      applied to the GUI before main_OpeningFcn gets called.  An</span>
+0015 <span class="comment">%      unrecognized property name or invalid value makes property application</span>
+0016 <span class="comment">%      stop.  All inputs are passed to main_OpeningFcn via varargin.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%      *See GUI Options on GUIDE's Tools menu.  Choose &quot;GUI allows only one</span>
+0019 <span class="comment">%      instance to run (singleton)&quot;.</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% See also: GUIDE, GUIDATA, GUIHANDLES</span>
+0022 
+0023 <span class="comment">% Edit the above text to modify the response to help main</span>
+0024 
+0025 <span class="comment">% Last Modified by GUIDE v2.5 13-Mar-2018 22:54:18</span>
+0026 
+0027 <span class="comment">% Begin initialization code - DO NOT EDIT</span>
+0028 gui_Singleton = 1;
+0029 gui_State = struct(<span class="string">'gui_Name'</span>,       mfilename, <span class="keyword">...</span>
+0030                    <span class="string">'gui_Singleton'</span>,  gui_Singleton, <span class="keyword">...</span>
+0031                    <span class="string">'gui_OpeningFcn'</span>, @<a href="#_sub1" class="code" title="subfunction main_OpeningFcn(hObject, eventdata, handles, varargin)">main_OpeningFcn</a>, <span class="keyword">...</span>
+0032                    <span class="string">'gui_OutputFcn'</span>,  @<a href="#_sub15" class="code" title="subfunction varargout = main_OutputFcn(hObject, eventdata, handles)">main_OutputFcn</a>, <span class="keyword">...</span>
+0033                    <span class="string">'gui_LayoutFcn'</span>,  [] , <span class="keyword">...</span>
+0034                    <span class="string">'gui_Callback'</span>,   []);
+0035 <span class="keyword">if</span> nargin &amp;&amp; ischar(varargin{1})
+0036     gui_State.gui_Callback = str2func(varargin{1});
+0037 <span class="keyword">end</span>
+0038 
+0039 <span class="keyword">if</span> nargout
+0040     [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+0041 <span class="keyword">else</span>
+0042     gui_mainfcn(gui_State, varargin{:});
+0043 <span class="keyword">end</span>
+0044 <span class="comment">% End initialization code - DO NOT EDIT</span>
+0045 
+0046 <span class="comment">% --- Executes just before main is made visible.</span>
+0047 <a name="_sub1" href="#_subfunctions" class="code">function main_OpeningFcn(hObject, eventdata, handles, varargin)</a>
+0048 <span class="comment">% This function has no output args, see OutputFcn.</span>
+0049 <span class="comment">% hObject    handle to figure</span>
+0050 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0051 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0052 <span class="comment">% varargin   command line arguments to main (see VARARGIN)</span>
+0053 
+0054 <span class="comment">% Choose default command line output for main</span>
+0055 handles.output = hObject;
+0056 
+0057 <span class="comment">% Create a cluster</span>
+0058 <span class="comment">% if isempty(gcp)</span>
+0059 <span class="comment">%     parpool;</span>
+0060 <span class="comment">% end</span>
+0061 
+0062 <span class="comment">% Update handles structure</span>
+0063 guidata(hObject, handles);
+0064 
+0065 <a href="#_sub3" class="code" title="subfunction init(hObject)">init</a>(hObject);
+0066 <a href="#_sub9" class="code" title="subfunction makePlots(hObject, plotInSeparateFigure)">makePlots</a>(hObject, false);
+0067 
+0068 <span class="comment">% This sets up the initial plot - only do when we are invisible</span>
+0069 <span class="comment">% so window can get raised using main.</span>
+0070 <span class="keyword">if</span> strcmp(get(hObject,<span class="string">'Visible'</span>),<span class="string">'off'</span>)
+0071     <span class="comment">%plot(rand(5));</span>
+0072 <span class="keyword">end</span>
+0073 
+0074 
+0075 
+0076 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0077 <span class="comment">%                                                                       %</span>
+0078 <span class="comment">%                   Initialization Functions                            %</span>
+0079 <span class="comment">%                                                                       %</span>
+0080 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0081 
+0082 <span class="comment">%% Parsing Parameters</span>
+0083 <span class="comment">% Parses the GUI parameters into the handles.p object</span>
+0084 <a name="_sub2" href="#_subfunctions" class="code">function parseParameters(hObject)</a>
+0085 handles = guidata(hObject);
+0086 
+0087 <span class="comment">% Parse Checkboxes</span>
+0088 hCheckboxes = [handles.mediaCheckBox ; handles.ensembleCheckBox; handles.missedBeatsCheckBox; handles.medianFilterPostCheckBox];
+0089 checkboxValues = cell2mat(get(hCheckboxes, <span class="string">'Value'</span>));
+0090 
+0091 <span class="comment">% Parse TextBoxes</span>
+0092 hEditTextboxes = [handles.windowSizeEdit ; handles.minimumCorrelationEdit; handles.windowSizePostEdit; handles.missedBeatsTolerancePercentEdit; handles.smoothingSplinesCoefEdit];
+0093 editValues = get(hEditTextboxes, <span class="string">'String'</span>);
+0094 p = {};
+0095 
+0096 <span class="comment">% File select</span>
+0097 p.fileName = handles.fileName;
+0098 
+0099 <span class="comment">% Preprocessing</span>
+0100 p.mediaCheckBox = checkboxValues(1);
+0101 p.windowSizeEdit = str2double(editValues(1));
+0102 p.ensembleCheckBox = checkboxValues(2);
+0103 p.minimumCorrelationEdit = str2double(editValues(2));
+0104 p.missedBeatsCheckBox = checkboxValues(3);
+0105 p.missedBeatsTolerancePercentEdit = str2double(editValues(4));
+0106 p.smoothingSplinesCoefEdit = str2double(editValues(5));
+0107 p.medianFilterPostCheckBox = checkboxValues(4);
+0108 p.windowSizePostEdit = str2double(editValues(3));
+0109 
+0110 <span class="comment">% Save handles</span>
+0111 handles.p = p;
+0112 guidata(hObject,handles);
+0113 
+0114 <span class="comment">%% Initializes the Sig handles object</span>
+0115 <a name="_sub3" href="#_subfunctions" class="code">function init(hObject)</a>
+0116 
+0117 <span class="comment">%Processing Data</span>
+0118 handles = guidata(hObject);
+0119 handles.sig.t = [];
+0120 handles.sig.detrended = [];
+0121 handles.sig.R_locs = [];
+0122 handles.sig.f = {};
+0123 handles.sig.fs = 0;
+0124 handles.sig.interval = [];
+0125 
+0126 <span class="comment">%Post-Processing Data</span>
+0127 handles.ensemble = {};
+0128 handles.ensemble.ecgErrors = [];
+0129 handles.ensemble.intervalNoise = [];
+0130 handles.noisyIntervals = [];
+0131 handles.missedBeats = {};
+0132 handles.missedBeats.intervalNoise = [];
+0133 handles.madFilter = {};
+0134 handles.madFilter.intervalNoise = [];
+0135 
+0136 <span class="comment">%Smoothing Data</span>
+0137 handles.smoothSig = [];
+0138 guidata(hObject,handles);
+0139 
+0140 
+0141 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0142 <span class="comment">%                                                                       %</span>
+0143 <span class="comment">%                      Computation Functions                            %</span>
+0144 <span class="comment">%                                                                       %</span>
+0145 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0146 <a name="_sub4" href="#_subfunctions" class="code">function compute(hObject)</a>
+0147 handles = guidata(hObject);
+0148 sigNum = handles.p.fileSelect;
+0149 
+0150 h = waitbar(0,<span class="string">'Loading Signal'</span>);
+0151 [ sig, fs ] = loadSig( sigNum );
+0152 
+0153 waitbar(0.1, h, <span class="string">'Preprocessing'</span>);
+0154 <span class="comment">% Pre-processing</span>
+0155 [ sig, detrended ] = <a href="../../completeToolbox/Pipeline/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>(sig, fs);
+0156 
+0157 <span class="comment">% Kota</span>
+0158 waitbar(0.4, h, <span class="string">'Detecting R-Peaks'</span>);
+0159 [ R_loc ] = <a href="../../completeToolbox/Pipeline/kota.html" class="code" title="function [ R_loc ] = kota( sig, detrended, fs )">kota</a>(sig, detrended, fs);
+0160 
+0161 validLocs = ones(1,length(R_loc));
+0162 
+0163 
+0164 waitbar(0.9, h, <span class="string">'Preparing Plots'</span>);
+0165 interval = diff(R_loc); <span class="comment">% Period</span>
+0166 interval(length(interval)+1) = interval(length(interval)); <span class="comment">% Adding one last index</span>
+0167 interval = interval./fs;
+0168 <span class="comment">%dlmwrite(file+&quot;.ibi&quot;,transpose(periodsSecs));</span>
+0169 interval = interval.^-1;
+0170 interval = interval.*60; <span class="comment">% To get BPM</span>
+0171 interval(isinf(interval)) = -2;
+0172 
+0173 close(h)
+0174 
+0175 handles = guidata(hObject);
+0176 handles.sig.t = 0:(1/fs):((length(detrended)-1)/fs);
+0177 handles.sig.detrended = detrended;
+0178 handles.sig.R_locs = R_loc;
+0179 handles.sig.f = fit(transpose(handles.sig.t(R_loc)),transpose(interval),<span class="string">'smoothingspline'</span>);
+0180 handles.sig.interval = interval;
+0181 handles.sig.fs = fs;
+0182 
+0183 guidata(hObject, handles);
+0184 
+0185 <a name="_sub5" href="#_subfunctions" class="code">function findPeaks(hObject)</a>
+0186 handles = guidata(hObject);
+0187 p = handles.p;
+0188 data = {};
+0189 
+0190 <span class="comment">% Load Sig</span>
+0191 [ sig, fs ] = <a href="../../completeToolbox/Pipeline/loadFromFile.html" class="code" title="function [ sig, fs ] = loadFromFile( file )">loadFromFile</a>( p.fileName(1:end-4) );
+0192 
+0193 <span class="comment">% Pre-processing</span>
+0194 [ sig, detrended ] = <a href="../../completeToolbox/Pipeline/preprocessingNew.html" class="code" title="function [ sig, detrended ] = preprocessingNew(sig, fs)">preprocessingNew</a>(sig, fs);
+0195 
+0196 <span class="comment">% Kota</span>
+0197 [ R_loc ] = <a href="../../completeToolbox/Pipeline/kota.html" class="code" title="function [ R_loc ] = kota( sig, detrended, fs )">kota</a>(sig, detrended, fs);
+0198 
+0199 
+0200 <span class="comment">% Save Data Back</span>
+0201 data.fs = fs;
+0202 data.detrended = detrended;
+0203 data.R_locs = R_loc;
+0204 data.t = 0:(1/fs):((length(detrended)-1)/fs);
+0205 data.interval = diff(R_loc);
+0206 
+0207 handles.sig = data;
+0208 guidata(hObject, handles);
+0209 
+0210 <a name="_sub6" href="#_subfunctions" class="code">function postProcessIbi(hObject)</a>
+0211 handles = guidata(hObject);
+0212 p = handles.p;
+0213 data = handles.sig;
+0214 <span class="keyword">if</span>(p.ensembleCheckBox == 1)
+0215     windowSize = 200;
+0216     errors = <a href="../../completeToolbox/Pipeline/ensembleNonCorrelatedDetector.html" class="code" title="function nonCorrelated = ensembleNonCorrelatedDetector( detrended_sig, R_locs, minCorrelation, windowSize )">ensembleNonCorrelatedDetector</a>( data.detrended, data.R_locs, p.minimumCorrelationEdit, windowSize );
+0217 <span class="keyword">else</span>
+0218     errors = zeros(1,length(data.R_locs));
+0219 <span class="keyword">end</span>
+0220 
+0221 
+0222 <span class="comment">% Make the interval array with the valid beats</span>
+0223 interval = diff(data.R_locs);
+0224 noisy = zeros(1,length(interval));
+0225 <span class="keyword">for</span> i = 1:length(data.R_locs)-1
+0226     <span class="comment">% Since here interval(i) = R_locs(i+1)-R_locs(i)</span>
+0227     <span class="keyword">if</span>(errors(i) == 1)
+0228         <span class="keyword">if</span>(i &gt; 1)
+0229             noisy(i-1) = 1;
+0230             noisy(i) = 1;
+0231         <span class="keyword">else</span>
+0232             noisy(i) = 1;
+0233         <span class="keyword">end</span>
+0234     <span class="keyword">end</span>
+0235 <span class="keyword">end</span>
+0236         
+0237 handles.ensemble = {};
+0238 handles.ensemble.ecgErrors = errors;
+0239 handles.ensemble.intervalNoise = noisy;
+0240 
+0241 <span class="comment">% Check for missed beat signs</span>
+0242 
+0243 <span class="keyword">if</span>(p.missedBeatsCheckBox == 1)
+0244     missedBeatErrors = <a href="../../completeToolbox/Pipeline/missedBeatDetector.html" class="code" title="function errors = missedBeatDetector( interval, toleratedeviationPercent )">missedBeatDetector</a>( interval, p.missedBeatsTolerancePercentEdit );
+0245 <span class="keyword">else</span> 
+0246     missedBeatErrors = zeros(1, length(interval));
+0247 <span class="keyword">end</span>
+0248 
+0249 handles.missedBeats = {};
+0250 handles.missedBeats.intervalNoise = missedBeatErrors;
+0251 
+0252 <span class="comment">% Use the non-destructive median filter:</span>
+0253 <span class="keyword">if</span>(p.mediaCheckBox == 1)
+0254     outliers = <a href="../../completeToolbox/Pipeline/medFilter.html" class="code" title="function outliers = medFilter( s, tau )">medFilter</a>( interval, p.windowSizeEdit );
+0255 <span class="keyword">else</span> 
+0256     outliers = zeros(1, length(interval));
+0257 <span class="keyword">end</span>
+0258 
+0259 totalNoisyIntervals = noisy | missedBeatErrors | outliers;
+0260 
+0261 handles.ensemble = {};
+0262 handles.ensemble.ecgErrors = errors;
+0263 handles.ensemble.intervalNoise = noisy;
+0264 handles.noisyIntervals = totalNoisyIntervals;
+0265 handles.missedBeats = {};
+0266 handles.missedBeats.intervalNoise = missedBeatErrors;
+0267 handles.madFilter = {};
+0268 handles.madFilter.intervalNoise = outliers;
+0269 
+0270 guidata(hObject, handles);
+0271 
+0272 <a name="_sub7" href="#_subfunctions" class="code">function smoothing(hObject)</a>
+0273 handles = guidata(hObject);
+0274 p = handles.p;
+0275 
+0276 noisyIntervals = logical(handles.noisyIntervals);
+0277 time = handles.sig.t;
+0278 R_locs = handles.sig.R_locs;
+0279 fs = handles.sig.fs;
+0280 interval = diff(R_locs);
+0281 BPM = 60*fs./(interval);
+0282 intervalLocs = R_locs(1:end-1);
+0283 <span class="keyword">switch</span> get(get(handles.tachoGeneration,<span class="string">'SelectedObject'</span>),<span class="string">'Tag'</span>)
+0284       <span class="keyword">case</span> <span class="string">'smoothingSplinesRadio'</span>
+0285           f = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),<span class="string">'smoothingspline'</span>,<span class="string">'SmoothingParam'</span>,p.smoothingSplinesCoefEdit);
+0286           smoothSignal = f(time(intervalLocs(~noisyIntervals)));
+0287       <span class="keyword">case</span> <span class="string">'directRadio'</span>
+0288           smoothSignal = BPM(~noisyIntervals);
+0289 <span class="keyword">end</span>
+0290 <span class="keyword">if</span>(p.medianFilterPostCheckBox == 1)
+0291     smoothSignal = medfilt1(smoothSignal,p.windowSizePostEdit);
+0292 <span class="keyword">end</span>
+0293 
+0294 handles.smoothSig = smoothSignal;
+0295 guidata(hObject, handles);
+0296 
+0297 <a name="_sub8" href="#_subfunctions" class="code">function evaluate(hObject)</a>
+0298 handles = guidata(hObject);
+0299 data = handles.sig;
+0300 p = handles.p;
+0301 noisyIntervals = handles.noisyIntervals;
+0302 
+0303 time = handles.sig.t;
+0304 R_locs = handles.sig.R_locs;
+0305 fs = handles.sig.fs;
+0306 interval = diff(R_locs);
+0307 BPM = 60*fs./(interval);
+0308 intervalLocs = R_locs(1:end-1);
+0309 
+0310 percentClean = ( length(data.R_locs)-1 - sum(noisyIntervals) ) / ( length(data.R_locs)-1 ) * 100;
+0311 noisyPerThousand = sum(noisyIntervals) / ( length(data.R_locs)-1 ) * 1000;
+0312 <span class="keyword">switch</span> get(get(handles.tachoGeneration,<span class="string">'SelectedObject'</span>),<span class="string">'Tag'</span>)
+0313     <span class="keyword">case</span> <span class="string">'smoothingSplinesRadio'</span>
+0314         [~,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),<span class="string">'smoothingspline'</span>,<span class="string">'SmoothingParam'</span>,p.smoothingSplinesCoefEdit);
+0315         r_squarred = gof.rsquare;
+0316     <span class="keyword">case</span> <span class="string">'directRadio'</span>
+0317         r_squarred = 0;
+0318 <span class="keyword">end</span>
+0319 
+0320 nonCorrelatedBeats = sum(handles.ensemble.ecgErrors);
+0321 missedBeats = sum(handles.missedBeats.intervalNoise);
+0322 madFilterNoise = sum(handles.madFilter.intervalNoise);
+0323 
+0324 eval = {};
+0325 eval.numBeats = length(R_locs);
+0326 eval.ibiPercentClean = percentClean;
+0327 eval.noisyPerThousand = noisyPerThousand;
+0328 eval.fitRSquare = r_squarred;
+0329 eval.nonCorrelatedBeats = nonCorrelatedBeats;
+0330 eval.missedBeats = missedBeats;
+0331 eval.madFilterNoise = madFilterNoise;
+0332 handles.eval = eval;
+0333 guidata(hObject, handles);
+0334 
+0335 
+0336 
+0337 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0338 <span class="comment">%                                                                       %</span>
+0339 <span class="comment">%                           Output Functions                            %</span>
+0340 <span class="comment">%                                                                       %</span>
+0341 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0342 <a name="_sub9" href="#_subfunctions" class="code">function makePlots(hObject, plotInSeparateFigure)</a>
+0343 handles = guidata(hObject);
+0344 <span class="keyword">if</span>(plotInSeparateFigure == true)
+0345     figure;
+0346     ax1 = subplot(3,1,1);
+0347 <span class="keyword">else</span>
+0348     axes(handles.axes1);
+0349     cla();
+0350 <span class="keyword">end</span>
+0351 hold on;
+0352 ecgErrors = logical(handles.ensemble.ecgErrors); <span class="comment">% Logical to allow indexing</span>
+0353 noisyIntervals = logical(handles.noisyIntervals);
+0354 noisyIntsEnsemble = logical(handles.ensemble.intervalNoise);
+0355 noisyIntsMissedBeats = logical(handles.missedBeats.intervalNoise);
+0356 noisyIntsMadFilter = logical(handles.madFilter.intervalNoise);
+0357 
+0358 time = handles.sig.t;
+0359 R_locs = handles.sig.R_locs;
+0360 detrended = handles.sig.detrended;
+0361 fs = handles.sig.fs;
+0362 interval = diff(R_locs);
+0363 
+0364 <span class="keyword">if</span>(~isempty(time))
+0365     plot(time,detrended);
+0366     plot(time(R_locs(~ecgErrors)),detrended(R_locs(~ecgErrors)),<span class="string">'bv'</span>,<span class="string">'MarkerFaceColor'</span>,<span class="string">'b'</span>)
+0367     <span class="keyword">if</span>(sum(ecgErrors) ~= 0)
+0368         plot(time(R_locs(ecgErrors)),detrended(R_locs(ecgErrors)),<span class="string">'rv'</span>,<span class="string">'MarkerFaceColor'</span>,<span class="string">'r'</span>)
+0369         legend(<span class="string">'ECG'</span>,<span class="string">'R-Peaks'</span>, <span class="string">'Uncorrelated Beats'</span>);
+0370     <span class="keyword">else</span>
+0371         legend(<span class="string">'ECG'</span>,<span class="string">'R-Peaks'</span>);
+0372     <span class="keyword">end</span>
+0373 <span class="keyword">end</span>
+0374 title(<span class="string">'ECG Signal with R points'</span>);
+0375 xlabel(<span class="string">'Time (s)'</span>);
+0376 ylabel(<span class="string">'Amplitude'</span>);
+0377 
+0378 <span class="keyword">if</span>(plotInSeparateFigure == true)
+0379     ax2 = subplot(3,1,2);
+0380 <span class="keyword">else</span>
+0381     axes(handles.axes2);
+0382     cla();
+0383 <span class="keyword">end</span>
+0384 hold on;
+0385 intervalLocs = R_locs(1:end-1);
+0386 BPM = 60*fs./(interval);
+0387 <span class="keyword">if</span>(~isempty(time))
+0388     f = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),<span class="string">'smoothingspline'</span>);
+0389     h = plot(f,time(intervalLocs(~noisyIntervals)),BPM(~noisyIntervals));
+0390     legend(h,{<span class="string">'Valid RR-Intervals'</span>, <span class="string">'Default Fit'</span>});
+0391     scatter(time(intervalLocs(noisyIntsEnsemble)),BPM(noisyIntsEnsemble),<span class="string">'DisplayName'</span>,<span class="string">'Ensemble Filtered'</span>);
+0392     scatter(time(intervalLocs(noisyIntsMissedBeats)),BPM(noisyIntsMissedBeats),<span class="string">'DisplayName'</span>,<span class="string">'Missed Beats'</span>);
+0393     scatter(time(intervalLocs(noisyIntsMadFilter)),BPM(noisyIntsMadFilter),<span class="string">'DisplayName'</span>,<span class="string">'MAD Filtered'</span>);
+0394     legend(<span class="string">'show'</span>);
+0395 <span class="keyword">end</span>
+0396 
+0397 title(&quot;Tachogram&quot;);
+0398 ylabel(&quot;BPM&quot;);
+0399 xlabel(&quot;Time (s)&quot;);
+0400 ylim([100 200]);
+0401 
+0402 
+0403 <span class="keyword">if</span>(plotInSeparateFigure == true)
+0404     ax3 = subplot(3,1,3);
+0405 <span class="keyword">else</span>
+0406     axes(handles.axes3);
+0407     cla();
+0408 <span class="keyword">end</span>
+0409 <span class="keyword">if</span>(~isempty(time))
+0410     hold on;
+0411     <span class="keyword">switch</span> get(get(handles.tachoGeneration,<span class="string">'SelectedObject'</span>),<span class="string">'Tag'</span>)
+0412         <span class="keyword">case</span> <span class="string">'smoothingSplinesRadio'</span>
+0413         smoothInterpolated = interp1(time(intervalLocs(~noisyIntervals)),handles.smoothSig,time,<span class="string">'spline'</span>);
+0414         <span class="keyword">case</span> <span class="string">'directRadio'</span>
+0415         smoothInterpolated = interp1(time(intervalLocs(~noisyIntervals)),handles.smoothSig,time,<span class="string">'linear'</span>);
+0416     <span class="keyword">end</span>
+0417     plot(time,smoothInterpolated, <span class="string">'DisplayName'</span>, <span class="string">'Final Tachogram'</span>);
+0418     scatter(time(intervalLocs(noisyIntervals)),smoothInterpolated(intervalLocs(noisyIntervals)),<span class="string">'DisplayName'</span>,<span class="string">'Interpolated Data'</span>, <span class="keyword">...</span>
+0419         <span class="string">'MarkerEdgeColor'</span>,<span class="string">'r'</span>,<span class="keyword">...</span>
+0420         <span class="string">'MarkerFaceColor'</span>,<span class="string">'r'</span>,<span class="keyword">...</span>
+0421         <span class="string">'LineWidth'</span>,0.1);
+0422     legend(<span class="string">'show'</span>);
+0423 <span class="keyword">end</span>
+0424 title(&quot;Tachogram Filtered&quot;);
+0425 ylabel(&quot;BPM&quot;);
+0426 xlabel(&quot;Time (s)&quot;);
+0427 ylim([100 200]);
+0428 <span class="keyword">if</span>(plotInSeparateFigure)
+0429     linkaxes([ax1,ax2, ax3],<span class="string">'x'</span>);
+0430 <span class="keyword">end</span>
+0431 guidata(hObject, handles);
+0432 
+0433 <a name="_sub10" href="#_subfunctions" class="code">function showEvaluationResults(hObject)</a>
+0434 handles = guidata(hObject);
+0435 eval = handles.eval;
+0436 set(handles.numRemovedBeatsEnsembleText, <span class="string">'String'</span>, num2str(eval.nonCorrelatedBeats));
+0437 set(handles.numRemovedBeatsMadFilterText, <span class="string">'String'</span>, num2str(eval.madFilterNoise));
+0438 set(handles.numMissedBeatsText, <span class="string">'String'</span>, num2str(eval.missedBeats));
+0439 outputString = num2str(eval.noisyPerThousand / 10) + &quot;<span class="comment">%&quot;;</span>
+0440 set(handles.rPeaksValidText, <span class="string">'String'</span>, outputString);
+0441 set(handles.splinesRSquareText, <span class="string">'String'</span>, num2str(eval.fitRSquare));
+0442 set(handles.detectedBeatsText, <span class="string">'String'</span>, num2str(eval.numBeats));
+0443 
+0444 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0445 <span class="comment">%                                                                       %</span>
+0446 <span class="comment">%                           Used CallBacks                              %</span>
+0447 <span class="comment">%                                                                       %</span>
+0448 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0449 
+0450 <span class="comment">%% Executes the main code</span>
+0451 <span class="comment">% --- Executes on button press in runButton.</span>
+0452 <a name="_sub11" href="#_subfunctions" class="code">function runButton_Callback(hObject, eventdata, handles)</a>
+0453 <span class="comment">% hObject    handle to runButton (see GCBO)</span>
+0454 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0455 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0456 
+0457 
+0458 <a href="#_sub2" class="code" title="subfunction parseParameters(hObject)">parseParameters</a>(hObject);
+0459 
+0460 <span class="comment">% compute(hObject);</span>
+0461 h = waitbar(0.2,<span class="string">'Finding Peaks'</span>);
+0462 <span class="keyword">if</span>(isempty(handles.sig.t))
+0463     <a href="#_sub5" class="code" title="subfunction findPeaks(hObject)">findPeaks</a>(hObject);
+0464 <span class="keyword">end</span>
+0465 
+0466 waitbar(0.8, h, <span class="string">'Post-Processing'</span>);
+0467 <a href="#_sub6" class="code" title="subfunction postProcessIbi(hObject)">postProcessIbi</a>(hObject);
+0468 
+0469 waitbar(0.9, h, <span class="string">'Smoothing'</span>);
+0470 <a href="#_sub7" class="code" title="subfunction smoothing(hObject)">smoothing</a>(hObject);
+0471 
+0472 waitbar(0.95, h, <span class="string">'Evaluating'</span>);
+0473 <a href="#_sub8" class="code" title="subfunction evaluate(hObject)">evaluate</a>(hObject);
+0474 <a href="#_sub10" class="code" title="subfunction showEvaluationResults(hObject)">showEvaluationResults</a>(hObject);
+0475 
+0476 waitbar(0.99, h, <span class="string">'Plotting'</span>);
+0477 <a href="#_sub9" class="code" title="subfunction makePlots(hObject, plotInSeparateFigure)">makePlots</a>(hObject,false);
+0478 
+0479 
+0480 close(h);
+0481 
+0482 <span class="comment">%% Allows the user to select a signal</span>
+0483 <span class="comment">% --- Executes on selection change in fileSelectButton.</span>
+0484 <a name="_sub12" href="#_subfunctions" class="code">function fileSelectButton_Callback(hObject, eventdata, handles)</a>
+0485 <span class="comment">% hObject    handle to fileSelectButton (see GCBO)</span>
+0486 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0487 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0488 
+0489 <a href="#_sub3" class="code" title="subfunction init(hObject)">init</a>(hObject);
+0490 <a href="#_sub9" class="code" title="subfunction makePlots(hObject, plotInSeparateFigure)">makePlots</a>(hObject, false);
+0491 [fileName,pathName] = uigetfile(<span class="string">'*.mat'</span>,<span class="string">'Select the APEX file'</span>);
+0492 handles = guidata(hObject);
+0493 set(handles.filename,<span class="string">'String'</span>, fileName(1:end-4));
+0494 handles.fileName = fileName;
+0495 handles.pathName = pathName;
+0496 guidata(hObject, handles);
+0497 
+0498 <span class="comment">%% Open in a new figure window</span>
+0499 <span class="comment">% --- Executes on button press in openFigsWindow.</span>
+0500 <a name="_sub13" href="#_subfunctions" class="code">function openFigsWindow_Callback(hObject, eventdata, handles)</a>
+0501 <span class="comment">% hObject    handle to openFigsWindow (see GCBO)</span>
+0502 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0503 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0504 <span class="keyword">if</span>(~isempty(handles.sig.t))
+0505     <a href="#_sub9" class="code" title="subfunction makePlots(hObject, plotInSeparateFigure)">makePlots</a>(hObject,true);
+0506 <span class="keyword">end</span>
+0507 
+0508 <span class="comment">%% Export to HRVAS</span>
+0509 <span class="comment">% --- Executes on button press in hrvasExport.</span>
+0510 <a name="_sub14" href="#_subfunctions" class="code">function hrvasExport_Callback(hObject, eventdata, handles)</a>
+0511 <span class="comment">% hObject    handle to hrvasExport (see GCBO)</span>
+0512 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0513 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0514 
+0515 
+0516 
+0517 
+0518 
+0519 
+0520 
+0521 
+0522 
+0523 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0524 <span class="comment">%                                                                       %</span>
+0525 <span class="comment">%                           Unused CallBacks                            %</span>
+0526 <span class="comment">%                                                                       %</span>
+0527 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0528 
+0529 
+0530 <span class="comment">% UIWAIT makes main wait for user response (see UIRESUME)</span>
+0531 <span class="comment">% uiwait(handles.figure1);</span>
+0532 
+0533 
+0534 <span class="comment">% --- Outputs from this function are returned to the command line.</span>
+0535 <a name="_sub15" href="#_subfunctions" class="code">function varargout = main_OutputFcn(hObject, eventdata, handles)</a>
+0536 <span class="comment">% varargout  cell array for returning output args (see VARARGOUT);</span>
+0537 <span class="comment">% hObject    handle to figure</span>
+0538 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0539 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0540 
+0541 <span class="comment">% Get default command line output from handles structure</span>
+0542 varargout{1} = handles.output;
+0543 
+0544 
+0545 <span class="comment">% --------------------------------------------------------------------</span>
+0546 <a name="_sub16" href="#_subfunctions" class="code">function FileMenu_Callback(hObject, eventdata, handles)</a>
+0547 <span class="comment">% hObject    handle to FileMenu (see GCBO)</span>
+0548 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0549 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0550 
+0551 
+0552 <span class="comment">% --------------------------------------------------------------------</span>
+0553 <a name="_sub17" href="#_subfunctions" class="code">function OpenMenuItem_Callback(hObject, eventdata, handles)</a>
+0554 <span class="comment">% hObject    handle to OpenMenuItem (see GCBO)</span>
+0555 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0556 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0557 file = uigetfile(<span class="string">'*.fig'</span>);
+0558 <span class="keyword">if</span> ~isequal(file, 0)
+0559     open(file);
+0560 <span class="keyword">end</span>
+0561 
+0562 <span class="comment">% --------------------------------------------------------------------</span>
+0563 <a name="_sub18" href="#_subfunctions" class="code">function PrintMenuItem_Callback(hObject, eventdata, handles)</a>
+0564 <span class="comment">% hObject    handle to PrintMenuItem (see GCBO)</span>
+0565 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0566 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0567 printdlg(handles.figure1)
+0568 
+0569 <span class="comment">% --------------------------------------------------------------------</span>
+0570 <a name="_sub19" href="#_subfunctions" class="code">function CloseMenuItem_Callback(hObject, eventdata, handles)</a>
+0571 <span class="comment">% hObject    handle to CloseMenuItem (see GCBO)</span>
+0572 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0573 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0574 selection = questdlg([<span class="string">'Close '</span> get(handles.figure1,<span class="string">'Name'</span>) <span class="string">'?'</span>],<span class="keyword">...</span>
+0575                      [<span class="string">'Close '</span> get(handles.figure1,<span class="string">'Name'</span>) <span class="string">'...'</span>],<span class="keyword">...</span>
+0576                      <span class="string">'Yes'</span>,<span class="string">'No'</span>,<span class="string">'Yes'</span>);
+0577 <span class="keyword">if</span> strcmp(selection,<span class="string">'No'</span>)
+0578     <span class="keyword">return</span>;
+0579 <span class="keyword">end</span>
+0580 
+0581 delete(handles.figure1)
+0582 
+0583 
+0584 <span class="comment">% Hints: contents = get(hObject,'String') returns fileSelectButton contents as cell array</span>
+0585 <span class="comment">%        contents{get(hObject,'Value')} returns selected item from fileSelectButton</span>
+0586 
+0587 
+0588 <span class="comment">% --- Executes during object creation, after setting all properties.</span>
+0589 <a name="_sub20" href="#_subfunctions" class="code">function fileSelectButton_CreateFcn(hObject, eventdata, handles)</a>
+0590 <span class="comment">% hObject    handle to fileSelectButton (see GCBO)</span>
+0591 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0592 <span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+0593 
+0594 <span class="comment">% Hint: popupmenu controls usually have a white background on Windows.</span>
+0595 <span class="comment">%       See ISPC and COMPUTER.</span>
+0596 <span class="keyword">if</span> ispc &amp;&amp; isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+0597      set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+0598 <span class="keyword">end</span>
+0599 
+0600 <span class="comment">%set(hObject, 'String', {'a5c3ecg', 'G002ecg', 'A1ecg', 'a2f1ecg', 'G011ecg', 'G013ecg'});</span>
+0601 
+0602 
+0603 <span class="comment">% --- Executes on button press in mediaCheckBox.</span>
+0604 <a name="_sub21" href="#_subfunctions" class="code">function mediaCheckBox_Callback(hObject, eventdata, handles)</a>
+0605 <span class="comment">% hObject    handle to mediaCheckBox (see GCBO)</span>
+0606 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0607 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0608 
+0609 <span class="comment">% Hint: get(hObject,'Value') returns toggle state of mediaCheckBox</span>
+0610 
+0611 
+0612 <span class="comment">% --- Executes on button press in ensembleCheckBox.</span>
+0613 <a name="_sub22" href="#_subfunctions" class="code">function ensembleCheckBox_Callback(hObject, eventdata, handles)</a>
+0614 <span class="comment">% hObject    handle to ensembleCheckBox (see GCBO)</span>
+0615 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0616 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0617 
+0618 <span class="comment">% Hint: get(hObject,'Value') returns toggle state of ensembleCheckBox</span>
+0619 
+0620 
+0621 <span class="comment">% --- Executes on button press in medianFilterPostCheckBox.</span>
+0622 <a name="_sub23" href="#_subfunctions" class="code">function medianFilterPostCheckBox_Callback(hObject, eventdata, handles)</a>
+0623 <span class="comment">% hObject    handle to medianFilterPostCheckBox (see GCBO)</span>
+0624 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0625 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0626 
+0627 <span class="comment">% Hint: get(hObject,'Value') returns toggle state of medianFilterPostCheckBox</span>
+0628 
+0629 
+0630 
+0631 <a name="_sub24" href="#_subfunctions" class="code">function windowSizePostEdit_Callback(hObject, eventdata, handles)</a>
+0632 <span class="comment">% hObject    handle to windowSizePostEdit (see GCBO)</span>
+0633 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0634 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0635 
+0636 <span class="comment">% Hints: get(hObject,'String') returns contents of windowSizePostEdit as text</span>
+0637 <span class="comment">%        str2double(get(hObject,'String')) returns contents of windowSizePostEdit as a double</span>
+0638 
+0639 
+0640 <span class="comment">% --- Executes during object creation, after setting all properties.</span>
+0641 <a name="_sub25" href="#_subfunctions" class="code">function windowSizePostEdit_CreateFcn(hObject, eventdata, handles)</a>
+0642 <span class="comment">% hObject    handle to windowSizePostEdit (see GCBO)</span>
+0643 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0644 <span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+0645 
+0646 <span class="comment">% Hint: edit controls usually have a white background on Windows.</span>
+0647 <span class="comment">%       See ISPC and COMPUTER.</span>
+0648 <span class="keyword">if</span> ispc &amp;&amp; isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+0649     set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+0650 <span class="keyword">end</span>
+0651 
+0652 
+0653 
+0654 <a name="_sub26" href="#_subfunctions" class="code">function windowSizeEdit_Callback(hObject, eventdata, handles)</a>
+0655 <span class="comment">% hObject    handle to windowSizeEdit (see GCBO)</span>
+0656 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0657 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0658 
+0659 <span class="comment">% Hints: get(hObject,'String') returns contents of windowSizeEdit as text</span>
+0660 <span class="comment">%        str2double(get(hObject,'String')) returns contents of windowSizeEdit as a double</span>
+0661 
+0662 
+0663 <span class="comment">% --- Executes during object creation, after setting all properties.</span>
+0664 <a name="_sub27" href="#_subfunctions" class="code">function windowSizeEdit_CreateFcn(hObject, eventdata, handles)</a>
+0665 <span class="comment">% hObject    handle to windowSizeEdit (see GCBO)</span>
+0666 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0667 <span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+0668 
+0669 <span class="comment">% Hint: edit controls usually have a white background on Windows.</span>
+0670 <span class="comment">%       See ISPC and COMPUTER.</span>
+0671 <span class="keyword">if</span> ispc &amp;&amp; isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+0672     set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+0673 <span class="keyword">end</span>
+0674 
+0675 
+0676 
+0677 <a name="_sub28" href="#_subfunctions" class="code">function minimumCorrelationEdit_Callback(hObject, eventdata, handles)</a>
+0678 <span class="comment">% hObject    handle to minimumCorrelationEdit (see GCBO)</span>
+0679 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0680 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0681 
+0682 <span class="comment">% Hints: get(hObject,'String') returns contents of minimumCorrelationEdit as text</span>
+0683 <span class="comment">%        str2double(get(hObject,'String')) returns contents of minimumCorrelationEdit as a double</span>
+0684 
+0685 
+0686 <span class="comment">% --- Executes during object creation, after setting all properties.</span>
+0687 <a name="_sub29" href="#_subfunctions" class="code">function minimumCorrelationEdit_CreateFcn(hObject, eventdata, handles)</a>
+0688 <span class="comment">% hObject    handle to minimumCorrelationEdit (see GCBO)</span>
+0689 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0690 <span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+0691 
+0692 <span class="comment">% Hint: edit controls usually have a white background on Windows.</span>
+0693 <span class="comment">%       See ISPC and COMPUTER.</span>
+0694 <span class="keyword">if</span> ispc &amp;&amp; isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+0695     set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+0696 <span class="keyword">end</span>
+0697 
+0698 
+0699 <span class="comment">% --- Executes on button press in missedBeatsCheckBox.</span>
+0700 <a name="_sub30" href="#_subfunctions" class="code">function missedBeatsCheckBox_Callback(hObject, eventdata, handles)</a>
+0701 <span class="comment">% hObject    handle to missedBeatsCheckBox (see GCBO)</span>
+0702 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0703 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0704 
+0705 <span class="comment">% Hint: get(hObject,'Value') returns toggle state of missedBeatsCheckBox</span>
+0706 
+0707 
+0708 <span class="comment">% --- Executes on button press in smoothingSplinesCheckBox.</span>
+0709 <a name="_sub31" href="#_subfunctions" class="code">function smoothingSplinesCheckBox_Callback(hObject, eventdata, handles)</a>
+0710 <span class="comment">% hObject    handle to smoothingSplinesCheckBox (see GCBO)</span>
+0711 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0712 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0713 
+0714 <span class="comment">% Hint: get(hObject,'Value') returns toggle state of smoothingSplinesCheckBox</span>
+0715 
+0716 
+0717 
+0718 <a name="_sub32" href="#_subfunctions" class="code">function smoothingSplinesCoefEdit_Callback(hObject, eventdata, handles)</a>
+0719 <span class="comment">% hObject    handle to smoothingSplinesCoefEdit (see GCBO)</span>
+0720 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0721 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0722 
+0723 <span class="comment">% Hints: get(hObject,'String') returns contents of smoothingSplinesCoefEdit as text</span>
+0724 <span class="comment">%        str2double(get(hObject,'String')) returns contents of smoothingSplinesCoefEdit as a double</span>
+0725 
+0726 
+0727 <span class="comment">% --- Executes during object creation, after setting all properties.</span>
+0728 <a name="_sub33" href="#_subfunctions" class="code">function smoothingSplinesCoefEdit_CreateFcn(hObject, eventdata, handles)</a>
+0729 <span class="comment">% hObject    handle to smoothingSplinesCoefEdit (see GCBO)</span>
+0730 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0731 <span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+0732 
+0733 <span class="comment">% Hint: edit controls usually have a white background on Windows.</span>
+0734 <span class="comment">%       See ISPC and COMPUTER.</span>
+0735 <span class="keyword">if</span> ispc &amp;&amp; isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+0736     set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+0737 <span class="keyword">end</span>
+0738 
+0739 
+0740 
+0741 <a name="_sub34" href="#_subfunctions" class="code">function missedBeatsTolerancePercentEdit_Callback(hObject, eventdata, handles)</a>
+0742 <span class="comment">% hObject    handle to missedBeatsTolerancePercentEdit (see GCBO)</span>
+0743 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0744 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0745 
+0746 <span class="comment">% Hints: get(hObject,'String') returns contents of missedBeatsTolerancePercentEdit as text</span>
+0747 <span class="comment">%        str2double(get(hObject,'String')) returns contents of missedBeatsTolerancePercentEdit as a double</span>
+0748 
+0749 
+0750 <span class="comment">% --- Executes during object creation, after setting all properties.</span>
+0751 <a name="_sub35" href="#_subfunctions" class="code">function missedBeatsTolerancePercentEdit_CreateFcn(hObject, eventdata, handles)</a>
+0752 <span class="comment">% hObject    handle to missedBeatsTolerancePercentEdit (see GCBO)</span>
+0753 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0754 <span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+0755 
+0756 <span class="comment">% Hint: edit controls usually have a white background on Windows.</span>
+0757 <span class="comment">%       See ISPC and COMPUTER.</span>
+0758 <span class="keyword">if</span> ispc &amp;&amp; isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+0759     set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+0760 <span class="keyword">end</span>
+0761 
+0762 
+0763 <span class="comment">% --- Executes on button press in medianFilterPostCheckBox.</span>
+0764 <a name="_sub36" href="#_subfunctions" class="code">function checkbox8_Callback(hObject, eventdata, handles)</a>
+0765 <span class="comment">% hObject    handle to medianFilterPostCheckBox (see GCBO)</span>
+0766 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0767 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0768 
+0769 <span class="comment">% Hint: get(hObject,'Value') returns toggle state of medianFilterPostCheckBox</span>
+0770 
+0771 
+0772 
+0773 <a name="_sub37" href="#_subfunctions" class="code">function edit10_Callback(hObject, eventdata, handles)</a>
+0774 <span class="comment">% hObject    handle to windowSizePostEdit (see GCBO)</span>
+0775 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0776 <span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+0777 
+0778 <span class="comment">% Hints: get(hObject,'String') returns contents of windowSizePostEdit as text</span>
+0779 <span class="comment">%        str2double(get(hObject,'String')) returns contents of windowSizePostEdit as a double</span>
+0780 
+0781 
+0782 <span class="comment">% --- Executes during object creation, after setting all properties.</span>
+0783 <a name="_sub38" href="#_subfunctions" class="code">function edit10_CreateFcn(hObject, eventdata, handles)</a>
+0784 <span class="comment">% hObject    handle to windowSizePostEdit (see GCBO)</span>
+0785 <span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+0786 <span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+0787 
+0788 <span class="comment">% Hint: edit controls usually have a white background on Windows.</span>
+0789 <span class="comment">%       See ISPC and COMPUTER.</span>
+0790 <span class="keyword">if</span> ispc &amp;&amp; isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+0791     set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+0792 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 14-Mar-2018 09:58:43 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

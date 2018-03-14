@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of loadFromFile</title>
+  <meta name="keywords" content="loadFromFile">
+  <meta name="description" content="LOADFROMFILE Loads the ECG signal from the full APEX recording file">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html completeToolbox --><!-- menu.html Pipeline -->
+<h1>loadFromFile
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>LOADFROMFILE Loads the ECG signal from the full APEX recording file</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [ sig, fs ] = loadFromFile( file ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">LOADFROMFILE Loads the ECG signal from the full APEX recording file
+   Input:
+       filePath can be absolute or relative to working directory
+   Outputs:
+       sig is the raw ECG signal
+       fs is the sampling 
+
+   Example:
+       [sig, fs] = loadFromFile('a2ecg.mat');
+
+   Process:
+   1. The signal is first formatted in a row vector.
+   2. The first minute of the signal is processed using our full 
+      pipeline. If necessary, the signal is reversed (see invertIfNeeded).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="hrvDetect.html" class="code" title="function [ result ] = hrvDetect( params )">hrvDetect</a>	RUNHRVANALYSIS Summary of this function goes here</li><li><a href="../../completeToolbox/gui/main.html" class="code" title="function varargout = main(varargin)">main</a>	MAIN MATLAB code for main.fig</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ sig, fs ] = loadFromFile( file )</a>
+0002 <span class="comment">%LOADFROMFILE Loads the ECG signal from the full APEX recording file</span>
+0003 <span class="comment">%   Input:</span>
+0004 <span class="comment">%       filePath can be absolute or relative to working directory</span>
+0005 <span class="comment">%   Outputs:</span>
+0006 <span class="comment">%       sig is the raw ECG signal</span>
+0007 <span class="comment">%       fs is the sampling</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Example:</span>
+0010 <span class="comment">%       [sig, fs] = loadFromFile('a2ecg.mat');</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   Process:</span>
+0013 <span class="comment">%   1. The signal is first formatted in a row vector.</span>
+0014 <span class="comment">%   2. The first minute of the signal is processed using our full</span>
+0015 <span class="comment">%      pipeline. If necessary, the signal is reversed (see invertIfNeeded).</span>
+0016 load(file + &quot;.mat&quot;);
+0017 
+0018 data = eval(file);
+0019 
+0020 <span class="keyword">if</span>(string(data.channels(1)) ~= <span class="string">'ECG'</span>)
+0021     print &quot;Unexpected data format&quot;;
+0022     <span class="keyword">return</span>;
+0023 <span class="keyword">end</span>
+0024 <span class="comment">% Get the first channel (ecg)</span>
+0025 sig = data.data(:,1);
+0026 <span class="keyword">if</span>(~isrow(sig))
+0027     sig = sig.';
+0028 <span class="keyword">end</span>
+0029 
+0030 fs = data.Fs;
+0031 windowInSeconds = 60;
+0032 <span class="comment">%sig = invertIfNecessary( sig, fs, windowInSeconds);</span>
+0033 
+0034 
+0035 
+0036 
+0037 <span class="keyword">end</span>
+0038</pre></div>
+<hr><address>Generated on Wed 14-Mar-2018 09:58:43 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ensembleNonCorrelatedDetector</title>
+  <meta name="keywords" content="ensembleNonCorrelatedDetector">
+  <meta name="description" content="ENSEMBLEOUTLIERDETECTOR Summary of this function goes here">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html completeToolbox --><!-- menu.html Pipeline -->
+<h1>ensembleNonCorrelatedDetector
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ENSEMBLEOUTLIERDETECTOR Summary of this function goes here</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function nonCorrelated = ensembleNonCorrelatedDetector( detrended_sig, R_locs, minCorrelation, windowSize ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">ENSEMBLEOUTLIERDETECTOR Summary of this function goes here
+   Detailed explanation goes here</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../completeToolbox/Physionet/hrvDetectShort.html" class="code" title="function [ result ] = hrvDetectShort( params, proportion )">hrvDetectShort</a>	RUNHRVANALYSIS Summary of this function goes here</li><li><a href="hrvDetect.html" class="code" title="function [ result ] = hrvDetect( params )">hrvDetect</a>	RUNHRVANALYSIS Summary of this function goes here</li><li><a href="../../completeToolbox/gui/main.html" class="code" title="function varargout = main(varargin)">main</a>	MAIN MATLAB code for main.fig</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function nonCorrelated = ensembleNonCorrelatedDetector( detrended_sig, R_locs, minCorrelation, windowSize )</a>
+0002 <span class="comment">%ENSEMBLEOUTLIERDETECTOR Summary of this function goes here</span>
+0003 <span class="comment">%   Detailed explanation goes here</span>
+0004 
+0005 nonCorrelated = zeros(1,length(R_locs));
+0006 
+0007 avg = zeros(1,(2*windowSize+1));
+0008 
+0009 left = R_locs-windowSize;
+0010 right = R_locs+windowSize;
+0011 
+0012 parfor i=1:length(R_locs)
+0013     leftIndex = left(i);
+0014     rightIndex = right(i);
+0015     <span class="keyword">if</span>(leftIndex &lt; 0 || rightIndex &gt; length(R_locs))
+0016         <span class="keyword">continue</span>;
+0017     <span class="keyword">end</span>
+0018     complex = detrended_sig(leftIndex:rightIndex);
+0019     avg = avg + complex;
+0020 <span class="keyword">end</span>
+0021 
+0022 avg = avg./length(R_locs);
+0023 
+0024 parfor i=1:length(R_locs)
+0025     leftIndex = left(i);
+0026     rightIndex = right(i);
+0027     <span class="keyword">if</span>(leftIndex &lt; 0 || rightIndex &gt; length(detrended_sig))
+0028         <span class="keyword">continue</span>;
+0029     <span class="keyword">end</span>
+0030     complex2 = detrended_sig(leftIndex:rightIndex);
+0031     corrCoeff = corrcoef(complex2, avg);
+0032     <span class="keyword">if</span>(corrCoeff(1,2) &gt; minCorrelation)
+0033         <span class="keyword">continue</span>
+0034     <span class="keyword">else</span>
+0035         nonCorrelated(i) = 1;
+0036     <span class="keyword">end</span>
+0037 <span class="keyword">end</span>
+0038 
+0039 
+0040 
+0041 
+0042 <span class="keyword">end</span>
+0043</pre></div>
+<hr><address>Generated on Wed 14-Mar-2018 09:58:43 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

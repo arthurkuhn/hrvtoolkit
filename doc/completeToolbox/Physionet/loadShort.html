@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of loadShort</title>
+  <meta name="keywords" content="loadShort">
+  <meta name="description" content="LOADSHORT Cuts the desired input signal and leaves the proportion requested">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html completeToolbox --><!-- menu.html Physionet -->
+<h1>loadShort
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>LOADSHORT Cuts the desired input signal and leaves the proportion requested</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [ sig, fs ] = loadShort( file, proportion ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">LOADSHORT Cuts the desired input signal and leaves the proportion requested
+   Input:
+       filePath can be absolute or relative to working directory
+   Outputs:
+       sig is the raw ECG signal
+       fs is the sampling 
+
+   Example:
+       [sig, fs] = shorten('infant1+ecg', 0.1);</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="hrvDetectShort.html" class="code" title="function [ result ] = hrvDetectShort( params, proportion )">hrvDetectShort</a>	RUNHRVANALYSIS Summary of this function goes here</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ sig, fs ] = loadShort( file, proportion )</a>
+0002 <span class="comment">%LOADSHORT Cuts the desired input signal and leaves the proportion requested</span>
+0003 <span class="comment">%   Input:</span>
+0004 <span class="comment">%       filePath can be absolute or relative to working directory</span>
+0005 <span class="comment">%   Outputs:</span>
+0006 <span class="comment">%       sig is the raw ECG signal</span>
+0007 <span class="comment">%       fs is the sampling</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Example:</span>
+0010 <span class="comment">%       [sig, fs] = shorten('infant1+ecg', 0.1);</span>
+0011 <span class="comment">%</span>
+0012 load(file + &quot;.mat&quot;);
+0013 data = eval(file);
+0014 
+0015 <span class="keyword">if</span>(string(data.channels(1)) ~= <span class="string">'ECG'</span>)
+0016     print &quot;Unexpected data format&quot;;
+0017     <span class="keyword">return</span>;
+0018 <span class="keyword">end</span>
+0019 <span class="comment">% Get the first channel (ecg)</span>
+0020 sig = data.data(:,1);
+0021 <span class="keyword">if</span>(~isrow(sig))
+0022     sig = sig.';
+0023 <span class="keyword">end</span>
+0024 
+0025 totalSize = length(sig);
+0026 newSize = floor(length(sig) * proportion);
+0027 
+0028 sig = sig(1:newSize);
+0029 
+0030 
+0031 fs = data.Fs;
+0032 windowInSeconds = 60;
+0033 <span class="comment">%sig = invertIfNecessary( sig, fs, windowInSeconds);</span>
+0034 
+0035 
+0036 
+0037 
+0038 <span class="keyword">end</span>
+0039</pre></div>
+<hr><address>Generated on Wed 14-Mar-2018 09:58:43 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
