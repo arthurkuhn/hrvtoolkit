@@ -1,5 +1,5 @@
 record = "infant2_ecg";
-proportion = 0.1; % Proportion of record that we want to evaluate
+proportion = 0.01; % Proportion of record that we want to evaluate
 
 % General algorithm parameters:
 ensembleFilter = struct('isOn', 1, 'threshold', 0.55);
@@ -16,7 +16,7 @@ fprintf("Running Algorithm ");
 result = hrvDetectShort( params, proportion );
 R_locs = result.R_locs;
 fs = result.fs;
-maxDeviation = fs / 4;  % Quarter of a second is max deviation
+maxDeviation = fs / 40;  % Quarter of a second is max deviation
 
 
 fprintf("Getting Valid Data ");
