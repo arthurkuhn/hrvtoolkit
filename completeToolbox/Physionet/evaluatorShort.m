@@ -1,3 +1,5 @@
+clear all;
+
 record = "infant2_ecg";
 proportion = 0.01; % Proportion of record that we want to evaluate
 
@@ -60,24 +62,26 @@ for i=1:length(R_locs_valid)
     end
 end
 
+timeMinutes = time./60;
+
 figure;
-bx1 = subplot(3,1,1);
+bx1 = subplot(2,2,1);
 hold on;
-plot (time,ecg_sig);
-plot (time(R_locs),ecg_sig(R_locs),'rv','MarkerFaceColor','r');
+plot (timeMinutes,ecg_sig);
+plot (timeMinutes(R_locs),ecg_sig(R_locs),'rv','MarkerFaceColor','r');
 legend('ECG','R - Detected', 'R - Valid');
 title('ECG Signal with Computed R points');
-xlabel('Time in seconds');
+xlabel('Time in Minutes');
 ylabel('Amplitude');
 ylim([-1 2]);
 
-bx2 = subplot(3,1,2);
+bx2 = subplot(2,2,2);
 hold on;
-plot (time,ecg_sig);
-plot (time(R_locs_valid),ecg_sig(R_locs_valid),'bv','MarkerFaceColor','b');
+plot (timeMinutes,ecg_sig);
+plot (timeMinutes(R_locs_valid),ecg_sig(R_locs_valid),'bv','MarkerFaceColor','b');
 legend('ECG', 'R - Valid');
 title('ECG Signal with Valid R points');
-xlabel('Time in seconds');
+xlabel('Time in Minutes');
 ylabel('Amplitude');
 ylim([-1 2]);
 
@@ -87,13 +91,30 @@ if(length(result.tachogram) == length(R_locs) - 1)
     result.tachogram(length(result.tachogram) + 1) = result.tachogram(length(result.tachogram));
 end
 
-bx3 = subplot(3,1,3);
+bx3 = subplot(2,2,3);
 hold on;
-plot (time(result.cleanIntervals),result.heartRate);
-legend('Tachogram');
+plot (timeMinutes(result.cleanIntervals),result.heartRate);
+scatter (timeMinutes(result.cleanIntervals),result.heartRate, 'b');
+legend('Tachogram', 'Valid Detected Beats');
 title('Tachogram');
-xlabel('Time in seconds');
-ylabel('Amplitude');
+xlabel('Time in Minutes');
+ylabel('BPM');
 ylim([100 200]);
-linkaxes([bx1,bx2,bx3],'x')
 
+
+bx4 = subplot(2,2,4);
+hold on;
+plot (timeMinutes(result.cleanIntervals),result.heartRate);
+legend('Tachogram');
+title('Expected Tachogram');
+xlabel('Time in Minutes');
+ylabel('BPM');
+ylim([100 200]);
+linkaxes([bx1,bx2],'xy');
+linkaxes([bx3,bx4],'xy');
+linkaxes([bx1,bx2,bx3,bx4],'x');
+
+
+averageDeviation = sum(jitter)/length(jitter);
+figure;
+hist(jitter);
