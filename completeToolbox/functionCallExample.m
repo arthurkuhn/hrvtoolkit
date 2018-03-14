@@ -11,4 +11,4 @@ tachoProcessing = struct('interpolationMethod', 'spline', 'medianFilter', median
 params = struct('ecgFile', 'a5c37ce1d999', 'postProcessing', postProcessing, 'tachoProcessing', tachoProcessing);
 
 
-[ result ] = hrvDetect( params )
+[ result ] = hrvDetect( params );
