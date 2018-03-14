@@ -64,6 +64,14 @@ end
 
 timeMinutes = time./60;
 
+% Make the interval array with the Official beats
+interval_valid = diff(R_locs_valid);
+BPM_valid = 60*fs./(interval_valid);
+interval_locs_valid = R_locs_valid(1:end-1);
+interpolated_validated = interp1(interval_locs_valid,BPM_valid,1:length(ecg_sig),'spline');
+
+
+
 figure;
 bx1 = subplot(2,2,1);
 hold on;
@@ -94,7 +102,7 @@ end
 bx3 = subplot(2,2,3);
 hold on;
 plot (timeMinutes(result.cleanIntervals),result.heartRate);
-scatter (timeMinutes(result.cleanIntervals),result.heartRate, 'b');
+scatter (timeMinutes(result.noisyIntervals),interpolated_validated(result.noisyIntervals), 'r');
 legend('Tachogram', 'Valid Detected Beats');
 title('Tachogram');
 xlabel('Time in Minutes');
@@ -104,7 +112,7 @@ ylim([100 200]);
 
 bx4 = subplot(2,2,4);
 hold on;
-plot (timeMinutes(result.cleanIntervals),result.heartRate);
+plot (timeMinutes(interval_locs_valid),BPM_valid);
 legend('Tachogram');
 title('Expected Tachogram');
 xlabel('Time in Minutes');

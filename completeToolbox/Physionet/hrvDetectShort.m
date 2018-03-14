@@ -85,6 +85,7 @@ result.tachogram = interval;
 result.R_locs = R_locs;
 result.heartRate = smoothSignal;
 result.cleanIntervals = intervalLocs(~noisyIntervals);
+result.noisyIntervals = intervalLocs(noisyIntervals);
 result.interpolatedFlag = [0];
 result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred);
 
