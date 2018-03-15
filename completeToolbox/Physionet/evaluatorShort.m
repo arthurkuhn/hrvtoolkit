@@ -83,7 +83,7 @@ xlabel('Time in Minutes');
 ylabel('Amplitude');
 ylim([-1 2]);
 
-bx2 = subplot(2,2,2);
+bx2 = subplot(2,2,3);
 hold on;
 plot (timeMinutes,ecg_sig);
 plot (timeMinutes(R_locs_valid),ecg_sig(R_locs_valid),'bv','MarkerFaceColor','b');
@@ -99,11 +99,11 @@ if(length(result.tachogram) == length(R_locs) - 1)
     result.tachogram(length(result.tachogram) + 1) = result.tachogram(length(result.tachogram));
 end
 
-bx3 = subplot(2,2,3);
+bx3 = subplot(2,2,2);
 hold on;
 plot (timeMinutes(result.cleanIntervals),result.heartRate);
 scatter (timeMinutes(result.noisyIntervals),interpolated_validated(result.noisyIntervals), 'r');
-legend('Tachogram', 'Valid Detected Beats');
+legend('Tachogram', 'Incorrectly Detected Beats');
 title('Tachogram');
 xlabel('Time in Minutes');
 ylabel('BPM');
