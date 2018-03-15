@@ -82,12 +82,11 @@ end
 result = {};
 result.fs = fs;
 result.tachogram = interval;
-result.R_locs = R_locs;
+result.R_locs = intervalLocs(~noisyIntervals);
 result.heartRate = smoothSignal;
 result.cleanIntervals = intervalLocs(~noisyIntervals);
 result.noisyIntervals = intervalLocs(noisyIntervals);
-result.interpolatedFlag = [0];
-result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred);
+result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', sum(missedBeatErrors));
 
 end
 

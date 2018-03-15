@@ -1,22 +1,23 @@
 clear all;
+close all;
 
-record = "infant2_ecg";
-proportion = 0.01; % Proportion of record that we want to evaluate
+record = "infant5_ecg";
+proportion =0.05; % Proportion of record that we want to evaluate
 
 % General algorithm parameters:
-ensembleFilter = struct('isOn', 1, 'threshold', 0.25);
-madFilter = struct('isOn', 1, 'threshold', 7);
+ensembleFilter = struct('isOn', 0, 'threshold', 0.2);
+madFilter = struct('isOn', 1, 'threshold', 10);
 n_missedBeats = struct('isOn', 1, 'threshold', 20);
 postProcessing = struct('ensembleFilter', ensembleFilter, 'madFilter', madFilter, 'missedBeats', n_missedBeats);
 medianFilter = struct('isOn', 1, 'windowSize', 3);
-tachoProcessing = struct('interpolationMethod', 'spline', 'medianFilter', medianFilter);
+tachoProcessing = struct('interpolationMethod', 'direct', 'medianFilter', medianFilter);
 params = struct('ecgFile', record, 'postProcessing', postProcessing, 'tachoProcessing', tachoProcessing);
 
 fprintf("Running Algorithm ");
 
 % Get the algorithm results:
 result = hrvDetectShort( params, proportion );
-R_locs = result.cleanIntervals;
+R_locs = result.R_locs;
 fs = result.fs;
 maxDeviation = fs / 40;  % Quarter of a second is max deviation
 
@@ -68,7 +69,7 @@ timeMinutes = time./60;
 interval_valid = diff(R_locs_valid);
 BPM_valid = 60*fs./(interval_valid);
 interval_locs_valid = R_locs_valid(1:end-1);
-interpolated_validated = interp1(interval_locs_valid,BPM_valid,1:length(ecg_sig),'spline');
+interpolated = interp1(R_locs,result.heartRate,1:length(ecg_sig),'spline');
 
 
 
@@ -102,8 +103,11 @@ end
 bx3 = subplot(2,2,2);
 hold on;
 plot (timeMinutes(result.cleanIntervals),result.heartRate);
-scatter (timeMinutes(result.noisyIntervals),interpolated_validated(result.noisyIntervals), 5, 'r');
-legend('Tachogram', 'Incorrectly Detected Beats');
+scatter (timeMinutes(result.noisyIntervals),interpolated(result.noisyIntervals), ...
+        'MarkerEdgeColor','r',...
+        'MarkerFaceColor','r',...
+        'LineWidth',0.1);
+legend('Tachogram', 'Locations where collected data was deemed noisy');
 title('Tachogram');
 xlabel('Time in Minutes');
 ylabel('BPM');
