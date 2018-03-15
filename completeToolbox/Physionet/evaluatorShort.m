@@ -102,7 +102,7 @@ end
 bx3 = subplot(2,2,2);
 hold on;
 plot (timeMinutes(result.cleanIntervals),result.heartRate);
-scatter (timeMinutes(result.noisyIntervals),interpolated_validated(result.noisyIntervals), 'r');
+scatter (timeMinutes(result.noisyIntervals),interpolated_validated(result.noisyIntervals), 5, 'r');
 legend('Tachogram', 'Incorrectly Detected Beats');
 title('Tachogram');
 xlabel('Time in Minutes');
