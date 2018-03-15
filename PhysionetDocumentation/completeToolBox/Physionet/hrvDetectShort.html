@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of hrvDetectShort</title>
+  <meta name="keywords" content="hrvDetectShort">
+  <meta name="description" content="hrvDetectShort - Analyses an ECG signal to extract heart-rate information">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # completeToolBox --><!-- menu.html Physionet -->
+<h1>hrvDetectShort
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>hrvDetectShort - Analyses an ECG signal to extract heart-rate information</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [ result ] = hrvDetectShort( params, proportion ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">hrvDetectShort - Analyses an ECG signal to extract heart-rate information
+ This function orchestrates the entire program execution.
+
+ Process:
+   1. Loading
+   2. Pre-Processing
+   3. Kota detection
+   4. Post-Processing
+   5. Smoothing
+
+
+ Inputs:
+    params struct
+
+ Outputs:
+    result struct
+
+ Please see exact struct definition in sample function or documentation.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="loadShort.html" class="code" title="function [ sig, fs ] = loadShort( file, proportion )">loadShort</a>	LOADSHORT Cuts the desired input signal and leaves the proportion requested</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="evaluatorShort.html" class="code" title="">evaluatorShort</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ result ] = hrvDetectShort( params, proportion )</a>
+0002 <span class="comment">%hrvDetectShort - Analyses an ECG signal to extract heart-rate information</span>
+0003 <span class="comment">% This function orchestrates the entire program execution.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Process:</span>
+0006 <span class="comment">%   1. Loading</span>
+0007 <span class="comment">%   2. Pre-Processing</span>
+0008 <span class="comment">%   3. Kota detection</span>
+0009 <span class="comment">%   4. Post-Processing</span>
+0010 <span class="comment">%   5. Smoothing</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% Inputs:</span>
+0014 <span class="comment">%    params struct</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Outputs:</span>
+0017 <span class="comment">%    result struct</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% Please see exact struct definition in sample function or documentation.</span>
+0020 
+0021 <span class="comment">% Ensemble Filter Window Size:</span>
+0022 ensembleFilterWindowSize = 200; <span class="comment">% in ms</span>
+0023 smoothingSplinesCoefficient = 0.5; <span class="comment">% between 0 and 1</span>
+0024 
+0025 <span class="comment">% Load Sig</span>
+0026 [ sig, fs ] = <a href="loadShort.html" class="code" title="function [ sig, fs ] = loadShort( file, proportion )">loadShort</a>( params.ecgFile, proportion );
+0027 
+0028 <span class="comment">% Pre-processing</span>
+0029 [ sig, detrended ] = preprocessingNew(sig, fs);
+0030 
+0031 <span class="comment">% Kota</span>
+0032 [ R_locs ] = kota(sig, detrended, fs);
+0033 
+0034 <span class="keyword">if</span>(params.postProcessing.ensembleFilter.isOn == 1)
+0035     errors = ensembleNonCorrelatedDetector( detrended, R_locs, params.postProcessing.ensembleFilter.threshold, ensembleFilterWindowSize );
+0036 <span class="keyword">else</span>
+0037     errors = zeros(1,length(R_locs));
+0038 <span class="keyword">end</span>
+0039 
+0040 
+0041 <span class="comment">% Make the interval array with the valid beats</span>
+0042 interval = diff(R_locs);
+0043 noisy = zeros(1,length(interval));
+0044 <span class="keyword">for</span> i = 1:length(R_locs)-1
+0045     <span class="comment">% Since here interval(i) = R_locs(i+1)-R_locs(i)</span>
+0046     <span class="keyword">if</span>(errors(i) == 1)
+0047         <span class="keyword">if</span>(i &gt; 1)
+0048             noisy(i-1) = 1;
+0049             noisy(i) = 1;
+0050         <span class="keyword">else</span>
+0051             noisy(i) = 1;
+0052         <span class="keyword">end</span>
+0053     <span class="keyword">end</span>
+0054 <span class="keyword">end</span>
+0055 
+0056 <span class="comment">% Check for missed beat signs</span>
+0057 
+0058 <span class="keyword">if</span>(params.postProcessing.missedBeats.isOn == 1)
+0059     missedBeatErrors = missedBeatDetector( interval, params.postProcessing.missedBeats.threshold );
+0060 <span class="keyword">else</span> 
+0061     missedBeatErrors = zeros(1, length(interval));
+0062 <span class="keyword">end</span>
+0063 
+0064 <span class="comment">% Use the non-destructive median filter:</span>
+0065 <span class="keyword">if</span>(params.postProcessing.madFilter.isOn == 1)
+0066     outliers = medFilter( interval, params.postProcessing.madFilter.threshold );
+0067 <span class="keyword">else</span> 
+0068     outliers = zeros(1, length(interval));
+0069 <span class="keyword">end</span>
+0070 
+0071 totalNoisyIntervals = noisy | missedBeatErrors | outliers;
+0072 
+0073 noisyIntervals = logical(totalNoisyIntervals);
+0074 
+0075 BPM = 60*fs./(interval);
+0076 intervalLocs = R_locs(1:end-1);
+0077 time = 0:(1/fs):((length(detrended)-1)/fs);
+0078 <span class="keyword">switch</span> (params.tachoProcessing.interpolationMethod)
+0079       <span class="keyword">case</span> <span class="string">'spline'</span>
+0080           [f,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),<span class="string">'smoothingspline'</span>,<span class="string">'SmoothingParam'</span>,smoothingSplinesCoefficient);
+0081           smoothSignal = f(time(intervalLocs(~noisyIntervals)));
+0082           r_squarred = gof.rsquare;
+0083       <span class="keyword">case</span> <span class="string">'direct'</span>
+0084           smoothSignal = BPM(~noisyIntervals);
+0085           r_squarred = 0;
+0086 <span class="keyword">end</span>
+0087 <span class="keyword">if</span>(params.tachoProcessing.medianFilter.isOn == 1)
+0088     smoothSignal = medfilt1(smoothSignal,params.tachoProcessing.medianFilter.windowSize);
+0089 <span class="keyword">end</span>
+0090 
+0091 percentNoisy = sum(noisyIntervals) / ( length(R_locs)-1 ) * 100;
+0092 <span class="keyword">switch</span> (params.tachoProcessing.interpolationMethod)
+0093     <span class="keyword">case</span> <span class="string">'spline'</span>
+0094         [f,~,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(smoothSignal),<span class="string">'smoothingspline'</span>,<span class="string">'SmoothingParam'</span>,smoothingSplinesCoefficient);
+0095         heartRate = f(time);
+0096     <span class="keyword">case</span> <span class="string">'direct'</span>
+0097         heartRate = interp1(transpose(time(intervalLocs(~noisyIntervals))),transpose(smoothSignal),time,<span class="string">'linear'</span>);
+0098         r_squarred = 0;
+0099 <span class="keyword">end</span>
+0100 
+0101 
+0102 result = {};
+0103 result.fs = fs;
+0104 result.tachogram = smoothSignal;
+0105 result.R_locs = intervalLocs(~noisyIntervals);
+0106 result.heartRate = heartRate;
+0107 result.noisyIntervals = intervalLocs(noisyIntervals);
+0108 result.evaluation = struct(<span class="string">'totalNumBeats'</span>, length(R_locs),<span class="string">'percentInvalid'</span>, percentNoisy,<span class="string">'splineRSquare'</span>, r_squarred, <span class="string">'numRemovedEnsemble'</span>, sum(noisy), <span class="string">'numRemovedMAD'</span>, sum(outliers), <span class="string">'missedBeatsNum'</span>, sum(missedBeatErrors));
+0109 
+0110 <span class="keyword">end</span>
+0111</pre></div>
+<hr><address>Generated on Thu 15-Mar-2018 13:53:54 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

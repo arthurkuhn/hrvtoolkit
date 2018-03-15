@@ -7,7 +7,7 @@ function [ sig, fs ] = loadShort( file, proportion )
 %       fs is the sampling 
 %
 %   Example:
-%       [sig, fs] = shorten('infant1+ecg', 0.1);
+%       [sig, fs] = loadShort('infant1+ecg', 0.1);
 %
 load(file + ".mat");
 data = eval(file);

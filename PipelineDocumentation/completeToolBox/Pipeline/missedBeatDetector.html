@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of missedBeatDetector</title>
+  <meta name="keywords" content="missedBeatDetector">
+  <meta name="description" content="missedBeatDetector Finds missed beats in the signal">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # completeToolBox --><!-- menu.html Pipeline -->
+<h1>missedBeatDetector
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>missedBeatDetector Finds missed beats in the signal</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function errors = missedBeatDetector( interval, toleratedeviationPercent ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">missedBeatDetector Finds missed beats in the signal
+ Analyses consecutive RR-intervals to detect signs of missed beats.
+
+ For each interval, the sum of its neighbors is computed:
+           sum = interval(i-1) + interval(i+1)
+ An interval is deemed noisy when:
+       interval(i) &gt; sum - sum*toleratedeviationPercent
+ and:  interval(i) &lt; sum - sum*toleratedeviationPercent
+
+ Inputs:
+    interval - The RR-interval data
+    toleratedeviationPercent - Tolerated variation in %
+
+ Outputs:
+    errors - Boolean Array, 1 for errors</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="hrvDetect.html" class="code" title="function [ result ] = hrvDetect( params )">hrvDetect</a>	hrvDetect - Analyses an ECG signal to extract heart-rate information</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function errors = missedBeatDetector( interval, toleratedeviationPercent )</a>
+0002 <span class="comment">%missedBeatDetector Finds missed beats in the signal</span>
+0003 <span class="comment">% Analyses consecutive RR-intervals to detect signs of missed beats.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% For each interval, the sum of its neighbors is computed:</span>
+0006 <span class="comment">%           sum = interval(i-1) + interval(i+1)</span>
+0007 <span class="comment">% An interval is deemed noisy when:</span>
+0008 <span class="comment">%       interval(i) &gt; sum - sum*toleratedeviationPercent</span>
+0009 <span class="comment">% and:  interval(i) &lt; sum - sum*toleratedeviationPercent</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Inputs:</span>
+0012 <span class="comment">%    interval - The RR-interval data</span>
+0013 <span class="comment">%    toleratedeviationPercent - Tolerated variation in %</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% Outputs:</span>
+0016 <span class="comment">%    errors - Boolean Array, 1 for errors</span>
+0017 <span class="comment">%</span>
+0018 
+0019 allowedDeviation = toleratedeviationPercent / 100;
+0020 
+0021 errors = zeros(1,length(interval));
+0022 
+0023 <span class="keyword">for</span> i = 2:length(interval)-1
+0024     <span class="comment">% double of 2 adjacent hardbeats: missed peak</span>
+0025     sumPrevNext = interval(i-1) + interval(i+1);
+0026     deviation = allowedDeviation * sumPrevNext;
+0027     <span class="keyword">if</span>(interval(i) &gt; (sumPrevNext - deviation) &amp;&amp; interval(i) &lt; (sumPrevNext + deviation))
+0028         errors(i) = 1;
+0029     <span class="keyword">end</span>
+0030 <span class="keyword">end</span>
+0031 <span class="keyword">end</span>
+0032</pre></div>
+<hr><address>Generated on Thu 15-Mar-2018 13:51:08 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

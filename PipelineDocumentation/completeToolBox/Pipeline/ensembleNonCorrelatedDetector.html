@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ensembleNonCorrelatedDetector</title>
+  <meta name="keywords" content="ensembleNonCorrelatedDetector">
+  <meta name="description" content="ensembleNonCorrelatedDetector - Analyses an ECG signal and estimated">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # completeToolBox --><!-- menu.html Pipeline -->
+<h1>ensembleNonCorrelatedDetector
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ensembleNonCorrelatedDetector - Analyses an ECG signal and estimated</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function nonCorrelated = ensembleNonCorrelatedDetector( detrended_sig, R_locs, minCorrelation, windowSize ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">ensembleNonCorrelatedDetector - Analyses an ECG signal and estimated
+ R-peak locations to determine which might be noisy.
+
+ Process:
+   1. construct an average beat over all the beats
+   2. each beat is compared to the average beat
+   3. If the static correlation is &lt; minCorrelation, the beat is marked as
+       noisy
+
+ Inputs:
+    detrended_sig detrended ecg signal
+    R_locs the detected peaks
+    minCorrelation between 0 and 1
+    windowSize in samples
+
+ Outputs:
+    nonCorrelated boolean array (1 for errors)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="hrvDetect.html" class="code" title="function [ result ] = hrvDetect( params )">hrvDetect</a>	hrvDetect - Analyses an ECG signal to extract heart-rate information</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function nonCorrelated = ensembleNonCorrelatedDetector( detrended_sig, R_locs, minCorrelation, windowSize )</a>
+0002 <span class="comment">%ensembleNonCorrelatedDetector - Analyses an ECG signal and estimated</span>
+0003 <span class="comment">% R-peak locations to determine which might be noisy.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Process:</span>
+0006 <span class="comment">%   1. construct an average beat over all the beats</span>
+0007 <span class="comment">%   2. each beat is compared to the average beat</span>
+0008 <span class="comment">%   3. If the static correlation is &lt; minCorrelation, the beat is marked as</span>
+0009 <span class="comment">%       noisy</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Inputs:</span>
+0012 <span class="comment">%    detrended_sig detrended ecg signal</span>
+0013 <span class="comment">%    R_locs the detected peaks</span>
+0014 <span class="comment">%    minCorrelation between 0 and 1</span>
+0015 <span class="comment">%    windowSize in samples</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Outputs:</span>
+0018 <span class="comment">%    nonCorrelated boolean array (1 for errors)</span>
+0019 
+0020 
+0021 nonCorrelated = zeros(1,length(R_locs));
+0022 
+0023 avg = zeros(1,(2*windowSize+1));
+0024 
+0025 left = R_locs-windowSize;
+0026 right = R_locs+windowSize;
+0027 
+0028 parfor i=1:length(R_locs)
+0029     leftIndex = left(i);
+0030     rightIndex = right(i);
+0031     <span class="keyword">if</span>(leftIndex &lt; 0 || rightIndex &gt; length(R_locs))
+0032         <span class="keyword">continue</span>;
+0033     <span class="keyword">end</span>
+0034     complex = detrended_sig(leftIndex:rightIndex);
+0035     avg = avg + complex;
+0036 <span class="keyword">end</span>
+0037 
+0038 avg = avg./length(R_locs);
+0039 
+0040 parfor i=1:length(R_locs)
+0041     leftIndex = left(i);
+0042     rightIndex = right(i);
+0043     <span class="keyword">if</span>(leftIndex &lt; 0 || rightIndex &gt; length(detrended_sig))
+0044         <span class="keyword">continue</span>;
+0045     <span class="keyword">end</span>
+0046     complex2 = detrended_sig(leftIndex:rightIndex);
+0047     corrCoeff = corrcoef(complex2, avg);
+0048     <span class="keyword">if</span>(corrCoeff(1,2) &gt; minCorrelation)
+0049         <span class="keyword">continue</span>
+0050     <span class="keyword">else</span>
+0051         nonCorrelated(i) = 1;
+0052     <span class="keyword">end</span>
+0053 <span class="keyword">end</span>
+0054 
+0055 
+0056 
+0057 
+0058 <span class="keyword">end</span>
+0059</pre></div>
+<hr><address>Generated on Thu 15-Mar-2018 13:51:08 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

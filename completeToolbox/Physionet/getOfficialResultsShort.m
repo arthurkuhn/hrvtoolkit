@@ -1,5 +1,15 @@
 function [R_locs, ecg_sig] = getOfficialResultsShort( recordName, proportion )
-%GETOFFICIALRESULTS Returns the valided results for the Physionet data
+%getOfficialResultsShort Cuts the desired input signal and leaves the proportion requested
+%   Input:
+%       recordName can be absolute or relative to working directory
+%       proportion
+%   Outputs:
+%       R_locs is the array of annotated beats
+%       ecg_sig is ecg signal
+%
+%   Example:
+%       [R_locs, ecg_sig] = getOfficialResultsShort('infant1ecg', 0.1);
+%
 
 load(recordName + ".mat");
 data = eval(recordName);

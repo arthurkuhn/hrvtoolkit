@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of evaluatorShort</title>
+  <meta name="keywords" content="evaluatorShort">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # completeToolBox --><!-- menu.html Physionet -->
+<h1>evaluatorShort
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="getOfficialResultsShort.html" class="code" title="function [R_locs, ecg_sig] = getOfficialResultsShort( recordName, proportion )">getOfficialResultsShort</a>	getOfficialResultsShort Cuts the desired input signal and leaves the proportion requested</li><li><a href="hrvDetectShort.html" class="code" title="function [ result ] = hrvDetectShort( params, proportion )">hrvDetectShort</a>	hrvDetectShort - Analyses an ECG signal to extract heart-rate information</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 clear all;
+0002 close all;
+0003 
+0004 record = &quot;infant4_ecg&quot;;
+0005 proportion =0.05; <span class="comment">% Proportion of record that we want to evaluate</span>
+0006 
+0007 <span class="comment">% General algorithm parameters:</span>
+0008 ensembleFilter = struct(<span class="string">'isOn'</span>, 0, <span class="string">'threshold'</span>, 0.2);
+0009 madFilter = struct(<span class="string">'isOn'</span>, 1, <span class="string">'threshold'</span>, 10);
+0010 n_missedBeats = struct(<span class="string">'isOn'</span>, 1, <span class="string">'threshold'</span>, 20);
+0011 postProcessing = struct(<span class="string">'ensembleFilter'</span>, ensembleFilter, <span class="string">'madFilter'</span>, madFilter, <span class="string">'missedBeats'</span>, n_missedBeats);
+0012 medianFilter = struct(<span class="string">'isOn'</span>, 1, <span class="string">'windowSize'</span>, 3);
+0013 tachoProcessing = struct(<span class="string">'interpolationMethod'</span>, <span class="string">'direct'</span>, <span class="string">'medianFilter'</span>, medianFilter);
+0014 params = struct(<span class="string">'ecgFile'</span>, record, <span class="string">'postProcessing'</span>, postProcessing, <span class="string">'tachoProcessing'</span>, tachoProcessing);
+0015 
+0016 fprintf(&quot;Running Algorithm &quot;);
+0017 
+0018 <span class="comment">% Get the algorithm results:</span>
+0019 result = <a href="hrvDetectShort.html" class="code" title="function [ result ] = hrvDetectShort( params, proportion )">hrvDetectShort</a>( params, proportion );
+0020 R_locs = result.R_locs;
+0021 fs = result.fs;
+0022 maxDeviation = fs / 40;  <span class="comment">% Quarter of a second is max deviation</span>
+0023 
+0024 
+0025 fprintf(&quot;Getting Valid Data &quot;);
+0026 
+0027 <span class="comment">% Get the official annotations:</span>
+0028 [R_locs_valid, ecg_sig] = <a href="getOfficialResultsShort.html" class="code" title="function [R_locs, ecg_sig] = getOfficialResultsShort( recordName, proportion )">getOfficialResultsShort</a>( record, proportion );
+0029 time = 0:(1/fs):((length(ecg_sig)-1)/fs);
+0030 
+0031 index = 1;
+0032 n_missedBeats = 0;
+0033 n_extraBeats = 0;
+0034 n_acceptable = 0;
+0035 jitter = [];
+0036 
+0037 fprintf(&quot;Starting Comparison &quot;);
+0038 
+0039 <span class="keyword">for</span> i=1:length(R_locs_valid)
+0040     matched = false;
+0041     validBeatPos = R_locs_valid(i);
+0042     <span class="keyword">while</span>(~matched)
+0043         <span class="comment">% Overflow, we continue</span>
+0044         <span class="keyword">if</span>(index &gt; length(R_locs))
+0045             n_missedBeats = n_missedBeats + 1;
+0046             matched = true;
+0047             <span class="keyword">break</span>;
+0048         <span class="keyword">end</span>
+0049         calculatedBeatPos = R_locs(index);
+0050         deviation = abs(validBeatPos - calculatedBeatPos);
+0051         <span class="keyword">if</span>(deviation &lt; maxDeviation)
+0052             n_acceptable = n_acceptable + 1;
+0053             jitter(n_acceptable) = deviation;
+0054             index = index + 1;
+0055             matched = true;
+0056         <span class="keyword">elseif</span>(calculatedBeatPos &lt; validBeatPos)
+0057             n_extraBeats = n_extraBeats + 1;
+0058             index = index + 1;
+0059         <span class="keyword">else</span>
+0060             n_missedBeats = n_missedBeats + 1;
+0061             matched = true;
+0062         <span class="keyword">end</span>
+0063     <span class="keyword">end</span>
+0064 <span class="keyword">end</span>
+0065 
+0066 timeMinutes = time./60;
+0067 
+0068 <span class="comment">% Make the interval array with the Official beats</span>
+0069 interval_valid = diff(R_locs_valid);
+0070 BPM_valid = 60*fs./(interval_valid);
+0071 interval_locs_valid = R_locs_valid(1:end-1);
+0072 interpolated = interp1(R_locs,result.tachogram,1:length(ecg_sig),<span class="string">'spline'</span>);
+0073 
+0074 
+0075 
+0076 figure;
+0077 bx1 = subplot(2,2,1);
+0078 hold on;
+0079 plot (timeMinutes,ecg_sig);
+0080 plot (timeMinutes(R_locs),ecg_sig(R_locs),<span class="string">'rv'</span>,<span class="string">'MarkerFaceColor'</span>,<span class="string">'r'</span>);
+0081 legend(<span class="string">'ECG'</span>,<span class="string">'R - Detected'</span>, <span class="string">'R - Valid'</span>);
+0082 title(<span class="string">'ECG Signal with Computed R points'</span>);
+0083 xlabel(<span class="string">'Time in Minutes'</span>);
+0084 ylabel(<span class="string">'Amplitude'</span>);
+0085 ylim([-1 2]);
+0086 
+0087 bx2 = subplot(2,2,3);
+0088 hold on;
+0089 plot (timeMinutes,ecg_sig);
+0090 plot (timeMinutes(R_locs_valid),ecg_sig(R_locs_valid),<span class="string">'bv'</span>,<span class="string">'MarkerFaceColor'</span>,<span class="string">'b'</span>);
+0091 legend(<span class="string">'ECG'</span>, <span class="string">'R - Valid'</span>);
+0092 title(<span class="string">'ECG Signal with Valid R points'</span>);
+0093 xlabel(<span class="string">'Time in Minutes'</span>);
+0094 ylabel(<span class="string">'Amplitude'</span>);
+0095 ylim([-1 2]);
+0096 
+0097 
+0098 <span class="comment">%Make the same length (the last beat is discarded in our algo)</span>
+0099 <span class="keyword">if</span>(length(result.tachogram) == length(R_locs) - 1)
+0100     result.tachogram(length(result.tachogram) + 1) = result.tachogram(length(result.tachogram));
+0101 <span class="keyword">end</span>
+0102 
+0103 bx3 = subplot(2,2,2);
+0104 hold on;
+0105 plot (timeMinutes(result.R_locs),result.tachogram);
+0106 scatter (timeMinutes(result.noisyIntervals),interpolated(result.noisyIntervals), <span class="keyword">...</span>
+0107         <span class="string">'MarkerEdgeColor'</span>,<span class="string">'r'</span>,<span class="keyword">...</span>
+0108         <span class="string">'MarkerFaceColor'</span>,<span class="string">'r'</span>,<span class="keyword">...</span>
+0109         <span class="string">'LineWidth'</span>,0.1);
+0110 legend(<span class="string">'Tachogram'</span>, <span class="string">'Locations where collected data was deemed noisy'</span>);
+0111 title(<span class="string">'Tachogram'</span>);
+0112 xlabel(<span class="string">'Time in Minutes'</span>);
+0113 ylabel(<span class="string">'BPM'</span>);
+0114 ylim([100 200]);
+0115 
+0116 
+0117 bx4 = subplot(2,2,4);
+0118 hold on;
+0119 plot (timeMinutes(interval_locs_valid),BPM_valid);
+0120 legend(<span class="string">'Tachogram'</span>);
+0121 title(<span class="string">'Expected Tachogram'</span>);
+0122 xlabel(<span class="string">'Time in Minutes'</span>);
+0123 ylabel(<span class="string">'BPM'</span>);
+0124 ylim([100 200]);
+0125 linkaxes([bx1,bx2],<span class="string">'xy'</span>);
+0126 linkaxes([bx3,bx4],<span class="string">'xy'</span>);
+0127 linkaxes([bx1,bx2,bx3,bx4],<span class="string">'x'</span>);
+0128 
+0129 
+0130 averageDeviation = sum(jitter)/length(jitter);
+0131 figure;
+0132 hist(jitter);</pre></div>
+<hr><address>Generated on Thu 15-Mar-2018 13:53:54 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
