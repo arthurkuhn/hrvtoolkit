@@ -1,6 +1,44 @@
 function [ result ] = hrvDetect( params )
-%RUNHRVANALYSIS Summary of this function goes here
-%   Detailed explanation goes here
+%hrvDetect - Analyses an ECG signal to extract heart-rate information
+% This function orchestrates the entire program execution.
+%
+% Process:
+%   1. Loading
+%   2. Pre-Processing
+%   3. Kota detection
+%   4. Post-Processing
+%   5. Smoothing
+%
+%
+% Inputs:
+%    params
+%
+% Outputs:
+%    result: struct with fields
+%           fs sampling frequency
+%           tachogram 
+%           R_locs location of R-peaks
+%           heartRate 
+%           cleanIntervals
+%           noisyIntervals
+%           interpolatedFlag
+%           evaluation
+
+result.fs = fs;
+result.tachogram = interval;
+result.R_locs = intervalLocs(~noisyIntervals);
+result.heartRate = smoothSignal;
+result.cleanIntervals = intervalLocs(~noisyIntervals);
+result.noisyIntervals = intervalLocs(noisyIntervals);
+result.interpolatedFlag = intervalLocs(noisyIntervals);
+result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', missedBeatsErrors);
+
+%
+%
+% Reference:
+% Kota, S., Swisher, C.B. & al (2017). "Identification of QRS complex in
+% non-stationary electrocardiogram of sick infants."
+% Computers in Biology and Medicine 87 (2017) 211–216
 
 % Ensemble Filter Window Size:
 ensembleFilterWindowSize = 200; % in ms

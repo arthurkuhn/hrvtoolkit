@@ -1,7 +1,17 @@
 function [ res ] = invertIfNecessary( rawEcg, fs, windowInSeconds )
-%invertIfNecessary Decides whether or not to invert the ECG signal
-%   Based on the analysis of a 10mns signal segment, we decide whether or
+%invertIfNecessary - Decides whether or not to invert the ECG signal
+%   Based on the analysis of a signal segment, we decide whether or
 %   not to invert the original signal.
+%
+%   Input:
+%       rawEcg: raw ECG signal
+%       fs: sampling frequency
+%       windowInSeconds: Window of time on which we run the analysis
+%   Outputs:
+%       res: the final signal (equal to rawEcg or -rawEcg)
+%
+%   Example:
+%       [ res ] = invertIfNecessary( ecgSig, 1000, 600 )
 
 rawEcgSample = rawEcg(1:windowInSeconds*fs);
 windowSize = 200;

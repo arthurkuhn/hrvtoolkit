@@ -1,6 +1,20 @@
 function errors = missedBeatDetector( interval, toleratedeviationPercent )
-%MISSEDBEATDETECTOR Summary of this function goes here
-%   Detailed explanation goes here
+%missedBeatDetector Finds missed beats in the signal
+% Analyses consecutive RR-intervals to detect signs of missed beats.
+%
+% For each interval, the sum of its neighbors is computed:
+%           sum = interval(i-1) + interval(i+1)
+% An interval is deemed noisy when:
+%       interval(i) > sum - sum*toleratedeviationPercent
+% and:  interval(i) < sum - sum*toleratedeviationPercent
+%
+% Inputs:
+%    interval - The RR-interval data
+%    toleratedeviationPercent - Tolerated variation in %
+%
+% Outputs:
+%    errors - Boolean Array, 1 for errors
+%
 
 allowedDeviation = toleratedeviationPercent / 100;
 

@@ -1,5 +1,5 @@
 function [ R_loc ] = kota( sig, detrended, fs )
-%kota QRS detection using Hilbert Transform
+%kota - QRS detection using Hilbert Transform
 % Detects the location of R-peaks using the algorithm described by Kota &
 % al.
 %

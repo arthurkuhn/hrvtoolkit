@@ -1,7 +1,7 @@
 clear all;
 close all;
 
-record = "infant5_ecg";
+record = "infant4_ecg";
 proportion =0.05; % Proportion of record that we want to evaluate
 
 % General algorithm parameters:

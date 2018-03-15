@@ -1,7 +1,6 @@
 function outliers = medFilter( s, tau )
-%medFilter Finds the outliers in the signal using a median filter
-% Skips beats already marked as invalid (and does not take them into
-% account for the other points.
+%medFilter - Finds the outliers in the signal using a MAD filter
+% Uses a Median absolute deviation filter to detect outliers.
 %
 % Inputs:
 %    signal - The RR-interval data
