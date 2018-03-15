@@ -1,12 +1,12 @@
 clear all;
 close all;
 
-record = "infant4_ecg";
-proportion =0.05; % Proportion of record that we want to evaluate
+record = "infant3_ecg";
+proportion =0.5; % Proportion of record that we want to evaluate
 
 % General algorithm parameters:
-ensembleFilter = struct('isOn', 0, 'threshold', 0.2);
-madFilter = struct('isOn', 1, 'threshold', 10);
+ensembleFilter = struct('isOn', 1, 'threshold', 0.1);
+madFilter = struct('isOn', 1, 'threshold', 20);
 n_missedBeats = struct('isOn', 1, 'threshold', 20);
 postProcessing = struct('ensembleFilter', ensembleFilter, 'madFilter', madFilter, 'missedBeats', n_missedBeats);
 medianFilter = struct('isOn', 1, 'windowSize', 3);
