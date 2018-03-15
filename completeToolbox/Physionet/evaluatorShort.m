@@ -4,11 +4,11 @@ record = "infant2_ecg";
 proportion = 0.01; % Proportion of record that we want to evaluate
 
 % General algorithm parameters:
-ensembleFilter = struct('isOn', 1, 'threshold', 0.55);
-madFilter = struct('isOn', 1, 'threshold', 5);
+ensembleFilter = struct('isOn', 1, 'threshold', 0.25);
+madFilter = struct('isOn', 1, 'threshold', 7);
 n_missedBeats = struct('isOn', 1, 'threshold', 20);
 postProcessing = struct('ensembleFilter', ensembleFilter, 'madFilter', madFilter, 'missedBeats', n_missedBeats);
-medianFilter = struct('isOn', 1, 'windowSize', 15);
+medianFilter = struct('isOn', 1, 'windowSize', 3);
 tachoProcessing = struct('interpolationMethod', 'spline', 'medianFilter', medianFilter);
 params = struct('ecgFile', record, 'postProcessing', postProcessing, 'tachoProcessing', tachoProcessing);
 
@@ -16,7 +16,7 @@ fprintf("Running Algorithm ");
 
 % Get the algorithm results:
 result = hrvDetectShort( params, proportion );
-R_locs = result.R_locs;
+R_locs = result.cleanIntervals;
 fs = result.fs;
 maxDeviation = fs / 40;  % Quarter of a second is max deviation
 
