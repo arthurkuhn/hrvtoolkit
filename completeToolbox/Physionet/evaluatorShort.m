@@ -69,7 +69,7 @@ timeMinutes = time./60;
 interval_valid = diff(R_locs_valid);
 BPM_valid = 60*fs./(interval_valid);
 interval_locs_valid = R_locs_valid(1:end-1);
-interpolated = interp1(R_locs,result.heartRate,1:length(ecg_sig),'spline');
+interpolated = interp1(R_locs,result.tachogram,1:length(ecg_sig),'spline');
 
 
 
@@ -102,7 +102,7 @@ end
 
 bx3 = subplot(2,2,2);
 hold on;
-plot (timeMinutes(result.cleanIntervals),result.heartRate);
+plot (timeMinutes(result.R_locs),result.tachogram);
 scatter (timeMinutes(result.noisyIntervals),interpolated(result.noisyIntervals), ...
         'MarkerEdgeColor','r',...
         'MarkerFaceColor','r',...

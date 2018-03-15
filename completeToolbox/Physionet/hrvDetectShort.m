@@ -1,6 +1,22 @@
 function [ result ] = hrvDetectShort( params, proportion )
-%RUNHRVANALYSIS Summary of this function goes here
-%   Detailed explanation goes here
+%hrvDetectShort - Analyses an ECG signal to extract heart-rate information
+% This function orchestrates the entire program execution.
+%
+% Process:
+%   1. Loading
+%   2. Pre-Processing
+%   3. Kota detection
+%   4. Post-Processing
+%   5. Smoothing
+%
+%
+% Inputs:
+%    params struct
+%
+% Outputs:
+%    result struct
+%
+% Please see exact struct definition in sample function or documentation.
 
 % Ensemble Filter Window Size:
 ensembleFilterWindowSize = 200; % in ms
@@ -61,10 +77,12 @@ intervalLocs = R_locs(1:end-1);
 time = 0:(1/fs):((length(detrended)-1)/fs);
 switch (params.tachoProcessing.interpolationMethod)
       case 'spline'
-          f = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',smoothingSplinesCoefficient);
+          [f,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',smoothingSplinesCoefficient);
           smoothSignal = f(time(intervalLocs(~noisyIntervals)));
+          r_squarred = gof.rsquare;
       case 'direct'
           smoothSignal = BPM(~noisyIntervals);
+          r_squarred = 0;
 end
 if(params.tachoProcessing.medianFilter.isOn == 1)
     smoothSignal = medfilt1(smoothSignal,params.tachoProcessing.medianFilter.windowSize);
@@ -73,18 +91,19 @@ end
 percentNoisy = sum(noisyIntervals) / ( length(R_locs)-1 ) * 100;
 switch (params.tachoProcessing.interpolationMethod)
     case 'spline'
-        [~,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',smoothingSplinesCoefficient);
-        r_squarred = gof.rsquare;
+        [f,~,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(smoothSignal),'smoothingspline','SmoothingParam',smoothingSplinesCoefficient);
+        heartRate = f(time);
     case 'direct'
+        heartRate = interp1(transpose(time(intervalLocs(~noisyIntervals))),transpose(smoothSignal),time,'linear');
         r_squarred = 0;
 end
 
+
 result = {};
 result.fs = fs;
-result.tachogram = interval;
+result.tachogram = smoothSignal;
 result.R_locs = intervalLocs(~noisyIntervals);
-result.heartRate = smoothSignal;
-result.cleanIntervals = intervalLocs(~noisyIntervals);
+result.heartRate = heartRate;
 result.noisyIntervals = intervalLocs(noisyIntervals);
 result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', sum(missedBeatErrors));
 

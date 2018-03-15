@@ -1,6 +1,22 @@
 function nonCorrelated = ensembleNonCorrelatedDetector( detrended_sig, R_locs, minCorrelation, windowSize )
-%ENSEMBLEOUTLIERDETECTOR Summary of this function goes here
-%   Detailed explanation goes here
+%ensembleNonCorrelatedDetector - Analyses an ECG signal and estimated
+% R-peak locations to determine which might be noisy.
+%
+% Process:
+%   1. construct an average beat over all the beats
+%   2. each beat is compared to the average beat
+%   3. If the static correlation is < minCorrelation, the beat is marked as
+%       noisy
+%
+% Inputs:
+%    detrended_sig detrended ecg signal
+%    R_locs the detected peaks
+%    minCorrelation between 0 and 1
+%    windowSize in samples
+%
+% Outputs:
+%    nonCorrelated boolean array (1 for errors)
+
 
 nonCorrelated = zeros(1,length(R_locs));
 
