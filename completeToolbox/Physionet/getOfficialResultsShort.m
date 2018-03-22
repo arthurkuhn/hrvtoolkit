@@ -17,7 +17,8 @@ data = eval(recordName);
 if(isfield(data, 'R_locs'))
     R_locs = data.R_locs;
 else
-    R_locs =[];
+    msg = 'Error Loading R_locs';
+    error(msg);
 end
 
 sig = data.data;

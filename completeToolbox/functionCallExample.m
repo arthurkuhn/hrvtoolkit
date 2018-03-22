@@ -1,6 +1,6 @@
 
 
-ensembleFilter = struct('isOn', 1, 'threshold', 0.55);
+ensembleFilter = struct('isOn', 1, 'threshold', 0.2);
 madFilter = struct('isOn', 1, 'threshold', 5);
 missedBeats = struct('isOn', 1, 'threshold', 20);
 postProcessing = struct('ensembleFilter', ensembleFilter, 'madFilter', madFilter, 'missedBeats', missedBeats);

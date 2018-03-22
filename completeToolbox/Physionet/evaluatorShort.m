@@ -1,16 +1,16 @@
 clear all;
 close all;
 
-record = "infant1_ecg";
+record = "a5c37ce1d999";
 proportion =0.001; % Proportion of record that we want to evaluate
 
 % General algorithm parameters:
-ensembleFilter = struct('isOn', 1, 'threshold', 0.1);
+ensembleFilter = struct('isOn', 0, 'threshold', 0.1);
 madFilter = struct('isOn', 1, 'threshold', 20);
 n_missedBeats = struct('isOn', 1, 'threshold', 20);
 postProcessing = struct('ensembleFilter', ensembleFilter, 'madFilter', madFilter, 'missedBeats', n_missedBeats);
 medianFilter = struct('isOn', 1, 'windowSize', 3);
-tachoProcessing = struct('interpolationMethod', 'direct', 'medianFilter', medianFilter);
+tachoProcessing = struct('interpolationMethod', 'spline', 'medianFilter', medianFilter);
 params = struct('ecgFile', record, 'postProcessing', postProcessing, 'tachoProcessing', tachoProcessing);
 
 fprintf("Running Algorithm ");

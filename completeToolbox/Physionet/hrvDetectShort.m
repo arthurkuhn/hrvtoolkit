@@ -91,10 +91,10 @@ end
 percentNoisy = sum(noisyIntervals) / ( length(R_locs)-1 ) * 100;
 switch (params.tachoProcessing.interpolationMethod)
     case 'spline'
-        [f,~,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(smoothSignal),'smoothingspline','SmoothingParam',smoothingSplinesCoefficient);
+        [f,~,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),smoothSignal,'smoothingspline','SmoothingParam',smoothingSplinesCoefficient);
         heartRate = f(time);
     case 'direct'
-        heartRate = interp1(transpose(time(intervalLocs(~noisyIntervals))),transpose(smoothSignal),time,'linear');
+        heartRate = interp1(transpose(time(intervalLocs(~noisyIntervals))),smoothSignal,time,'linear');
         r_squarred = 0;
 end
 

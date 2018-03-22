@@ -91,10 +91,10 @@ end
 percentNoisy = sum(noisyIntervals) / ( length(R_locs)-1 ) * 100;
 switch (params.tachoProcessing.interpolationMethod)
     case 'spline'
-        [f,~,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(smoothSignal),'smoothingspline','SmoothingParam',smoothingSplinesCoefficient);
+        [f,~,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),smoothSignal,'smoothingspline','SmoothingParam',smoothingSplinesCoefficient);
         heartRate = f(time);
     case 'direct'
-        heartRate = interp1(transpose(time(intervalLocs(~noisyIntervals))),transpose(smoothSignal),time,'direct');
+        heartRate = interp1(transpose(time(intervalLocs(~noisyIntervals))),smoothSignal,time,'direct');
         r_squarred = 0;
 end
 
@@ -105,7 +105,7 @@ result.R_locs = intervalLocs(~noisyIntervals);
 result.heartRate = heartRate;
 result.noisyIntervals = intervalLocs(noisyIntervals);
 result.interpolatedFlag = [0];
-result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', missedBeatsErrors);
+result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', missedBeatErrors);
 
 end
 
