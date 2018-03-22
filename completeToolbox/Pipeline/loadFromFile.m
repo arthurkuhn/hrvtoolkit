@@ -1,4 +1,4 @@
-function [ sig, fs ] = loadFromFile( file )
+function [ sig, fs ] = loadFromFile( filePath, fileName )
 %loadFromFile -  Loads the ECG signal from the full APEX recording file
 %   Input:
 %       filePath can be absolute or relative to working directory
@@ -15,9 +15,13 @@ function [ sig, fs ] = loadFromFile( file )
 %      pipeline. If necessary, the signal is reversed (see invertIfNeeded).
 %
 
-load(file + ".mat");
+load(fullfile(filePath,fileName));
 
-data = eval(file);
+if(contains(fileName, '.mat'))
+    fileName = fileName(1:end-4);
+end
+    
+data = eval(fileName);
 
 if(string(data.channels(1)) ~= 'ECG')
     print "Unexpected data format";

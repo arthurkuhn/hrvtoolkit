@@ -9,7 +9,7 @@ postProcessing = struct('ensembleFilter', ensembleFilter, 'madFilter', madFilter
 medianFilter = struct('isOn', 1, 'windowSize', 15);
 tachoProcessing = struct('interpolationMethod', 'spline', 'medianFilter', medianFilter);
 
-params = struct('ecgFile', 'a5c37ce1d999', 'postProcessing', postProcessing, 'tachoProcessing', tachoProcessing);
+params = struct('filePath','C:\Users\Arthur\Documents\GitHub\hr2\hr-dp\data\APEX', 'fileName', 'a5c37ce1d999', 'postProcessing', postProcessing, 'tachoProcessing', tachoProcessing);
 
 
 [ result ] = hrvDetect( params );

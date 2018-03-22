@@ -23,7 +23,7 @@ ensembleFilterWindowSize = 200; % in ms
 smoothingSplinesCoefficient = 0.5; % between 0 and 1
 
 % Load Sig
-[ sig, fs ] = loadFromFile( params.ecgFile );
+[ sig, fs ] = loadFromFile( params.filePath, params.fileName );
 
 % Pre-processing
 [ sig, detrended ] = preprocessingNew(sig, fs);

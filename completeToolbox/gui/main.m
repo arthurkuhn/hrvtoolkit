@@ -95,6 +95,7 @@ p = {};
 
 % File select
 p.fileName = handles.fileName;
+p.pathName = handles.pathName;
 
 % Preprocessing
 p.mediaCheckBox = checkboxValues(1);
@@ -188,7 +189,7 @@ p = handles.p;
 data = {};
 
 % Load Sig
-[ sig, fs ] = loadFromFile( p.fileName(1:end-4) );
+[ sig, fs ] = loadFromFile( p.pathName, p.fileName );
 
 % Pre-processing
 [ sig, detrended ] = preprocessingNew(sig, fs);
