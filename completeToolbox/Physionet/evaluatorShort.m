@@ -1,8 +1,8 @@
 clear all;
 close all;
 
-record = "infant3_ecg";
-proportion =0.5; % Proportion of record that we want to evaluate
+record = "infant1_ecg";
+proportion =0.001; % Proportion of record that we want to evaluate
 
 % General algorithm parameters:
 ensembleFilter = struct('isOn', 1, 'threshold', 0.1);
