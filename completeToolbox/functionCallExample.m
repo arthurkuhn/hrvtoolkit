@@ -1,4 +1,5 @@
 
+clear all;
 
 ensembleFilter = struct('isOn', 1, 'threshold', 0.2);
 madFilter = struct('isOn', 1, 'threshold', 5);
