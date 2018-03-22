@@ -259,21 +259,20 @@ time = handles.sig.t;
 R_locs = handles.sig.R_locs;
 fs = handles.sig.fs;
 interval = diff(R_locs);
-BPM = 60*fs./(interval);
 intervalLocs = R_locs(1:end-1);
 switch get(get(handles.tachoGeneration,'SelectedObject'),'Tag')
       case 'smoothingSplinesRadio'
-          f = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',p.smoothingSplinesCoefEdit);
+          f = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(interval(~noisyIntervals)),'smoothingspline','SmoothingParam',p.smoothingSplinesCoefEdit);
           smoothSignal = f(time(intervalLocs(~noisyIntervals)));
       case 'directRadio'
-          smoothSignal = BPM(~noisyIntervals);
+          smoothSignal = interval(~noisyIntervals);
 end
 if(p.medianFilterPostCheckBox == 1)
     smoothSignal = medfilt1(smoothSignal,p.windowSizePostEdit);
 end
 
-handles.tacho = 60*fs./(smoothSignal);
-handles.smoothSig = smoothSignal;
+handles.tacho = smoothSignal;
+handles.smoothSig = 60*fs./(smoothSignal);
 guidata(hObject, handles);
 
 function evaluate(hObject)
@@ -316,7 +315,7 @@ guidata(hObject, handles);
 
 function exportDataIbi(hObject)
 handles = guidata(hObject);
-tacho = handles.tacho./60;
+tacho = handles.tacho./1000; %To be in seconds
 filter = strcat(handles.p.fileName(1:end-4),'.ibi');
 [file,path] = uiputfile(filter);
 if(~isempty(file))
