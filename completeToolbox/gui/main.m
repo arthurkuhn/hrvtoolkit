@@ -109,9 +109,26 @@ tachoProcessing = struct('interpolationMethod', interpolationMethod, 'medianFilt
 
 params = struct('filePath',handles.pathName, 'fileName', handles.fileName, 'postProcessing', postProcessing, 'tachoProcessing', tachoProcessing);
 
+p = {};
+
+% File select
+p.fileName = handles.fileName;
+p.pathName = handles.pathName;
+
+% Preprocessing
+p.mediaCheckBox = checkboxValues(1);
+p.windowSizeEdit = str2double(editValues(1));
+p.ensembleCheckBox = checkboxValues(2);
+p.minimumCorrelationEdit = str2double(editValues(2));
+p.missedBeatsCheckBox = checkboxValues(3);
+p.missedBeatsTolerancePercentEdit = str2double(editValues(4));
+p.smoothingSplinesCoefEdit = str2double(editValues(5));
+p.medianFilterPostCheckBox = checkboxValues(4);
+p.windowSizePostEdit = str2double(editValues(3));
 
 % Save handles
-handles.p = params;
+handles.params = params;
+handles.p = p;
 guidata(hObject,handles);
 
 %% Initializes the Sig handles object
@@ -255,6 +272,7 @@ if(p.medianFilterPostCheckBox == 1)
     smoothSignal = medfilt1(smoothSignal,p.windowSizePostEdit);
 end
 
+handles.tacho = 60*fs./(smoothSignal);
 handles.smoothSig = smoothSignal;
 guidata(hObject, handles);
 
@@ -297,7 +315,14 @@ handles.eval = eval;
 guidata(hObject, handles);
 
 function exportDataIbi(hObject)
-Quand y a des peaks removed en gros faut ignorer linterval davant et dapre
+handles = guidata(hObject);
+tacho = handles.tacho./60;
+filter = strcat(handles.p.fileName(1:end-4),'.ibi');
+[file,path] = uiputfile(filter);
+if(~isempty(file))
+    csvwrite(fullfile(path,file),tacho);
+end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                       %
@@ -768,3 +793,4 @@ function exportIBI_Callback(hObject, eventdata, handles)
 % hObject    handle to exportIBI (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+exportDataIbi(hObject);
