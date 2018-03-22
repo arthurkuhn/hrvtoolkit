@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 13-Mar-2018 22:54:18
+% Last Modified by GUIDE v2.5 22-Mar-2018 12:21:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -91,25 +91,27 @@ checkboxValues = cell2mat(get(hCheckboxes, 'Value'));
 % Parse TextBoxes
 hEditTextboxes = [handles.windowSizeEdit ; handles.minimumCorrelationEdit; handles.windowSizePostEdit; handles.missedBeatsTolerancePercentEdit; handles.smoothingSplinesCoefEdit];
 editValues = get(hEditTextboxes, 'String');
-p = {};
 
-% File select
-p.fileName = handles.fileName;
-p.pathName = handles.pathName;
+switch get(get(handles.tachoGeneration,'SelectedObject'),'Tag')
+      case 'smoothingSplinesRadio'
+          interpolationMethod = 'spline';
+      case 'directRadio'
+          interpolationMethod = 'direct';
+end
 
-% Preprocessing
-p.mediaCheckBox = checkboxValues(1);
-p.windowSizeEdit = str2double(editValues(1));
-p.ensembleCheckBox = checkboxValues(2);
-p.minimumCorrelationEdit = str2double(editValues(2));
-p.missedBeatsCheckBox = checkboxValues(3);
-p.missedBeatsTolerancePercentEdit = str2double(editValues(4));
-p.smoothingSplinesCoefEdit = str2double(editValues(5));
-p.medianFilterPostCheckBox = checkboxValues(4);
-p.windowSizePostEdit = str2double(editValues(3));
+ensembleFilter = struct('isOn', checkboxValues(2), 'threshold', str2double(editValues(2)));
+madFilter = struct('isOn', checkboxValues(1), 'threshold', str2double(editValues(1)));
+missedBeats = struct('isOn', checkboxValues(3), 'threshold', str2double(editValues(4)));
+postProcessing = struct('ensembleFilter', ensembleFilter, 'madFilter', madFilter, 'missedBeats', missedBeats);
+
+medianFilter = struct('isOn', checkboxValues(4), 'windowSize', str2double(editValues(3)));
+tachoProcessing = struct('interpolationMethod', interpolationMethod, 'medianFilter', medianFilter);
+
+params = struct('filePath',handles.pathName, 'fileName', handles.fileName, 'postProcessing', postProcessing, 'tachoProcessing', tachoProcessing);
+
 
 % Save handles
-handles.p = p;
+handles.p = params;
 guidata(hObject,handles);
 
 %% Initializes the Sig handles object
@@ -144,45 +146,6 @@ guidata(hObject,handles);
 %                      Computation Functions                            %
 %                                                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function compute(hObject)
-handles = guidata(hObject);
-sigNum = handles.p.fileSelect;
-
-h = waitbar(0,'Loading Signal');
-[ sig, fs ] = loadSig( sigNum );
-
-waitbar(0.1, h, 'Preprocessing');
-% Pre-processing
-[ sig, detrended ] = preprocessingNew(sig, fs);
-
-% Kota
-waitbar(0.4, h, 'Detecting R-Peaks');
-[ R_loc ] = kota(sig, detrended, fs);
-
-validLocs = ones(1,length(R_loc));
-
-
-waitbar(0.9, h, 'Preparing Plots');
-interval = diff(R_loc); % Period
-interval(length(interval)+1) = interval(length(interval)); % Adding one last index
-interval = interval./fs;
-%dlmwrite(file+".ibi",transpose(periodsSecs));
-interval = interval.^-1;
-interval = interval.*60; % To get BPM
-interval(isinf(interval)) = -2;
-
-close(h)
-
-handles = guidata(hObject);
-handles.sig.t = 0:(1/fs):((length(detrended)-1)/fs);
-handles.sig.detrended = detrended;
-handles.sig.R_locs = R_loc;
-handles.sig.f = fit(transpose(handles.sig.t(R_loc)),transpose(interval),'smoothingspline');
-handles.sig.interval = interval;
-handles.sig.fs = fs;
-
-guidata(hObject, handles);
-
 function findPeaks(hObject)
 handles = guidata(hObject);
 p = handles.p;
@@ -333,7 +296,8 @@ eval.madFilterNoise = madFilterNoise;
 handles.eval = eval;
 guidata(hObject, handles);
 
-
+function exportDataIbi(hObject)
+Quand y a des peaks removed en gros faut ignorer linterval davant et dapre
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                       %
@@ -790,3 +754,17 @@ function edit10_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in exportFulResults.
+function exportFulResults_Callback(hObject, eventdata, handles)
+% hObject    handle to exportFulResults (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in exportIBI.
+function exportIBI_Callback(hObject, eventdata, handles)
+% hObject    handle to exportIBI (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
