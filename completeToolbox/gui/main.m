@@ -597,7 +597,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
      set(hObject,'BackgroundColor','white');
 end
 
-%set(hObject, 'String', {'a5c3ecg', 'G002ecg', 'A1ecg', 'a2f1ecg', 'G011ecg', 'G013ecg'});
 
 
 % --- Executes on button press in mediaCheckBox.
