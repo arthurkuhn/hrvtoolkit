@@ -72,22 +72,23 @@ totalNoisyIntervals = noisy | missedBeatErrors | outliers;
 
 noisyIntervals = logical(totalNoisyIntervals);
 
-BPM = 60*fs./(interval);
 intervalLocs = R_locs(1:end-1);
 time = 0:(1/fs):((length(detrended)-1)/fs);
 switch (params.tachoProcessing.interpolationMethod)
       case 'spline'
-          [f,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',smoothingSplinesCoefficient);
+          [f,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(interval(~noisyIntervals)),'smoothingspline','SmoothingParam',smoothingSplinesCoefficient);
           smoothSignal = f(time(intervalLocs(~noisyIntervals)));
           r_squarred = gof.rsquare;
       case 'direct'
-          smoothSignal = BPM(~noisyIntervals);
+          smoothSignal = interval(~noisyIntervals);
           r_squarred = 0;
 end
 if(params.tachoProcessing.medianFilter.isOn == 1)
     smoothSignal = medfilt1(smoothSignal,params.tachoProcessing.medianFilter.windowSize);
 end
 
+% Make in BPM
+smoothSignal = 60*fs./(smoothSignal);
 percentNoisy = sum(noisyIntervals) / ( length(R_locs)-1 ) * 100;
 switch (params.tachoProcessing.interpolationMethod)
     case 'spline'
@@ -108,4 +109,3 @@ result.interpolatedFlag = [0];
 result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', missedBeatErrors);
 
 end
-
