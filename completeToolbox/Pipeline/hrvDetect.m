@@ -87,6 +87,7 @@ if(params.tachoProcessing.medianFilter.isOn == 1)
     smoothSignal = medfilt1(smoothSignal,params.tachoProcessing.medianFilter.windowSize);
 end
 
+tachogram = smoothSignal;
 % Make in BPM
 smoothSignal = 60*fs./(smoothSignal);
 percentNoisy = sum(noisyIntervals) / ( length(R_locs)-1 ) * 100;
@@ -101,7 +102,7 @@ end
 
 result = {};
 result.fs = fs;
-result.tachogram = smoothSignal;
+result.tachogram = tachogram;
 result.R_locs = intervalLocs(~noisyIntervals);
 result.heartRate = heartRate;
 result.noisyIntervals = intervalLocs(noisyIntervals);
