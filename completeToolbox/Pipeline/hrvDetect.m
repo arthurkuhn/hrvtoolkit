@@ -1,4 +1,4 @@
-function [ result ] = hrvDetect( params )
+function [ result ] = hrvDetect(fileName, varargin )
 %hrvDetect - Analyses an ECG signal to extract heart-rate information
 % This function orchestrates the entire program execution.
 %
@@ -18,12 +18,28 @@ function [ result ] = hrvDetect( params )
 %
 % Please see exact struct definition in sample function or documentation.
 
-% Ensemble Filter Window Size:
-ensembleFilterWindowSize = 200; % in ms
-smoothingSplinesCoefficient = 0.5; % between 0 and 1
+if nargin ==1
+   "Using default parameters : No filter, direct interpolation"
+end
+
+options = {
+    {'ensemble_filter_threshold' NaN 'Ensemble Filter Correlation Threshold'} ...
+    {'ensemble_filter_window' 200 'Ensemble filter window in samples'} ... %TODO: Make in ms
+    {'mad_filter_threshold' NaN 'Mad Filter Threshold'} ...
+    {'missed_beats_tolerance_percent' NaN 'Tolerance in beat-to-beat variation'} ...
+    {'median_filter_window' NaN 'Median Filter Window Size'} ...
+    {'interpolation_method' 'spline' 'Interpolation Method (spline or direct)'} ...
+    {'smoothing_spline_coef' 0.5 'Smoothing Spline Coefficient (invalid when direct is specified as the interpolation_method'} ...
+    {'directory' '' 'Directory where the file is located (if not on path)'}
+    };
+if nargin == 0
+    %arg_help('fig_mod',options);
+    return
+end
+arg_parse (options, varargin);
 
 % Load Sig
-[ sig, fs ] = loadFromFile( params.filePath, params.fileName );
+[ sig, fs ] = loadFromFile( directory, fileName );
 
 % Pre-processing
 [ sig, detrended ] = preprocessingNew(sig, fs);
@@ -31,8 +47,8 @@ smoothingSplinesCoefficient = 0.5; % between 0 and 1
 % Kota
 [ R_locs ] = kota(sig, detrended, fs);
 
-if(params.postProcessing.ensembleFilter.isOn == 1)
-    errors = ensembleNonCorrelatedDetector( detrended, R_locs, params.postProcessing.ensembleFilter.threshold, ensembleFilterWindowSize );
+if(~isnan(ensemble_filter_threshold))
+    errors = ensembleNonCorrelatedDetector( detrended, R_locs, ensemble_filter_threshold, ensemble_filter_window );
 else
     errors = zeros(1,length(R_locs));
 end
@@ -55,15 +71,15 @@ end
 
 % Check for missed beat signs
 
-if(params.postProcessing.missedBeats.isOn == 1)
-    missedBeatErrors = missedBeatDetector( interval, params.postProcessing.missedBeats.threshold );
+if(~isnan(missed_beats_tolerance_percent))
+    missedBeatErrors = missedBeatDetector( interval, missed_beats_tolerance_percent );
 else 
     missedBeatErrors = zeros(1, length(interval));
 end
 
 % Use the non-destructive median filter:
-if(params.postProcessing.madFilter.isOn == 1)
-    outliers = medFilter( interval, params.postProcessing.madFilter.threshold );
+if(~isnan(mad_filter_threshold))
+    outliers = medFilter( interval, mad_filter_threshold );
 else 
     outliers = zeros(1, length(interval));
 end
@@ -74,26 +90,26 @@ noisyIntervals = logical(totalNoisyIntervals);
 
 intervalLocs = R_locs(1:end-1);
 time = 0:(1/fs):((length(detrended)-1)/fs);
-switch (params.tachoProcessing.interpolationMethod)
+switch (interpolation_method)
       case 'spline'
-          [f,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(interval(~noisyIntervals)),'smoothingspline','SmoothingParam',smoothingSplinesCoefficient);
+          [f,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(interval(~noisyIntervals)),'smoothingspline','SmoothingParam',smoothing_spline_coef);
           smoothSignal = f(time(intervalLocs(~noisyIntervals)));
           r_squarred = gof.rsquare;
       case 'direct'
           smoothSignal = interval(~noisyIntervals);
           r_squarred = 0;
 end
-if(params.tachoProcessing.medianFilter.isOn == 1)
-    smoothSignal = medfilt1(smoothSignal,params.tachoProcessing.medianFilter.windowSize);
+if(~isnan(median_filter_window))
+    smoothSignal = medfilt1(smoothSignal,median_filter_window);
 end
 
 tachogram = smoothSignal;
 % Make in BPM
 smoothSignal = 60*fs./(smoothSignal);
 percentNoisy = sum(noisyIntervals) / ( length(R_locs)-1 ) * 100;
-switch (params.tachoProcessing.interpolationMethod)
+switch (interpolation_method)
     case 'spline'
-        [f,~,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),smoothSignal,'smoothingspline','SmoothingParam',smoothingSplinesCoefficient);
+        [f,~,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),smoothSignal,'smoothingspline','SmoothingParam',smoothing_spline_coef);
         heartRate = f(time);
     case 'direct'
         heartRate = interp1(transpose(time(intervalLocs(~noisyIntervals))),smoothSignal,time,'direct');
