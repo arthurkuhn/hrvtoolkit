@@ -1,8 +1,10 @@
 # The Tacho Toolbox
 
 ## Documentation Links
-[Physionet] (https://arthurkuhn.github.io/hr-dp/physionet)
-[Pipeline](/pipeline)
+[Physionet](/physionet)
+[Matlab](/matlab)
+[GUI](/gui)
+
 
 ## Structure
 
