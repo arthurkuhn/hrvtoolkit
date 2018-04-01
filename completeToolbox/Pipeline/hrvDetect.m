@@ -33,7 +33,7 @@ options = {
     {'directory' '' 'Directory where the file is located (if not on path)'}
     };
 if nargin == 0
-    %arg_help('fig_mod',options);
+    arg_help('fig_mod',options);
     return
 end
 arg_parse (options, varargin);
