@@ -4,17 +4,19 @@ close all;
 record = "a5c37ce1d999";
 proportion =0.001; % Proportion of record that we want to evaluate
 
+% General algorithm parameters:
+ensembleFilter = struct('isOn', 0, 'threshold', 0.1);
+madFilter = struct('isOn', 1, 'threshold', 20);
+n_missedBeats = struct('isOn', 1, 'threshold', 20);
+postProcessing = struct('ensembleFilter', ensembleFilter, 'madFilter', madFilter, 'missedBeats', n_missedBeats);
+medianFilter = struct('isOn', 1, 'windowSize', 3);
+tachoProcessing = struct('interpolationMethod', 'spline', 'medianFilter', medianFilter);
+params = struct('ecgFile', record, 'postProcessing', postProcessing, 'tachoProcessing', tachoProcessing);
+
 fprintf("Running Algorithm ");
 
-result = hrvDetect('a5c37ce1d999', 'n_sample_start', 1 , ...
-    'n_sample_end', 500, ...
-    'ensemble_filter_threshold', 0.1, ...
-    'mad_filter_threshold', 20, ...
-    'missed_beats_tolerance_percent', 20, ...
-    'median_filter_window', 3, ...
-    'interpolation_method','spline', ...
-    'smoothing_spline_coef', 0.5);
-
+% Get the algorithm results:
+result = hrvDetectShort( params, proportion );
 R_locs = result.R_locs;
 fs = result.fs;
 maxDeviation = fs / 40;  % Quarter of a second is max deviation
