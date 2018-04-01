@@ -23,6 +23,8 @@ if nargin ==1
 end
 
 options = {
+    {'n_sample_start' 1 'Sample number where analysis will start (default: 1)'} ...
+    {'n_sample_end' NaN 'Sample number where the analysis will end (default: end)'} ...
     {'ensemble_filter_threshold' NaN 'Ensemble Filter Correlation Threshold'} ...
     {'ensemble_filter_window' 200 'Ensemble filter window in samples'} ... %TODO: Make in ms
     {'mad_filter_threshold' NaN 'Mad Filter Threshold'} ...
@@ -40,6 +42,12 @@ arg_parse (options, varargin);
 
 % Load Sig
 [ sig, fs ] = loadFromFile( directory, fileName );
+
+if(isnan(n_sample_end))
+   sig = sig(n_sample_start:end);
+else
+   sig = sig(n_sample_start:n_sample_end);
+end
 
 % Pre-processing
 [ sig, detrended ] = preprocessingNew(sig, fs);
