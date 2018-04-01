@@ -1,123 +1,93 @@
----
-layout: default
----
+# The Tacho Toolbox
 
-Text can be **bold**, _italic_, or ~~strikethrough~~.
+## Structure
 
-[Link to another page](another-page).
+| Pipeline Stage | Function |
+| ------ | ------ |
+| Loading | Load the raw ECG signal and invert it if necessary |
+| Pre-Processing | Detrends and filters the signal |
+| Beat Detection | Detects R-Peaks using the Kota algorithm |
+| Beat Processing | Analyse detected beats to remove noise |
+| Tachogram Generation | Generate the tachogram from the valid beat data |
+| Tachogram Processing | Post-process the tachogram to remove any remaining noise |
 
-There should be whitespace between paragraphs.
 
-There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
+## TODO List
 
-# [](#header-1)Header 1
+- Interpolated Flag in Pipeling
+- Finish Evaluator function
+- GUI update to enable any file selection
+- InvertIfNecessary: infant1_ecg suggests bad idea, temporarily removed
 
-This is a normal paragraph following a header. GitHub is a code hosting platform for version control and collaboration. It lets you and others work together on projects from anywhere.
 
-## [](#header-2)Header 2
+## Coding Practices
 
-> This is a blockquote following a header.
->
-> When something is important enough, you do it even if the odds are not in your favor.
+### Comments
+All functions should be commented as follows:
 
-### [](#header-3)Header 3
-
-```js
-// Javascript code with syntax highlighting.
-var fun = function lang(l) {
-  dateformat.i18n = require('./lang/' + l)
-  return true;
-}
+```Matlab
+%medFilter Finds the outliers in the signal using a median filter
+% Skips beats already marked as invalid (and does not take them into
+% account for the other points.
+%
+% Inputs:
+%    signal - The RR-interval data
+%    validLocs - Boolean Array, 1 for valid peaks
+%    tau - Parameter
+%
+% Outputs:
+%    validLocs - Boolean Array, 1 for valid peaks
+%
+% Reference:
+% Thuraisingham, R. A. (2006). "Preprocessing RR interval time
+% series for heart rate variability analysis and estimates of
+% standard deviation of RR intervals."
+% Comput. Methods Programs Biomed.
 ```
 
-```ruby
-# Ruby code with syntax highlighting
-GitHubPages::Dependencies.gems.each do |gem, version|
-  s.add_dependency(gem, "= #{version}")
-end
+### Documentation
+
+Generated in /doc using [M2HTML](https://www.artefact.tk/software/matlab/m2html).
+To generate documentation for the Pipeline, run from the root of the repo:
+```Matlab
+rmdir doc s
+m2html('mfiles','matlab/Pipeline', 'htmldir','doc', 'recursive','on', 'global','on');
+```
+All the doc can then be found in the doc folder
+
+To get the doc with the graph (needs dot from graphviz in path):
+```Matlab
+m2html('mfiles','matlab/Pipeline', 'htmldir','doc', 'recursive','on', 'global','on', 'template','frame', 'index','menu', 'graph','on');
 ```
 
-#### [](#header-4)Header 4
 
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
+### WFDB ToolBox
 
-##### [](#header-5)Header 5
+#### Database Info
 
-1.  This is an ordered list following a header.
-2.  This is an ordered list following a header.
-3.  This is an ordered list following a header.
+Preterm Infant Cardio-Respiratory Signals Database [Info](https://physionet.org/physiobank/database/picsdb/)
 
-###### [](#header-6)Header 6
+### Accessing Records
 
-| head1        | head two          | three |
-|:-------------|:------------------|:------|
-| ok           | good swedish fish | nice  |
-| out of stock | good and plenty   | nice  |
-| ok           | good `oreos`      | hmm   |
-| ok           | good `zoute` drop | yumm  |
+Important note: This plugin can be slow due to the large datafiles downloaded in the background.
 
-### There's a horizontal rule below this.
+The WFDB Toolbox allows the user to transparently use signals from the entire dataset. Signals are lazily downloaded in the cache folder as required.
 
-* * *
+### Useful commands
 
-### Here is an unordered list:
+| Command | Function | Example |
+| ------ | ------ | ------ |
+| tach | Gets a uniformly sampled and smoothed heart signal. [DOC](https://physionet.org/physiotools/matlab/wfdb-app-matlab/html/tach.html) | ```[hr]=tach('picsdb/infant1_ecg','qrsc'); plot(hr);grid on;hold on``` |
+| rdsamp | Reads a signal from the database [DOC](https://physionet.org/physiotools/matlab/wfdb-app-matlab/html/rdsamp.html) | ```[signal,Fs,tm]=rdsamp('picsdb/infant1_ecg',[],1000); plot(tm,signal(:,1))``` |
+| rdann | Reads an annotation file from the database [DOC](https://physionet.org/physiotools/matlab/wfdb-app-matlab/html/rdann.html)| ```[ann]=rdann('picsdb/infant1_ecg','qrsc');``` |
 
-*   Item foo
-*   Item bar
-*   Item baz
-*   Item zip
-
-### And an ordered list:
-
-1.  Item one
-1.  Item two
-1.  Item three
-1.  Item four
-
-### And a nested list:
-
-- level 1 item
-  - level 2 item
-  - level 2 item
-    - level 3 item
-    - level 3 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-
-### Small image
-
-![](https://assets-cdn.github.com/images/icons/emoji/octocat.png)
-
-### Large image
-
-![](https://guides.github.com/activities/hello-world/branching.png)
-
-
-### Definition lists can be used with HTML syntax.
-
-<dl>
-<dt>Name</dt>
-<dd>Godzilla</dd>
-<dt>Born</dt>
-<dd>1952</dd>
-<dt>Birthplace</dt>
-<dd>Japan</dd>
-<dt>Color</dt>
-<dd>Green</dd>
-</dl>
+### Complete Example
 
 ```
-Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
+record = 'picsdb/infant1_ecg';
+[signal,Fs,tm]=rdsamp(record);
+[ann]=rdann(record,'qrsc');
+plot(tm,signal(:,1));hold on;grid on
+plot(tm(ann),signal(ann,1),'ro','MarkerSize',4);
 ```
 
-```
-The final element.
-```
