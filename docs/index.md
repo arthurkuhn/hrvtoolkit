@@ -1,9 +1,10 @@
 # The Tacho Toolbox
 
 ## Documentation Links
-[Physionet](/hr-dp/physionet)
-[Matlab](//matlab)
-[GUI](//gui)
+-[Overview](overview)
+-[Code Documentation](https://arthurkuhn.github.io/hr-dp/matlab/)
+-[GUI](https://arthurkuhn.github.io/hr-dp/gui/)
+-[Physionet](https://arthurkuhn.github.io/hr-dp/physionet/)
 
 
 ## Structure
