@@ -1,9 +1,9 @@
 # The Tacho Toolbox
 
 ## Documentation Links
-[Physionet](/physionet)
-[Matlab](/matlab)
-[GUI](/gui)
+[Physionet](/hr-dp/physionet)
+[Matlab](//matlab)
+[GUI](//gui)
 
 
 ## Structure
