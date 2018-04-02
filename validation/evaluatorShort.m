@@ -1,13 +1,13 @@
 clear all;
 close all;
 
-record = "a5c37ce1d999";
-proportion =0.001; % Proportion of record that we want to evaluate
-
 fprintf("Running Algorithm ");
 
-result = hrvDetect('a5c37ce1d999', 'n_sample_start', 1 , ...
-    'n_sample_end', 500, ...
+numSamples = 50000;
+record = 'infant1_ecg';
+
+result = hrvDetect(record, 'n_sample_start', 1 , ...
+    'n_sample_end', numSamples, ...
     'ensemble_filter_threshold', 0.1, ...
     'mad_filter_threshold', 20, ...
     'missed_beats_tolerance_percent', 20, ...
@@ -23,7 +23,8 @@ maxDeviation = fs / 40;  % Quarter of a second is max deviation
 fprintf("Getting Valid Data ");
 
 % Get the official annotations:
-[R_locs_valid, ecg_sig] = getOfficialResultsShort( record, proportion );
+[R_locs_valid, ecg_sig] = getOfficialResultsShort( record, numSamples );
+%R_locs_valid = rdann(record,'qrsc',[],numSamples);
 time = 0:(1/fs):((length(ecg_sig)-1)/fs);
 
 index = 1;

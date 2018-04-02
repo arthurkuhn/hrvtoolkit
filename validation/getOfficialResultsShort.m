@@ -1,4 +1,4 @@
-function [R_locs, ecg_sig] = getOfficialResultsShort( recordName, proportion )
+function [R_locs, ecg_sig] = getOfficialResultsShort( recordName, numSamples )
 %getOfficialResultsShort Cuts the desired input signal and leaves the proportion requested
 %   Input:
 %       recordName can be absolute or relative to working directory
@@ -23,12 +23,10 @@ end
 
 sig = data.data;
 
-newSize = floor(length(sig) * proportion);
-
-ecg_sig = sig(1:newSize);
+ecg_sig = sig(1:numSamples);
 indexLastRLoc = 1;
 while(indexLastRLoc < length(R_locs))
-    if(R_locs(indexLastRLoc+1) >= newSize)
+    if(R_locs(indexLastRLoc+1) >= numSamples)
         break;
     end
     indexLastRLoc = indexLastRLoc + 1;
