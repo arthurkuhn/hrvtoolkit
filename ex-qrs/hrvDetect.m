@@ -32,6 +32,7 @@ options = {
     {'median_filter_window' NaN 'Median Filter Window Size'} ...
     {'interpolation_method' 'spline' 'Interpolation Method (spline or direct)'} ...
     {'smoothing_spline_coef' 0.5 'Smoothing Spline Coefficient (invalid when direct is specified as the interpolation_method'} ...
+    {'eval_type' NaN 'Evaluation type (short, full, default none)'} ...
     {'directory' '' 'Directory where the file is located (if not on path)'}
     };
 if nargin == 0
@@ -131,6 +132,15 @@ result.R_locs = intervalLocs(~noisyIntervals);
 result.heartRate = heartRate;
 result.noisyIntervals = intervalLocs(noisyIntervals);
 result.interpolatedFlag = [0];
-result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', missedBeatErrors);
-
+if(~isnan(eval_type))
+    if(eval_type == 'short')
+        result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', missedBeatErrors);
+    elseif(eval_type == 'full')
+        result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', missedBeatErrors);
+        result.evaluation.sig = sig;
+        result.evaluation.detrended = detrended;
+    else
+        error("Invalid eval type: choose 'short' or 'full' or do not set");
+    end
+end
 end
