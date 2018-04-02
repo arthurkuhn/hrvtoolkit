@@ -312,8 +312,8 @@ function runButton_Callback(hObject, eventdata, handles)
 % compute(hObject);
 h = waitbar(0.2,'Running hrvDetect');
 
-waitbar(0.95, h, 'Evaluating');
 evaluate(hObject);
+waitbar(0.95, h, 'Evaluating');
 showEvaluationResults(hObject);
 
 waitbar(0.99, h, 'Plotting');
