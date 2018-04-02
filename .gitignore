@@ -2,3 +2,4 @@
 *.asv
 *.m~
 tools/WFDBToolbox/database/**
+data/Physionet/*
