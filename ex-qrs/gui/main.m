@@ -144,11 +144,13 @@ end
 if(checkboxValues(4) == 1)
     options = [options, 'median_filter_window', str2double(editValues(3))];
 end
+if(isfield(handles, 'pathName'))
+    options = [options, 'directory', handles.pathName]; % used if not in matlab path
+end
 
 options = [options, 'interpolation_method', interpolationMethod];
 options = [options, 'smoothing_spline_coef', str2double(editValues(5))]; % used if interpolation method is spline
-options = [options, 'directory', handles.pathName]; % used if not in matlab path
-options = [options, 'eval_type','full']; % required for plotting
+options = [options, 'eval_type', 'full']; % required for plotting
 
 handles.result = hrvDetect(handles.fileName, options);
 
@@ -179,17 +181,25 @@ else
     cla();
 end
 hold on;
-ecgErrors = logical(handles.ensemble.ecgErrors); % Logical to allow indexing
-noisyIntervals = logical(handles.noisyIntervals);
-noisyIntsEnsemble = logical(handles.ensemble.intervalNoise);
-noisyIntsMissedBeats = logical(handles.missedBeats.intervalNoise);
-noisyIntsMadFilter = logical(handles.madFilter.intervalNoise);
 
-time = handles.sig.t;
-R_locs = handles.sig.R_locs;
-detrended = handles.sig.detrended;
-fs = handles.sig.fs;
-interval = diff(R_locs);
+if(~isfield(handles,'result'))
+    % Not run yet
+    time = [];
+else
+    errorFlags = handles.result.evaluation.errorFlags;        
+
+    ecgErrors = errorFlags.invalid_r_peaks_ensemble; % Logical to allow indexing
+    noisyIntervals = logical(handles.result.noisyIntervals);
+    noisyIntsEnsemble = errorFlags.invalid_rr_intervals_ensemble;
+    noisyIntsMissedBeats = errorFlags.invalid_rr_intervals_missed;
+    noisyIntsMadFilter = errorFlags.invalid_rr_intervals_madFiltered;
+
+    time = handles.result.evaluation.time;
+    R_locs = handles.result.R_locs;
+    detrended = handles.result.evaluation.detrended;
+    fs = handles.result.fs;
+    interval = diff(R_locs);
+end
 
 if(~isempty(time))
     plot(time,detrended);
@@ -212,9 +222,9 @@ else
     cla();
 end
 hold on;
-intervalLocs = R_locs(1:end-1);
-BPM = 60*fs./(interval);
 if(~isempty(time))
+    intervalLocs = R_locs(1:end-1);
+    BPM = 60*fs./(interval);
     f = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline');
     h = plot(f,time(intervalLocs(~noisyIntervals)),BPM(~noisyIntervals));
     legend(h,{'Valid RR-Intervals', 'Default Fit'});
@@ -262,14 +272,29 @@ guidata(hObject, handles);
 
 function showEvaluationResults(hObject)
 handles = guidata(hObject);
-eval = handles.eval;
-set(handles.numRemovedBeatsEnsembleText, 'String', num2str(eval.nonCorrelatedBeats));
-set(handles.numRemovedBeatsMadFilterText, 'String', num2str(eval.madFilterNoise));
-set(handles.numMissedBeatsText, 'String', num2str(eval.missedBeats));
-outputString = num2str(eval.noisyPerThousand / 10) + "%";
+if(~isfield(handles,'result'))
+    nonCorrelatedBeats = 0;
+    madFilterNoise = 0;
+    missedBeats = 0;
+    noisyPercent = 0;
+    fitRSquare = 0;
+    numBeats = 0;
+else
+    eval = handles.result.evaluation;
+    nonCorrelatedBeats = eval.numRemovedEnsemble;
+    madFilterNoise = eval.numRemovedMAD;
+    missedBeats = eval.missedBeatsNum;
+    noisyPercent = eval.percentInvalid;
+    fitRSquare = eval.splineRSquare;
+    numBeats = eval.totalNumBeats;
+end
+set(handles.numRemovedBeatsEnsembleText, 'String', num2str(nonCorrelatedBeats));
+set(handles.numRemovedBeatsMadFilterText, 'String', num2str(madFilterNoise));
+set(handles.numMissedBeatsText, 'String', num2str(missedBeats));
+outputString = num2str(noisyPercent) + "%";
 set(handles.rPeaksValidText, 'String', outputString);
-set(handles.splinesRSquareText, 'String', num2str(eval.fitRSquare));
-set(handles.detectedBeatsText, 'String', num2str(eval.numBeats));
+set(handles.splinesRSquareText, 'String', num2str(fitRSquare));
+set(handles.detectedBeatsText, 'String', num2str(numBeats));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                       %
@@ -283,8 +308,6 @@ function runButton_Callback(hObject, eventdata, handles)
 % hObject    handle to runButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-parseParameters(hObject);
 
 % compute(hObject);
 h = waitbar(0.2,'Running hrvDetect');

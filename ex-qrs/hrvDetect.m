@@ -133,12 +133,19 @@ result.heartRate = heartRate;
 result.noisyIntervals = intervalLocs(noisyIntervals);
 result.interpolatedFlag = [0];
 if(~isnan(eval_type))
-    if(eval_type == 'short')
+    if(strcmp(eval_type, 'short'))
         result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', missedBeatErrors);
-    elseif(eval_type == 'full')
+    elseif(strcmp(eval_type, 'full'))
         result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', missedBeatErrors);
         result.evaluation.sig = sig;
+        result.evaluation.time = time;
         result.evaluation.detrended = detrended;
+        errorFlags = {};
+        errorFlags.invalid_r_peaks_ensemble = logical(errors);
+        errorFlags.invalid_rr_intervals_ensemble = logical(noisy);
+        errorFlags.invalid_rr_intervals_missed = logical(missedBeatErrors);
+        errorFlags.invalid_rr_intervals_madFiltered = logical(outliers);
+        result.evaluation.errorFlags = errorFlags;
     else
         error("Invalid eval type: choose 'short' or 'full' or do not set");
     end
