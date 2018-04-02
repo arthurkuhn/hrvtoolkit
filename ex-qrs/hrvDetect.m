@@ -30,7 +30,7 @@ options = {
     {'mad_filter_threshold' NaN 'Mad Filter Threshold'} ...
     {'missed_beats_tolerance_percent' NaN 'Tolerance in beat-to-beat variation'} ...
     {'median_filter_window' NaN 'Median Filter Window Size'} ...
-    {'interpolation_method' 'spline' 'Interpolation Method (spline or direct)'} ...
+    {'interpolation_method' 'spline' 'Interpolation Method (spline or linear)'} ...
     {'smoothing_spline_coef' 0.5 'Smoothing Spline Coefficient (invalid when direct is specified as the interpolation_method'} ...
     {'directory' '' 'Directory where the file is located (if not on path)'}
     };
@@ -103,12 +103,24 @@ switch (interpolation_method)
           [f,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(interval(~noisyIntervals)),'smoothingspline','SmoothingParam',smoothing_spline_coef);
           smoothSignal = f(time(intervalLocs(~noisyIntervals)));
           r_squarred = gof.rsquare;
-      case 'direct'
+      case 'linear'
           smoothSignal = interval(~noisyIntervals);
           r_squarred = 0;
 end
 if(~isnan(median_filter_window))
     smoothSignal = medfilt1(smoothSignal,median_filter_window);
+end
+
+if(isempty(smoothSignal))
+    result = {};
+    result.fs = fs;
+    result.tachogram = [];
+    result.R_locs = [];
+    result.heartRate = [];
+    result.noisyIntervals = intervalLocs(noisyIntervals);
+    result.interpolatedFlag = [0];
+    result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', 100,'splineRSquare', 0, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', missedBeatErrors);
+    return;
 end
 
 tachogram = smoothSignal;
@@ -119,7 +131,7 @@ switch (interpolation_method)
     case 'spline'
         [f,~,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),smoothSignal,'smoothingspline','SmoothingParam',smoothing_spline_coef);
         heartRate = f(time);
-    case 'direct'
+    case 'linear'
         heartRate = interp1(transpose(time(intervalLocs(~noisyIntervals))),smoothSignal,time,'linear');
         r_squarred = 0;
 end

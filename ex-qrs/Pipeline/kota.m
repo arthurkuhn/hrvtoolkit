@@ -68,6 +68,10 @@ parfor i=1:length(left)-1
  R_loc(i) = R_loc(i)-1+left(i); % add offset
 end
 
+if(isempty(locs))
+    R_loc = [];
+end
+
 end
 
 
