@@ -98,17 +98,6 @@ switch get(get(handles.tachoGeneration,'SelectedObject'),'Tag')
       case 'directRadio'
           interpolationMethod = 'direct';
 end
-
-ensembleFilter = struct('isOn', checkboxValues(2), 'threshold', str2double(editValues(2)));
-madFilter = struct('isOn', checkboxValues(1), 'threshold', str2double(editValues(1)));
-missedBeats = struct('isOn', checkboxValues(3), 'threshold', str2double(editValues(4)));
-postProcessing = struct('ensembleFilter', ensembleFilter, 'madFilter', madFilter, 'missedBeats', missedBeats);
-
-medianFilter = struct('isOn', checkboxValues(4), 'windowSize', str2double(editValues(3)));
-tachoProcessing = struct('interpolationMethod', interpolationMethod, 'medianFilter', medianFilter);
-
-params = struct('filePath',handles.pathName, 'fileName', handles.fileName, 'postProcessing', postProcessing, 'tachoProcessing', tachoProcessing);
-
 p = {};
 
 % File select
@@ -127,7 +116,6 @@ p.medianFilterPostCheckBox = checkboxValues(4);
 p.windowSizePostEdit = str2double(editValues(3));
 
 % Save handles
-handles.params = params;
 handles.p = p;
 guidata(hObject,handles);
 
@@ -163,117 +151,6 @@ guidata(hObject,handles);
 %                      Computation Functions                            %
 %                                                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function findPeaks(hObject)
-handles = guidata(hObject);
-p = handles.p;
-data = {};
-
-% Load Sig
-[ sig, fs ] = loadFromFile( p.pathName, p.fileName );
-
-% Pre-processing
-[ sig, detrended ] = preprocessingNew(sig, fs);
-
-% Kota
-[ R_loc ] = kota(sig, detrended, fs);
-
-
-% Save Data Back
-data.fs = fs;
-data.detrended = detrended;
-data.R_locs = R_loc;
-data.t = 0:(1/fs):((length(detrended)-1)/fs);
-data.interval = diff(R_loc);
-
-handles.sig = data;
-guidata(hObject, handles);
-
-function postProcessIbi(hObject)
-handles = guidata(hObject);
-p = handles.p;
-data = handles.sig;
-if(p.ensembleCheckBox == 1)
-    windowSize = 200;
-    errors = ensembleNonCorrelatedDetector( data.detrended, data.R_locs, p.minimumCorrelationEdit, windowSize );
-else
-    errors = zeros(1,length(data.R_locs));
-end
-
-
-% Make the interval array with the valid beats
-interval = diff(data.R_locs);
-noisy = zeros(1,length(interval));
-for i = 1:length(data.R_locs)-1
-    % Since here interval(i) = R_locs(i+1)-R_locs(i)
-    if(errors(i) == 1)
-        if(i > 1)
-            noisy(i-1) = 1;
-            noisy(i) = 1;
-        else
-            noisy(i) = 1;
-        end
-    end
-end
-        
-handles.ensemble = {};
-handles.ensemble.ecgErrors = errors;
-handles.ensemble.intervalNoise = noisy;
-
-% Check for missed beat signs
-
-if(p.missedBeatsCheckBox == 1)
-    missedBeatErrors = missedBeatDetector( interval, p.missedBeatsTolerancePercentEdit );
-else 
-    missedBeatErrors = zeros(1, length(interval));
-end
-
-handles.missedBeats = {};
-handles.missedBeats.intervalNoise = missedBeatErrors;
-
-% Use the non-destructive median filter:
-if(p.mediaCheckBox == 1)
-    outliers = medFilter( interval, p.windowSizeEdit );
-else 
-    outliers = zeros(1, length(interval));
-end
-
-totalNoisyIntervals = noisy | missedBeatErrors | outliers;
-
-handles.ensemble = {};
-handles.ensemble.ecgErrors = errors;
-handles.ensemble.intervalNoise = noisy;
-handles.noisyIntervals = totalNoisyIntervals;
-handles.missedBeats = {};
-handles.missedBeats.intervalNoise = missedBeatErrors;
-handles.madFilter = {};
-handles.madFilter.intervalNoise = outliers;
-
-guidata(hObject, handles);
-
-function smoothing(hObject)
-handles = guidata(hObject);
-p = handles.p;
-
-noisyIntervals = logical(handles.noisyIntervals);
-time = handles.sig.t;
-R_locs = handles.sig.R_locs;
-fs = handles.sig.fs;
-interval = diff(R_locs);
-intervalLocs = R_locs(1:end-1);
-switch get(get(handles.tachoGeneration,'SelectedObject'),'Tag')
-      case 'smoothingSplinesRadio'
-          f = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(interval(~noisyIntervals)),'smoothingspline','SmoothingParam',p.smoothingSplinesCoefEdit);
-          smoothSignal = f(time(intervalLocs(~noisyIntervals)));
-      case 'directRadio'
-          smoothSignal = interval(~noisyIntervals);
-end
-if(p.medianFilterPostCheckBox == 1)
-    smoothSignal = medfilt1(smoothSignal,p.windowSizePostEdit);
-end
-
-handles.tacho = smoothSignal;
-handles.smoothSig = 60*fs./(smoothSignal);
-guidata(hObject, handles);
 
 function evaluate(hObject)
 handles = guidata(hObject);
