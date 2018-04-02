@@ -1,9 +1,16 @@
-function loss = batchEval( ensemble_filter_threshold,  mad_filter_threshold, missed_beats_tolerance_percent)
+function loss = batchEval( x )
 %BATCHEVAL Summary of this function goes here
 %   Detailed explanation goes here
 
-numSamples = 50000;
+if(length(x) ~= 3)
+    error("Invalid Input Size")'
+end
 
+ensemble_filter_threshold = x(1);
+mad_filter_threshold = x(2);
+missed_beats_tolerance_percent = x(3);
+
+numSamples = 100000;
 avgPrecision = 0;
 avgRecall = 0;
 avgF_score = 0;
