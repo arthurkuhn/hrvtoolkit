@@ -120,7 +120,7 @@ switch (interpolation_method)
         [f,~,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),smoothSignal,'smoothingspline','SmoothingParam',smoothing_spline_coef);
         heartRate = f(time);
     case 'direct'
-        heartRate = interp1(transpose(time(intervalLocs(~noisyIntervals))),smoothSignal,time,'direct');
+        heartRate = interp1(transpose(time(intervalLocs(~noisyIntervals))),smoothSignal,time,'linear');
         r_squarred = 0;
 end
 
