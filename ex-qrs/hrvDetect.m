@@ -141,10 +141,11 @@ if(~isnan(eval_type))
         result.evaluation.time = time;
         result.evaluation.detrended = detrended;
         errorFlags = {};
-        errorFlags.invalid_r_peaks_ensemble = logical(errors);
-        errorFlags.invalid_rr_intervals_ensemble = logical(noisy);
-        errorFlags.invalid_rr_intervals_missed = logical(missedBeatErrors);
-        errorFlags.invalid_rr_intervals_madFiltered = logical(outliers);
+        maxLength = length(R_locs);
+        errorFlags.invalid_r_peaks_ensemble = logical(errors(1:maxLength));
+        errorFlags.invalid_rr_intervals_ensemble = logical(noisy(1:maxLength-1));
+        errorFlags.invalid_rr_intervals_missed = logical(missedBeatErrors(1:maxLength-1));
+        errorFlags.invalid_rr_intervals_madFiltered = logical(outliers(1:maxLength-1));
         result.evaluation.errorFlags = errorFlags;
     else
         error("Invalid eval type: choose 'short' or 'full' or do not set");
