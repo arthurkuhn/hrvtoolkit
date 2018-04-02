@@ -1,25 +1,10 @@
+# The Tacho Toolbox
 
-
-# Heart Rate Variability Analysis Toolbox
-
-
-
-## Purpose
-
-This toolbox was built to enable R-Peak extraction and heart rate variability analysis in pre-term infants. Widely used beat extraction algorithms such as Pan & Tompkins are unable to deal with the high amount of noise in these sognals. This project uses the algorithm proposed by Kota TODO. Much less sensitive to noise, this algorithn allows fro more reliable R-peak extraction.
-
-This toolbox was put together by Arthur Kuhn & Clara Dionet as part of the McGill Engineering Design Project.
-
-
-
-## Acknowledgements & References
-
-We thank Professor Robert E. Kearney and Dr Samantha Latremouille for their continuous guidance and support throughout this project. Their expert guidance steered us in the right direction and made the completion of this project possible.
-
-
-## Packages Overview
-
-This toolbox enables processing of raw ECG signals to extract numerous heart rate variability measures. It is split into multiple packages. The beats package processes the raw ECG signal, extracts R-peak locations and filters the signal to remove noisy and ectopic beats. The HRVAS package is a small modification of the following project: TODO. It takes a series of inter-beat intervals as an input and computes many hrv measures. The physionet package is used for validation, to compare the results of our qrs peak extraction algorithm with annotated ECG files from the physionet database.
+## Documentation Links
+-[Overview](overview)
+-[Code Documentation](https://arthurkuhn.github.io/hr-dp/matlab/)
+-[GUI](https://arthurkuhn.github.io/hr-dp/gui/)
+-[Physionet](https://arthurkuhn.github.io/hr-dp/physionet/)
 
 
 ## Structure
@@ -55,7 +40,7 @@ All functions should be commented as follows:
 % Inputs:
 %    signal - The RR-interval data
 %    validLocs - Boolean Array, 1 for valid peaks
-%    tau - Parameter
+%    tau - Parameter
 %
 % Outputs:
 %    validLocs - Boolean Array, 1 for valid peaks
@@ -112,5 +97,4 @@ record = 'picsdb/infant1_ecg';
 plot(tm,signal(:,1));hold on;grid on
 plot(tm(ann),signal(ann,1),'ro','MarkerSize',4);
 ```
-
 
