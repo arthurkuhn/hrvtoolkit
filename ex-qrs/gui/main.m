@@ -96,7 +96,7 @@ switch get(get(handles.tachoGeneration,'SelectedObject'),'Tag')
       case 'smoothingSplinesRadio'
           interpolationMethod = 'spline';
       case 'directRadio'
-          interpolationMethod = 'direct';
+          interpolationMethod = 'linear';
 end
 p = {};
 
@@ -154,40 +154,43 @@ guidata(hObject,handles);
 
 function evaluate(hObject)
 handles = guidata(hObject);
-data = handles.sig;
-p = handles.p;
-noisyIntervals = handles.noisyIntervals;
 
-time = handles.sig.t;
-R_locs = handles.sig.R_locs;
-fs = handles.sig.fs;
-interval = diff(R_locs);
-BPM = 60*fs./(interval);
-intervalLocs = R_locs(1:end-1);
+% Parse Checkboxes
+hCheckboxes = [handles.mediaCheckBox ; handles.ensembleCheckBox; handles.missedBeatsCheckBox; handles.medianFilterPostCheckBox];
+checkboxValues = cell2mat(get(hCheckboxes, 'Value'));
 
-percentClean = ( length(data.R_locs)-1 - sum(noisyIntervals) ) / ( length(data.R_locs)-1 ) * 100;
-noisyPerThousand = sum(noisyIntervals) / ( length(data.R_locs)-1 ) * 1000;
+% Parse TextBoxes
+hEditTextboxes = [handles.windowSizeEdit ; handles.minimumCorrelationEdit; handles.windowSizePostEdit; handles.missedBeatsTolerancePercentEdit; handles.smoothingSplinesCoefEdit];
+editValues = get(hEditTextboxes, 'String');
+
 switch get(get(handles.tachoGeneration,'SelectedObject'),'Tag')
-    case 'smoothingSplinesRadio'
-        [~,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline','SmoothingParam',p.smoothingSplinesCoefEdit);
-        r_squarred = gof.rsquare;
-    case 'directRadio'
-        r_squarred = 0;
+      case 'smoothingSplinesRadio'
+          interpolationMethod = 'spline';
+      case 'directRadio'
+          interpolationMethod = 'linear';
 end
 
-nonCorrelatedBeats = sum(handles.ensemble.ecgErrors);
-missedBeats = sum(handles.missedBeats.intervalNoise);
-madFilterNoise = sum(handles.madFilter.intervalNoise);
+options = {};
 
-eval = {};
-eval.numBeats = length(R_locs);
-eval.ibiPercentClean = percentClean;
-eval.noisyPerThousand = noisyPerThousand;
-eval.fitRSquare = r_squarred;
-eval.nonCorrelatedBeats = nonCorrelatedBeats;
-eval.missedBeats = missedBeats;
-eval.madFilterNoise = madFilterNoise;
-handles.eval = eval;
+if(checkboxValues(2) == 1)
+    options = [options, 'ensemble_filter_threshold', str2double(editValues(2))];
+end
+if(checkboxValues(1) == 1)
+    options = [options, 'mad_filter_threshold', str2double(editValues(1))];
+end
+if(checkboxValues(3) == 1)
+    options = [options, 'missed_beats_tolerance_percent', str2double(editValues(4))];
+end
+if(checkboxValues(4) == 1)
+    options = [options, 'median_filter_window', str2double(editValues(3))];
+end
+
+options = [options, 'interpolation_method', interpolationMethod];
+options = [options, 'smoothing_spline_coef', str2double(editValues(5))];
+options = [options, 'directory', handles.pathName];
+
+handles.result = hrvDetect(handles.fileName, options);
+
 guidata(hObject, handles);
 
 function exportDataIbi(hObject)
@@ -320,20 +323,10 @@ function runButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-
 parseParameters(hObject);
 
 % compute(hObject);
-h = waitbar(0.2,'Finding Peaks');
-if(isempty(handles.sig.t))
-    findPeaks(hObject);
-end
-
-waitbar(0.8, h, 'Post-Processing');
-postProcessIbi(hObject);
-
-waitbar(0.9, h, 'Smoothing');
-smoothing(hObject);
+h = waitbar(0.2,'Running hrvDetect');
 
 waitbar(0.95, h, 'Evaluating');
 evaluate(hObject);
