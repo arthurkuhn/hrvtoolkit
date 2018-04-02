@@ -79,46 +79,6 @@ end
 %                                                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Parsing Parameters
-% Parses the GUI parameters into the handles.p object
-function parseParameters(hObject)
-handles = guidata(hObject);
-
-% Parse Checkboxes
-hCheckboxes = [handles.mediaCheckBox ; handles.ensembleCheckBox; handles.missedBeatsCheckBox; handles.medianFilterPostCheckBox];
-checkboxValues = cell2mat(get(hCheckboxes, 'Value'));
-
-% Parse TextBoxes
-hEditTextboxes = [handles.windowSizeEdit ; handles.minimumCorrelationEdit; handles.windowSizePostEdit; handles.missedBeatsTolerancePercentEdit; handles.smoothingSplinesCoefEdit];
-editValues = get(hEditTextboxes, 'String');
-
-switch get(get(handles.tachoGeneration,'SelectedObject'),'Tag')
-      case 'smoothingSplinesRadio'
-          interpolationMethod = 'spline';
-      case 'directRadio'
-          interpolationMethod = 'linear';
-end
-p = {};
-
-% File select
-p.fileName = handles.fileName;
-p.pathName = handles.pathName;
-
-% Preprocessing
-p.mediaCheckBox = checkboxValues(1);
-p.windowSizeEdit = str2double(editValues(1));
-p.ensembleCheckBox = checkboxValues(2);
-p.minimumCorrelationEdit = str2double(editValues(2));
-p.missedBeatsCheckBox = checkboxValues(3);
-p.missedBeatsTolerancePercentEdit = str2double(editValues(4));
-p.smoothingSplinesCoefEdit = str2double(editValues(5));
-p.medianFilterPostCheckBox = checkboxValues(4);
-p.windowSizePostEdit = str2double(editValues(3));
-
-% Save handles
-handles.p = p;
-guidata(hObject,handles);
-
 %% Initializes the Sig handles object
 function init(hObject)
 
@@ -186,8 +146,9 @@ if(checkboxValues(4) == 1)
 end
 
 options = [options, 'interpolation_method', interpolationMethod];
-options = [options, 'smoothing_spline_coef', str2double(editValues(5))];
-options = [options, 'directory', handles.pathName];
+options = [options, 'smoothing_spline_coef', str2double(editValues(5))]; % used if interpolation method is spline
+options = [options, 'directory', handles.pathName]; % used if not in matlab path
+options = [options, 'eval_type','full']; % required for plotting
 
 handles.result = hrvDetect(handles.fileName, options);
 
