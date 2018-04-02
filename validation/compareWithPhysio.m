@@ -1,4 +1,4 @@
-function [ precision, recall, f_score, jitter ] = compareWithPhysio( record, result, numSamples, maxDeviationMs, plot )
+function [ precision, recall, f_score, jitter ] = compareWithPhysio( record, result, numSamples, maxDeviationMs, shouldPlot )
 %COMPAREWITHPHYSIO Summary of this function goes here
 %   Detailed explanation goes here
 %       compareWithPhysio('infant1_ecg', result, 500000, 15, 1)
@@ -6,6 +6,15 @@ function [ precision, recall, f_score, jitter ] = compareWithPhysio( record, res
 R_locs = result.R_locs;
 fs = result.fs;
 maxDeviation = maxDeviationMs * 1000 / fs;
+
+% No result from our algo
+if(isempty(R_locs))
+    precision = 0;
+    recall = 0;
+    f_score = 0;
+    jitter = 0;
+    return;
+end
 
 % Get the official annotations:
 [R_locs_valid, ecg_sig] = getOfficialResultsShort( record, numSamples );
@@ -54,7 +63,7 @@ interval_locs_valid = R_locs_valid(1:end-1);
 interpolated = interp1(R_locs,result.tachogram,1:length(ecg_sig),'spline');
 
 
-if(plot == 1)
+if(shouldPlot == 1)
     figure;
     bx1 = subplot(2,2,1);
     hold on;
@@ -116,6 +125,13 @@ precision = n_acceptable / length(R_locs);
 recall = n_acceptable / length(R_locs_valid);
 f_score = 2 * (precision * recall) / (precision + recall) ;
 avg_jitter = sum(jitter)/length(jitter);
+
+if(isnan(f_score))
+    f_score = 0;
+end
+if(isnan(avg_jitter))
+    avg_jitter = 0;
+end
 
 end
 
