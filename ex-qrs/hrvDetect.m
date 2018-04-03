@@ -18,7 +18,7 @@ function [ result ] = hrvDetect(fileName, varargin )
 %
 % Please see exact struct definition in sample function or documentation.
 
-if nargin ==1
+if nargin == 1
    "Using default parameters : No filter, direct interpolation"
 end
 
@@ -104,7 +104,7 @@ switch (interpolation_method)
           [f,gof,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(interval(~noisyIntervals)),'smoothingspline','SmoothingParam',smoothing_spline_coef);
           smoothSignal = f(time(intervalLocs(~noisyIntervals)));
           r_squarred = gof.rsquare;
-      case 'direct'
+      case 'linear'
           smoothSignal = interval(~noisyIntervals);
           r_squarred = 0;
 end
@@ -120,7 +120,7 @@ switch (interpolation_method)
     case 'spline'
         [f,~,~] = fit(transpose(time(intervalLocs(~noisyIntervals))),smoothSignal,'smoothingspline','SmoothingParam',smoothing_spline_coef);
         heartRate = f(time);
-    case 'direct'
+    case 'linear'
         heartRate = interp1(transpose(time(intervalLocs(~noisyIntervals))),smoothSignal,time,'linear');
         r_squarred = 0;
 end
@@ -134,18 +134,20 @@ result.noisyIntervals = intervalLocs(noisyIntervals);
 result.interpolatedFlag = [0];
 if(~isnan(eval_type))
     if(strcmp(eval_type, 'short'))
-        result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', missedBeatErrors);
+        result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', sum(missedBeatErrors));
     elseif(strcmp(eval_type, 'full'))
-        result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', missedBeatErrors);
+        result.evaluation = struct('totalNumBeats', length(R_locs),'percentInvalid', percentNoisy,'splineRSquare', r_squarred, 'numRemovedEnsemble', sum(noisy), 'numRemovedMAD', sum(outliers), 'missedBeatsNum', sum(missedBeatErrors));
         result.evaluation.sig = sig;
         result.evaluation.time = time;
         result.evaluation.detrended = detrended;
         errorFlags = {};
         maxLength = length(R_locs);
-        errorFlags.invalid_r_peaks_ensemble = logical(errors(1:maxLength));
+        errorFlags.invalid_r_peaks_ensemble = logical(errors(1:maxLength-1));
         errorFlags.invalid_rr_intervals_ensemble = logical(noisy(1:maxLength-1));
         errorFlags.invalid_rr_intervals_missed = logical(missedBeatErrors(1:maxLength-1));
         errorFlags.invalid_rr_intervals_madFiltered = logical(outliers(1:maxLength-1));
+        errorFlags.invalid_rr_intervals_all = logical(noisyIntervals);
+        errorFlags.all_R_locs = R_locs;
         result.evaluation.errorFlags = errorFlags;
     else
         error("Invalid eval type: choose 'short' or 'full' or do not set");
