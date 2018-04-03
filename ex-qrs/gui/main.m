@@ -197,10 +197,10 @@ else
 
     time = handles.result.evaluation.time;
     heartRate = handles.result.heartRate;
+    roughTacho = handles.result.evaluation.roughTacho;
     R_locs = handles.result.R_locs;
     detrended = handles.result.evaluation.detrended;
     fs = handles.result.fs;
-    interval = diff(R_locs);
 end
 
 if(~isempty(time))
@@ -225,11 +225,9 @@ else
 end
 hold on;
 if(~isempty(time))
-    intervalLocs = R_locs(1:end-1);
+    interval = diff(all_R_locs);
     BPM = 60*fs./(interval);
-    f = fit(transpose(time(R_locs(1:end-1))),transpose(BPM),'smoothingspline');
-    h = plot(f,time(R_locs(1:end-1)),BPM);
-    legend(h,{'Valid RR-Intervals', 'Default Fit'});
+    plot(time(R_locs),roughTacho, 'DisplayName', 'Un-Smoothed Tachogram');
     scatter(time(all_R_locs(noisyIntsEnsemble)),BPM(noisyIntsEnsemble),'DisplayName','Ensemble Filtered'); % TODO: Need to update BPM array
     scatter(time(all_R_locs(noisyIntsMissedBeats)),BPM(noisyIntsMissedBeats),'DisplayName','Missed Beats'); % TODO: Need to update BPM array
     scatter(time(all_R_locs(noisyIntsMadFilter)),BPM(noisyIntsMadFilter),'DisplayName','MAD Filtered'); % TODO: Need to update BPM array
