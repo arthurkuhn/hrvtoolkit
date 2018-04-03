@@ -108,6 +108,9 @@ switch (interpolation_method)
           smoothSignal = interval(~noisyIntervals);
           r_squarred = 0;
 end
+
+roughSig = 60*fs./(smoothSignal);
+
 if(~isnan(median_filter_window))
     smoothSignal = medfilt1(smoothSignal,median_filter_window);
 end
@@ -152,6 +155,7 @@ if(~isnan(eval_type))
         result.evaluation.sig = sig;
         result.evaluation.time = time;
         result.evaluation.detrended = detrended;
+        result.evaluation.roughTacho = roughSig;
         errorFlags = {};
         maxLength = length(R_locs);
         errorFlags.invalid_r_peaks_ensemble = logical(errors(1:maxLength-1));
