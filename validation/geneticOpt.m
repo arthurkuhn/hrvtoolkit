@@ -85,10 +85,10 @@ UB = [1 15 100];  % Upper bound
 % violation of nonlinear constraints at every generation. We can also
 % visualize the progress of the algorithm by displaying information to
 % the command window using the |Display| option.
-options = optimoptions(@ga,'PlotFcn',{@gaplotbestf,@gaplotmaxconstr}, ...
+options = optimoptions(@ga,'PlotFcn',{@gaplotbestf,@gaplotscorediversity, @gaplotscores, @gaplotbestindiv}, ...
     'Display','iter', ...
     'MaxGenerations', 300, ...
-    'MaxStallTime', 60);
+    'PopulationSize', 15);
 
 %% Providing a Start Point
 % A start point for the minimization can be provided to |ga| function by
@@ -96,7 +96,7 @@ options = optimoptions(@ga,'PlotFcn',{@gaplotbestf,@gaplotmaxconstr}, ...
 % use the first individual from |InitialPopulationMatrix| as a start point
 % for a constrained minimization. Refer to the documentation for a
 % description of specifying an initial population to |ga|.
-X0 = [0 3 20]; % Start point (row vector)
+X0 = [0.5 3 20]; % Start point (row vector)
 options.InitialPopulationMatrix = X0;
 ConstrainFunction = @constraints;
 % Next we run the GA solver.

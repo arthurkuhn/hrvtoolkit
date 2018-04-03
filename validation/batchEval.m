@@ -3,7 +3,7 @@ function loss = batchEval( x )
 %   Detailed explanation goes here
 
 if(length(x) ~= 3)
-    error("Invalid Input Size")'
+    error("Invalid Input Size");
 end
 
 ensemble_filter_threshold = x(1);
@@ -16,7 +16,7 @@ avgRecall = 0;
 avgF_score = 0;
 avgJitter = 0;
 
-evaluated = [1 2 3 4 5 6 7 8];
+evaluated = 1:8;
 precisionArr = zeros(1, length(evaluated));
 recallArr = zeros(1, length(evaluated));
 f_scoreArr = zeros(1, length(evaluated));
