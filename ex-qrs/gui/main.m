@@ -189,12 +189,14 @@ else
     errorFlags = handles.result.evaluation.errorFlags;        
 
     ecgErrors = errorFlags.invalid_r_peaks_ensemble; % Logical to allow indexing
-    noisyIntervals = logical(handles.result.noisyIntervals);
+    noisyIntervals = errorFlags.invalid_rr_intervals_all;
     noisyIntsEnsemble = errorFlags.invalid_rr_intervals_ensemble;
     noisyIntsMissedBeats = errorFlags.invalid_rr_intervals_missed;
     noisyIntsMadFilter = errorFlags.invalid_rr_intervals_madFiltered;
+    all_R_locs = errorFlags.all_R_locs;
 
     time = handles.result.evaluation.time;
+    heartRate = handles.result.heartRate;
     R_locs = handles.result.R_locs;
     detrended = handles.result.evaluation.detrended;
     fs = handles.result.fs;
@@ -203,9 +205,9 @@ end
 
 if(~isempty(time))
     plot(time,detrended);
-    plot(time(R_locs(~ecgErrors)),detrended(R_locs(~ecgErrors)),'bv','MarkerFaceColor','b')
+    plot(time(all_R_locs(~ecgErrors)),detrended(all_R_locs(~ecgErrors)),'bv','MarkerFaceColor','b')
     if(sum(ecgErrors) ~= 0)
-        plot(time(R_locs(ecgErrors)),detrended(R_locs(ecgErrors)),'rv','MarkerFaceColor','r')
+        plot(time(all_R_locs(ecgErrors)),detrended(all_R_locs(ecgErrors)),'rv','MarkerFaceColor','r')
         legend('ECG','R-Peaks', 'Uncorrelated Beats');
     else
         legend('ECG','R-Peaks');
@@ -225,12 +227,12 @@ hold on;
 if(~isempty(time))
     intervalLocs = R_locs(1:end-1);
     BPM = 60*fs./(interval);
-    f = fit(transpose(time(intervalLocs(~noisyIntervals))),transpose(BPM(~noisyIntervals)),'smoothingspline');
-    h = plot(f,time(intervalLocs(~noisyIntervals)),BPM(~noisyIntervals));
+    f = fit(transpose(time(R_locs(1:end-1))),transpose(BPM),'smoothingspline');
+    h = plot(f,time(R_locs(1:end-1)),BPM);
     legend(h,{'Valid RR-Intervals', 'Default Fit'});
-    scatter(time(intervalLocs(noisyIntsEnsemble)),BPM(noisyIntsEnsemble),'DisplayName','Ensemble Filtered');
-    scatter(time(intervalLocs(noisyIntsMissedBeats)),BPM(noisyIntsMissedBeats),'DisplayName','Missed Beats');
-    scatter(time(intervalLocs(noisyIntsMadFilter)),BPM(noisyIntsMadFilter),'DisplayName','MAD Filtered');
+    scatter(time(all_R_locs(noisyIntsEnsemble)),BPM(noisyIntsEnsemble),'DisplayName','Ensemble Filtered'); % TODO: Need to update BPM array
+    scatter(time(all_R_locs(noisyIntsMissedBeats)),BPM(noisyIntsMissedBeats),'DisplayName','Missed Beats'); % TODO: Need to update BPM array
+    scatter(time(all_R_locs(noisyIntsMadFilter)),BPM(noisyIntsMadFilter),'DisplayName','MAD Filtered'); % TODO: Need to update BPM array
     legend('show');
 end
 
@@ -248,14 +250,8 @@ else
 end
 if(~isempty(time))
     hold on;
-    switch get(get(handles.tachoGeneration,'SelectedObject'),'Tag')
-        case 'smoothingSplinesRadio'
-        smoothInterpolated = interp1(time(intervalLocs(~noisyIntervals)),handles.smoothSig,time,'spline');
-        case 'directRadio'
-        smoothInterpolated = interp1(time(intervalLocs(~noisyIntervals)),handles.smoothSig,time,'linear');
-    end
-    plot(time,smoothInterpolated, 'DisplayName', 'Final Tachogram');
-    scatter(time(intervalLocs(noisyIntervals)),smoothInterpolated(intervalLocs(noisyIntervals)),'DisplayName','Interpolated Data', ...
+    plot(time,heartRate, 'DisplayName', 'Final Tachogram');
+    scatter(time(all_R_locs(noisyIntervals)),heartRate(all_R_locs(noisyIntervals)),'DisplayName','Interpolated Data', ...
         'MarkerEdgeColor','r',...
         'MarkerFaceColor','r',...
         'LineWidth',0.1);
