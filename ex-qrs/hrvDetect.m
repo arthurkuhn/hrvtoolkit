@@ -115,7 +115,7 @@ if(~isnan(median_filter_window))
     smoothSignal = medfilt1(smoothSignal,median_filter_window);
 end
 
-if(isempty(smoothSignal))
+if(length(smoothSignal) < 2)
     result = {};
     result.fs = fs;
     result.tachogram = [];

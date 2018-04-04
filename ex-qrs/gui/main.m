@@ -338,7 +338,7 @@ function openFigsWindow_Callback(hObject, eventdata, handles)
 % hObject    handle to openFigsWindow (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if(~isempty(handles.sig.t))
+if(~isempty(handles.result))
     makePlots(hObject,true);
 end
 
