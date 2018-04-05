@@ -2,7 +2,7 @@ clear all;
 close all;
 
 numSamples = 500000;
-record = 'infant3_ecg';
+record = 'infant1_ecg';
 plot = 1;
 
 result = hrvDetect(record, 'n_sample_start', 1 , ...
