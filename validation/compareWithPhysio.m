@@ -70,7 +70,7 @@ if(shouldPlot == 1)
     plot(timeMinutes,ecg_sig);
     plot(timeMinutes(R_locs),ecg_sig(R_locs),'rv','MarkerFaceColor','r');
     legend('ECG','R - Detected', 'R - Valid');
-    title('ECG Signal with Computed R points');
+    title('ECG Signal with Computed R points','FontSize',20);
     xlabel('Time in Minutes');
     ylabel('Amplitude');
     ylim([-1 2]);
@@ -80,6 +80,7 @@ if(shouldPlot == 1)
     plot (timeMinutes,ecg_sig);
     plot (timeMinutes(R_locs_valid),ecg_sig(R_locs_valid),'bv','MarkerFaceColor','b');
     legend('ECG', 'R - Valid');
+    lgd.FontSize = 22;
     title('ECG Signal with Valid R points');
     xlabel('Time in Minutes');
     ylabel('Amplitude');
