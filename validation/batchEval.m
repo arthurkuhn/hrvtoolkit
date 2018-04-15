@@ -10,7 +10,7 @@ ensemble_filter_threshold = x(1);
 mad_filter_threshold = x(2);
 missed_beats_tolerance_percent = x(3);
 
-numSamples = 100000;
+numSamples = 3000000;
 avgPrecision = 0;
 avgRecall = 0;
 avgF_score = 0;

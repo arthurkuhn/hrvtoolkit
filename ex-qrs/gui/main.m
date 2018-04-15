@@ -158,8 +158,12 @@ guidata(hObject, handles);
 
 function exportDataIbi(hObject)
 handles = guidata(hObject);
-tacho = handles.tacho./1000; %To be in seconds
-filter = strcat(handles.p.fileName(1:end-4),'.ibi');
+if(~isfield(handles, 'result'))
+    f = msgbox('Please run the algorithm first','Error');
+    return;
+end
+tacho = handles.result.heartRate;
+filter = strcat(handles.fileName(1:end-4),'.ibi');
 [file,path] = uiputfile(filter);
 if(~isempty(file))
     csvwrite(fullfile(path,file),tacho);
