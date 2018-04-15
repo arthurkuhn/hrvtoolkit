@@ -158,7 +158,10 @@ guidata(hObject, handles);
 
 function exportDataIbi(hObject)
 handles = guidata(hObject);
-tacho = handles.tacho./1000; %To be in seconds
+if(isField(handles, "result"))
+    return;
+end
+tacho = handles.result.heartRate;
 filter = strcat(handles.p.fileName(1:end-4),'.ibi');
 [file,path] = uiputfile(filter);
 if(~isempty(file))
