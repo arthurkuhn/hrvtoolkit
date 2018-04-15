@@ -162,11 +162,11 @@ if(~isfield(handles, 'result'))
     f = msgbox('Please run the algorithm first','Error');
     return;
 end
-tacho = handles.result.heartRate;
+ibi = handles.result.ibi;
 filter = strcat(handles.fileName(1:end-4),'.ibi');
 [file,path] = uiputfile(filter);
 if(~isempty(file))
-    csvwrite(fullfile(path,file),tacho);
+    csvwrite(fullfile(path,file),ibi);
 end
 
 

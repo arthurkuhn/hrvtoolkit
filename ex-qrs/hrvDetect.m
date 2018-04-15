@@ -98,6 +98,7 @@ totalNoisyIntervals = noisy | missedBeatErrors | outliers;
 noisyIntervals = logical(totalNoisyIntervals);
 
 intervalLocs = R_locs(1:end-1);
+ibi = interval(~noisyIntervals)./fs; %In seconds
 time = 0:(1/fs):((length(detrended)-1)/fs);
 switch (interpolation_method)
       case 'spline'
@@ -145,6 +146,7 @@ result.fs = fs;
 result.tachogram = tachogram;
 result.R_locs = intervalLocs(~noisyIntervals);
 result.heartRate = heartRate;
+result.ibi = ibi;
 result.noisyIntervals = intervalLocs(noisyIntervals);
 result.interpolatedFlag = [0];
 if(~isnan(eval_type))
