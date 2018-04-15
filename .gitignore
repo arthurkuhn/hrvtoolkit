@@ -3,3 +3,4 @@
 *.m~
 tools/WFDBToolbox/database/**
 data/Physionet/*
+data/IBI/*
