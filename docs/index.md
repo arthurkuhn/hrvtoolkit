@@ -15,13 +15,6 @@ buttons:
       url: 'https://github.com/arthurkuhn/hrvtoolkit'
       external_url: true
 
-<!-- # Author box
-author:
-    title: About Author
-    title_url: '#'
-    external_url: true
-    description: Author description -->
-
 # Grid navigation
 grid_navigation:
     - title: About the ToolKit
@@ -48,5 +41,4 @@ grid_navigation:
       excerpt: Read the technical report describing the pipeline implementation here.
       cta: Coming Soon
       url: '#' 
-      external_url: true
 ---
