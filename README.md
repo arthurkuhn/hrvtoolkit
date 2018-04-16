@@ -3,7 +3,7 @@
 # Heart Rate Variability Analysis Toolbox
 
 <aside class="warning">
-This is a pre-release, unstable version. Release 1 end of April 2018
+WARNGING! This is a pre-release, unstable version. Release 1 end of April 2018
 </aside>
 
 ## Purpose
