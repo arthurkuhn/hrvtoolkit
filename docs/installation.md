@@ -5,8 +5,8 @@ keywords:
 comments: false
 
 # Hero section
-title: About
-description: Find out about the HRV Toolkit and the different use cases.
+title: Installation
+description: The HRV ToolKit can be run in different ways. Find out how to install it here.
 
 # Micro navigation
 micro_nav: true
@@ -14,11 +14,11 @@ micro_nav: true
 # Page navigation
 page_nav:
     prev:
-        content: Homepage
-        url: '/'
+        content: About
+        url: '/about'
     next:
-        content: Installation
-        url: '/installation'
+        content: Using the GUI
+        url: '/gui'
 ---
 
 # The Tacho Toolbox
