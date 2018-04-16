@@ -15,6 +15,6 @@ micro_nav: true
 page_nav:
     prev:
         content: Using Matlab
-        url: '/matlab'
+        url: '/matlabguide'
 ---
 

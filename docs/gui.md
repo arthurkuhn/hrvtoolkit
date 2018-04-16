@@ -18,6 +18,6 @@ page_nav:
         url: '/installation'
     next:
         content: Using MATLAB
-        url: '/matlab'
+        url: '/matlabguide'
 ---
 

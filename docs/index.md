@@ -8,7 +8,7 @@ title: HRV Toolkit
 description: A toolbox for Heart Rate Variability Analysis
 buttons:
     - content: Quick Install
-      url: '#'
+      url: '/installation'
       external_url: false
     - icon: github
       content: Source Code
@@ -32,7 +32,7 @@ grid_navigation:
     - title: Using MATLAB
       excerpt: In this section you'll find out how to call the MATLAB functions directly, as well as run batch processing.
       cta: Read more
-      url: '/matlab'   
+      url: '/matlabguide'   
     - title: API Reference
       excerpt: Find out how to call all the MATLAB functions of the pipeline.
       cta: Read more
