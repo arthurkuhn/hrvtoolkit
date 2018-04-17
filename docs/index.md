@@ -22,11 +22,11 @@ grid_navigation:
       cta: Read more
       url: '/about'
     - title: Installation
-      excerpt: The HRV ToolKit can be run in different ways. Here you can see how to install the MATLAB and standalone apps, for prototyping and experimentation. For batch processing and more advanced usage, find out how to get the code here.
+      excerpt: The HRV ToolKit can be run in different ways. Find out how to get it here
       cta: Read more
       url: '/installation' 
     - title: Using the GUI
-      excerpt: Both the QRS extraction and HRVAS apps have user interfaces allowing for simple control of the pipeline. Find out about all the features here.
+      excerpt: Both the QRS extraction and HRVAS apps have user interfaces. Find out about all their features here.
       cta: Read more
       url: '/gui'   
     - title: Using MATLAB
