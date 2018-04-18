@@ -10,7 +10,7 @@ for i = 1:length(files)
     for t = 1:length(testValues)
         options = getOptionsForTest(t, testValues);
         [ result ] = hrvDetect(char(files(i)), options );
-        fileName = strcat(files(i),'-testValue-', int2str(testValues(t)),'.ibi');
+        fileName = strcat(files(i),'-testValue-', num2str(testValues(t)),'.ibi');
         ibi = result.ibi;
         csvwrite(char(fileName),ibi);
     end
