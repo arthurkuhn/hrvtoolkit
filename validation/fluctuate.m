@@ -4,15 +4,15 @@ files = {'a5c37ce1d999','a2f1ba57e8af','a02b15a1254c'};
 
 % Step 2:
 % Update the test values here
-testValues = 0:0.1:1;
+testValues = 0.1:0.1:1;
 
 for i = 1:length(files)
-    for t = testValues
-        options = getOptionsForTest(t);
+    for t = 1:length(testValues)
+        options = getOptionsForTest(t, testValues);
         [ result ] = hrvDetect(char(files(i)), options );
-        filteName = strcat(files(i),'-testValue-', int2str(testValue),'.ibi');
+        fileName = strcat(files(i),'-testValue-', int2str(testValues(t)),'.ibi');
         ibi = result.ibi;
-        csvwrite(fullfile(path,file),ibi);
+        csvwrite(char(fileName),ibi);
     end
 end
 
@@ -21,9 +21,9 @@ end
 % Simply change the value of the option you want to vary to
 % testValues(testNum).
 % Eg: options = [options, 'ensemble_filter_threshold', testValues(testNum)];
-function options = getOptionsForTest(testNum)
+function options = getOptionsForTest(testNum, testValues)
     options = {};
-    options = [options, 'ensemble_filter_threshold', 0.2];
+    options = [options, 'ensemble_filter_threshold', testValues(testNum)];
     options = [options, 'mad_filter_threshold', 5];
     options = [options, 'missed_beats_tolerance_percent', 20];
     options = [options, 'median_filter_window', 3];
