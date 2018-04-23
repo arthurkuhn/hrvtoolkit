@@ -30,4 +30,4 @@ Contributions are most welcome. Please do get in touch with us or open a pull re
 
 # Contacting the authors
 
-Please email: arthur . kuhn *at* maill.mcgill.ca
+Please email: arthur . kuhn *at* mail.mcgill.ca
