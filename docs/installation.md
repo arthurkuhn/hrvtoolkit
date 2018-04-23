@@ -30,7 +30,7 @@ page_nav:
 # Installation
 
 <div class="callout callout--info">
-    <p><strong>Tyring the toolbox</strong>To try the GUI, by far the easiest and quickest installation method is to install the [MATLAB application]()</p>
+    <p><strong>Tyring the toolbox</strong>To try the GUI, by far the easiest and quickest installation method is to install the [MATLAB application](http://hrvtoolkit.com/installation/#matlab-application)</p>
 </div>
 
 Depending on your intended use of the package, different installation options are available.

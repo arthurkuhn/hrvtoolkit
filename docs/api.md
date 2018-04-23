@@ -16,5 +16,8 @@ page_nav:
     prev:
         content: Using Matlab
         url: '/matlabguide'
+    next:
+        content: Issues
+        url: '/issues'
 ---
 

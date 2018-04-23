@@ -37,9 +37,13 @@ grid_navigation:
       excerpt: Find out how to call all the MATLAB functions of the pipeline.
       cta: Read more
       url: '/api' 
+    - title: Issues
+      excerpt: Find out how to contact the authors, get help and report issues.
+      cta: Find out more
+      url: '/issues'   
     - title: Technical Reference
       excerpt: Read the technical report describing the pipeline implementation here.
-      cta: Coming Soon
-      url: '#' 
+      cta: Open
+      url: 'http://hrvtoolkit.com/final_report.pdf' 
       external_url: true
 ---
