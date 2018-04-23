@@ -1,0 +1,70 @@
+<deployment-project plugin="plugin.webdeploy" plugin-version="1.0">
+  <configuration file="C:\Users\Arthur\Documents\GitHub\hr2\hr-dp\ex-qrs\gui\main_App_1.prj" location="C:\Users\Arthur\Documents\GitHub\hr2\hr-dp\ex-qrs\gui" name="main_App_1" target="target.webdeploy" target-name="Web App Compiler">
+    <param.appname>main_App_1</param.appname>
+    <param.version>1.0</param.version>
+    <param.displayname>main_App_1</param.displayname>
+    <param.authnamewatermark />
+    <param.summary />
+    <param.screenshot>C:\Users\Arthur\AppData\Local\Temp\tpcbf361c7_254a_4fec_a431_1addabb5e367.png</param.screenshot>
+    <param.intermediate>${PROJECT_ROOT}\main_App_1\for_testing</param.intermediate>
+    <param.files.only>${PROJECT_ROOT}\main_App_1\for_redistribution_files_only</param.files.only>
+    <param.output>${PROJECT_ROOT}\main_App_1\for_redistribution</param.output>
+    <param.logdir>${PROJECT_ROOT}\main_App_1</param.logdir>
+    <param.target.type>subtarget.web.app</param.target.type>
+    <param.user.defined.mcr.options />
+    <unset>
+      <param.version />
+      <param.displayname />
+      <param.authnamewatermark />
+      <param.summary />
+      <param.intermediate />
+      <param.files.only />
+      <param.output />
+      <param.logdir />
+      <param.target.type />
+      <param.user.defined.mcr.options />
+    </unset>
+    <fileset.web.main>
+      <file>${PROJECT_ROOT}\main_App.mlapp</file>
+    </fileset.web.main>
+    <fileset.resources />
+    <fileset.depfun />
+    <fileset.package />
+    <build-deliverables>
+      <file location="${PROJECT_ROOT}\main_App_1\for_testing" name="main_App_1.ctf" optional="false">C:\Users\Arthur\Documents\GitHub\hr2\hr-dp\ex-qrs\gui\main_App_1\for_testing\main_App_1.ctf</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2018a</root>
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+        <toolbox name="gpucoder" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <gpucoder>
+          <enabled>true</enabled>
+        </gpucoder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.0</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
