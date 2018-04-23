@@ -7,7 +7,7 @@
 ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/arthurkuhn/hrvtoolkit.svg)
 ![Maintenance](https://img.shields.io/maintenance/yes/2018.svg)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/arthurkuhn/hrvtoolkit/pulls)
-[![Analytics](https://ga-beacon.appspot.com/UA-117929608-1/github.com/arthurkuhn/hrvtoolkit?pixel)](https://github.com/arthurkuhn/hrvtoolkit)
+[![Analytics](https://ga-beacon.appspot.com/UA-117929608-2/github.com/arthurkuhn/hrvtoolkit?pixel)](https://github.com/arthurkuhn/hrvtoolkit)
 
 # Heart Rate Variability Analysis Toolbox
 
