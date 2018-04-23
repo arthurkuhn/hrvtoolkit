@@ -26,10 +26,11 @@ page_nav:
 
 ## Purpose
 
-This toolbox was built to enable R-Peak extraction and heart rate variability analysis in pre-term infants. Widely used beat extraction algorithms such as Pan & Tompkins are unable to deal with the high amount of noise in these sognals. This project uses the algorithm proposed by Kota TODO. Much less sensitive to noise, this algorithn allows fro more reliable R-peak extraction.
+This toolbox was built to enable R-Peak extraction and heart rate variability analysis in pre-term infants. Widely used beat extraction algorithms such as Pan & Tompkins are unable to deal with the high amount of noise in these sognals. This project uses the algorithm proposed by Kota. Much less sensitive to noise, this algorithn allows fro more reliable R-peak extraction.
+
+The technical report can be found [here.](http://hrvtoolkit.com/final_report.pdf)
 
 This toolbox was put together by Arthur Kuhn & Clara Dionet as part of the McGill Engineering Design Project.
-
 
 
 ## Acknowledgements & References
