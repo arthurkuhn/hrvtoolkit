@@ -13,9 +13,9 @@ files = cell(1,:);
 testValuesEnsemble = 0.1:0.1:0.5;
 testValuesMAD = 5:5:25;
 
-for i = 1:length(files)
+parfor i = 1:length(files)
     for e = 1:length(testValuesEnsemble)
-        parfor m = 1:length(testValuesMAD)
+        for m = 1:length(testValuesMAD)
             options = getOptionsForTest(e, m, testValuesEnsemble, testValuesMAD);
             [ result ] = hrvDetect(char(files(i)), options );
             fileName = strcat(files(i),'-MAD-', num2str(testValuesMAD(m)),'-ENSEMBLE-',num2str(testValuesEnsemble(e)),'.ibi');

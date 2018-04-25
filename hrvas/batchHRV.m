@@ -277,15 +277,17 @@ function hrv=batchGetHRV(fList,opt,flagNoGui)
     else
         disp('Processing: 0% complete.')
     end
-    tic; avgElapsed=0;
+    start = tic; 
+    avgElapsed=0;
     
     %get hrv for each file
     nFiles=length(fList);
-    for f=1:nFiles 
+    flagNoGui = 1;
+    parfor f=1:nFiles 
         hrv(f)=getHRV(fList{f},opt);
 
         %calculate remaining time for waitbar
-        elapsedTime=toc; %total time elapsed since start
+        elapsedTime=toc(start); %total time elapsed since start
         %average time elapsed to process a single file
         avgElapsed=elapsedTime/f; 
         %time remaining in processing (min)
@@ -299,7 +301,7 @@ function hrv=batchGetHRV(fList,opt,flagNoGui)
             if abort
                 warning('Batch canceled.');
                 delete(h)
-                return; 
+                %return; 
             end
         else
             disp(['Processing: ' num2str(bar) ...

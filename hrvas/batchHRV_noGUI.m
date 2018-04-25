@@ -92,7 +92,7 @@ function hrv=batchGetHRV(fList,opt)
     
     %get hrv for each file
     nFiles=length(fList);
-    for f=1:nFiles 
+    parfor f=1:nFiles 
         hrv(f)=getHRV(fList{f},opt);
 
         %calculate remaining time for waitbar
