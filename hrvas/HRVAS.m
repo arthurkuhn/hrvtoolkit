@@ -20,7 +20,7 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function HRVAS
+function HRVAS(varargin)
 % HRVAS: GUI to calculate heart rate variability (HRV) measures
 %
 % Version: 1.0.3
@@ -57,7 +57,7 @@ function HRVAS
 
     %% Global Variables
 
-    global HRV h flagProcessed flagPreviewed nIBI dIBI IBI trend
+    global HRV h flagProcessed flagPreviewed nIBI dIBI IBI trend externMode
     settings=[];%analysis options/settings
     IBI=[]; %ibi data
     nIBI=[]; %non-detrended ibi
@@ -66,6 +66,13 @@ function HRVAS
     h=[];   %gui handles
     flagProcessed=false; %flag to indicate that HRV has been proc
     flagPreviewed=false; %flag to indicate previewing IBI
+    externMode=false; %flag to indicate that the program was launched from QRS detect
+    
+    if(isempty(varargin))
+        externMode = true;
+        IBI = varargin{1};
+    end
+        
 
     %% GUI: Main Figure
     
