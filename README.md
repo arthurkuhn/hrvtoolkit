@@ -11,7 +11,7 @@
 
 # Heart Rate Variability Analysis Toolbox
 
-[Download link](https://github.com/arthurkuhn/hrvtoolkit/docs/package/toolkit.mlappinstall)
+[Download link](http://hrvtoolkit.com/package/toolkit.mlappinstall)
 
 
 
