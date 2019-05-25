@@ -21,3 +21,8 @@ page_nav:
         url: '/issues'
 ---
 
+
+
+# API Documentation
+
+The domentation generated directly from the Matlab code [can be found here.](/matlab)
